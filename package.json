@@ -1,0 +1,28 @@
+{
+  "name": "backsolid",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test:entity": "vitest src/domain",
+    "test:usecase": "vitest src/usecases",
+    "dev": "ts-node src/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^9.2.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.3",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.6",
+    "zod": "^3.23.8"
+  },
+  "dependencies": {
+    "@prisma/client": "5.22.0",
+    "express": "^4.21.1"
+  }
+}
