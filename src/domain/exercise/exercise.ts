@@ -1,32 +1,34 @@
-export type CategoryProps = {
+export type ExerciseProps = {
     id: string;
     name: string;
+    category_id: number | null;
     user_id: string | null;
 };
 
-export type CategoryCreateProps = {
+export type ExerciseCreateProps = {
     name: string;
+    category_id: number | null;
     user_id: string | null;
 };
 
-export class Category {
-
-    private constructor(private props: CategoryProps){
+export class Exercise {
+    private constructor(private props: ExerciseProps){
         this.validate();
     };
 
-    public static create(data: CategoryCreateProps){
-        const categoryId: string = crypto.randomUUID();
-        const category = new Category({
-            id: categoryId,
+    public static create(data: ExerciseCreateProps){
+        const exerciseId: string = crypto.randomUUID();
+        const exercise = new Exercise({
+            id: exerciseId,
             ...data
         });
-        return category;
+        return exercise;
     };
 
-    public static with(props: CategoryProps){
-        const category = new Category(props);
-        return category;
+    public static with(props: ExerciseProps){
+        const exercise = new Exercise(props);
+        console.log("exercise >> ", exercise);
+        return exercise;
     };
 
     public get id() {
@@ -35,6 +37,10 @@ export class Category {
 
     public get name(){
         return this.props.name;
+    };
+
+    public get category_id(){
+        return this.props.category_id;
     };
 
     public get user_id(){
@@ -53,8 +59,13 @@ export class Category {
         if (trimmedName.length === 0 || trimmedName.length > 30) 
             throw new Error("Digite um Nome corretamente!");
 
+        if (this.props.category_id && typeof this.props.category_id !== 'number')
+            throw new Error("Selecione uma Categoria válida!");
+
+        if (this.props.category_id && typeof this.props.category_id === 'number' && this.props.category_id <= 0)
+            throw new Error("Selecione uma Categoria válida!");
+
         if (this.props.user_id && !uuidRegex.test(this.props.user_id)) 
             throw new Error("Selecione um Usuário válido!");
     };
-
 };
