@@ -37,6 +37,18 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return output;
     };
 
+    public async select(id: string): Promise<Category | null>{
+        const category = this.categories.find(t => t.id === id);
+        
+        if(!category) return null;
+        const output = Category.with({
+            id: category.id,
+            name: category.name,
+            user_id: category.user_id
+        });
+        return output;
+    };
+
     public async list(user_id?: string): Promise<Category[]> {
         const categoriesWithUserIdNull: Category[] = this.categories.filter(t => t.user_id === null);
         let categoriesWithUserIdSameEqualsUser: Category[] = [];
@@ -46,7 +58,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         const resultCategories = categoriesWithUserIdNull.concat(categoriesWithUserIdSameEqualsUser);
         let output = [];
         for (const t of resultCategories) {
-            const category = Category.with({
+            const category: Category = Category.with({
                 id: t.id,
                 name: t.name,
                 user_id: t.user_id

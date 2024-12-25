@@ -4,20 +4,20 @@ import { Category } from "../../../domain/category/entities/category";
 
 export class CategoryRepositoryPrisma implements CategoryGateway {
 
-    private constructor(private readonly prismaClient: PrismaClient){}
+    private constructor(private readonly prismaClient: PrismaClient) { }
 
-    public static create(prismaClient: PrismaClient){
+    public static create(prismaClient: PrismaClient) {
         return new CategoryRepositoryPrisma(prismaClient);
     };
 
     public async existsByName(input: Category, user_id?: string): Promise<boolean> {
         const { id, name } = input;
         const whereId = (id) ? { id } : {};
-        const whereUser = (user_id) ? [ { user_id: null }, { user_id } ] : [ {} ];
+        const whereUser = (user_id) ? [{ user_id: null }, { user_id }] : [{}];
         const result = await this.prismaClient.category.findFirst({
             where: { NOT: { ...whereId }, name, OR: whereUser }
         });
-        if(result === null) return false;
+        if (result === null) return false;
         return true;
     };
 
@@ -37,13 +37,29 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
+    public async select(id: string): Promise<Category | null> {
+        const result = await this.prismaClient.category.findUnique({
+            where: { id }
+        });
+
+        if (!result) return result;
+
+        const output = Category.with({
+            id: result.id,
+            name: result.name,
+            user_id: result.user_id
+        });
+
+        return output;
+    };
+
     public async list(user_id?: string): Promise<Category[]> {
         const whereUserId = (user_id) ? { user_id } : {};
         const result = await this.prismaClient.category.findMany({
-            where: { OR: [ { user_id: null }, { ...whereUserId } ] }
+            where: { OR: [{ user_id: null }, { ...whereUserId }] }
         });
         let output = [];
-        for(const t of result){
+        for (const t of result) {
             const category = Category.with({
                 id: t.id,
                 name: t.name,

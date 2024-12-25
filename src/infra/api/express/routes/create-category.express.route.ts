@@ -22,24 +22,28 @@ export class CreateCategoryRoute implements Route {
 
     public getHandler(){
         return async(request: Request, response: Response) => {
-            const { name } = request.body;
-            const input: CreateCategoryInputDto = { name };
-            const userAdminFake: CreateCategoryUserDto = {
-                id: crypto.randomUUID(),
-                name: 'Paulo',
-                role: 'ADMIN'
+            try {
+                const { name } = request.body;
+                const input: CreateCategoryInputDto = { name };
+                const userAdminFake: CreateCategoryUserDto = {
+                    id: crypto.randomUUID(),
+                    name: 'Paulo',
+                    role: 'ADMIN'
+                };
+                const userFake: CreateCategoryUserDto = {
+                    id: crypto.randomUUID(),
+                    name: 'Paulo',
+                    role: 'USER'
+                };
+                const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                const result: CreateCategoryOutputDto = 
+                    await this.createCategoryService.execute(input, user);
+    
+                const output = this.presente(result);
+                response.status(201).json(output);
+            } catch (error: any) {
+                response.status(500).json({ message: error?.message || "Error Interno do Servidor." });  
             };
-            const userFake: CreateCategoryUserDto = {
-                id: crypto.randomUUID(),
-                name: 'Paulo',
-                role: 'USER'
-            };
-            const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-            const result: CreateCategoryOutputDto = 
-                await this.createCategoryService.execute(input, user);
-
-            const output = this.presente(result);
-            response.status(201).json(output);
         };
     };
 

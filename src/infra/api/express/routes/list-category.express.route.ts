@@ -14,9 +14,9 @@ export class ListCategoryRoute implements Route {
         private readonly path: string,
         private readonly method: HttpMethod,
         private readonly listCategorySerivce: ListCategoryUsecase
-    ){};
+    ) { };
 
-    public static create(listCategorySerivce: ListCategoryUsecase){
+    public static create(listCategorySerivce: ListCategoryUsecase) {
         return new ListCategoryRoute(
             "/category/list",
             HttpMethod.GET,
@@ -24,23 +24,27 @@ export class ListCategoryRoute implements Route {
         )
     };
 
-    public getHandler(){
-        return async(request: Request, response: Response) => {
-            const userAdminFake: ListCategoryUserDto = {
-                id: crypto.randomUUID(),
-                name: 'Paulo',
-                role: 'ADMIN'
+    public getHandler() {
+        return async (_: Request, response: Response) => {
+            try {
+                const userAdminFake: ListCategoryUserDto = {
+                    id: crypto.randomUUID(),
+                    name: 'Paulo',
+                    role: 'ADMIN'
+                };
+                const userFake: ListCategoryUserDto = {
+                    id: '14260c56-e1d3-48bc-8a36-b4b60f53564b',
+                    name: 'Paulo',
+                    role: 'USER'
+                };
+                const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                const result = await this.listCategorySerivce.execute(undefined, user);
+                const output = this.present(result);
+                response.status(200).json(output).send();
+            } catch (error: any) {
+                response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };
-            const userFake: ListCategoryUserDto = {
-                id: '14260c56-e1d3-48bc-8a36-b4b60f53564b',
-                name: 'Paulo',
-                role: 'USER'
-            };
-            const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-            const result = await this.listCategorySerivce.execute(undefined, user);
-            const output = this.present(result);
-            response.status(200).json(output).send();
-        }
+        };
     };
 
     public getPath(): string {
@@ -54,7 +58,7 @@ export class ListCategoryRoute implements Route {
     private present(input: ListCategoryOutputDto): ListCategoryResponseDto {
         const response = [];
         const categories = input.categories;
-        for(const t of categories){
+        for (const t of categories) {
             response.push({
                 id: t.id,
                 name: t.name
