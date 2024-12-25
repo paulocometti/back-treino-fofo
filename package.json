@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test:entity": "vitest src/domain",
-    "test:usecase": "vitest src/usecases",
+    "t:e": "vitest src/domain",
+    "t:u": "vitest src/usecases",
     "dev": "ts-node src/main.ts"
   },
   "keywords": [],

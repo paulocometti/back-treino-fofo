@@ -27,7 +27,6 @@ export class Exercise {
 
     public static with(props: ExerciseProps){
         const exercise = new Exercise(props);
-        console.log("exercise >> ", exercise);
         return exercise;
     };
 

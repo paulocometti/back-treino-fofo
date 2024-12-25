@@ -10,7 +10,18 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return new CategoryRepositoryPrisma(prismaClient);
     };
 
-    public async save(input: Category): Promise<Category> {
+    public async existsByName(input: Category, user_id?: string): Promise<boolean> {
+        const { id, name } = input;
+        const whereId = (id) ? { id } : {};
+        const whereUser = (user_id) ? [ { user_id: null }, { user_id } ] : [ {} ];
+        const result = await this.prismaClient.category.findFirst({
+            where: { NOT: { ...whereId }, name, OR: whereUser }
+        });
+        if(result === null) return false;
+        return true;
+    };
+
+    public async insert(input: Category): Promise<Category> {
         const data = {
             id: input.id,
             name: input.name,
@@ -26,7 +37,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
-    public async list(user_id: string | null): Promise<Category[]> {
+    public async list(user_id?: string): Promise<Category[]> {
         const whereUserId = (user_id) ? { user_id } : {};
         const result = await this.prismaClient.category.findMany({
             where: { OR: [ { user_id: null }, { ...whereUserId } ] }

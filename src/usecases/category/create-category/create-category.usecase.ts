@@ -30,11 +30,14 @@ export class CreateCategoryUsecase
     };
 
     public async execute(input: CreateCategoryInputDto, user: CreateCategoryUserDto): Promise<CreateCategoryOutputDto>{
-        const { name } = input;
+        const { name: nameCategory } = input;
         const userAdminFake = User.with(user);
         const userId = userAdminFake.role === 'ADMIN' ? null : userAdminFake.id;
-        const aCategory = Category.create(name, userId);
-        const result = await this.categoryGateway.save(aCategory);
+        const aCategory = Category.create({name: nameCategory, user_id: userId});
+        const test = await this.categoryGateway.existsByName(aCategory, userId);
+        console.log("test >> ", test);
+        if(test) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
+        const result = await this.categoryGateway.insert(aCategory);
         const output = this.presentOutput(result);
         return output;
     };
