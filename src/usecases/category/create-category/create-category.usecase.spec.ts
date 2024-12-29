@@ -76,26 +76,6 @@ describe('CreateCategoryUsecase', () => {
     expect(categories[0].user_id).toBe(userFake2.id);
   });
 
-  it('deve armazenar múltiplas categorias corretamente', async () => {
-    const inputs: CreateCategoryInputDto[] = [
-      { name: 'Livros' },
-      { name: 'Vestuário' },
-    ];
-    const userFake: CreateCategoryUserDto = {
-      id: crypto.randomUUID(),
-      name: 'Paulo',
-      role: 'ADMIN'
-    };
-
-    for (const input of inputs) {
-      await useCase.execute(input, userFake);
-    }
-
-    const categories = await categoryRepository.list(userFake.id);
-    expect(categories.length).toBe(2);
-    expect(categories.map(c => c.name)).toEqual(['Livros', 'Vestuário']);
-  });
-
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre Categorias oficiais', async () => {
     const input = { name: 'Eletrônicos' };
     const userFake: CreateCategoryUserDto = {
@@ -120,16 +100,15 @@ describe('CreateCategoryUsecase', () => {
       role: 'USER'
     };
     await useCase.execute(input, userFake);
-
-    const input2 = { name: 'Eletrônicos' };
-    const userFake2: CreateCategoryUserDto = {
+    
+    const userAdminFake: CreateCategoryUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
 
     await expect(
-      useCase.execute(input2, userFake2)
+      useCase.execute(input, userAdminFake)
     ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
   });
 

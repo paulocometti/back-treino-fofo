@@ -27,7 +27,6 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
             name: input.name,
             user_id: input.user_id,
         };
-
         const result = await this.prismaClient.category.create({ data });
         const output = Category.with({
             id: result.id,
@@ -37,9 +36,9 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
-    public async select(id: string): Promise<Category | null> {
+    public async select(id: string, user_id?: string): Promise<Category | null> {
         const result = await this.prismaClient.category.findUnique({
-            where: { id }
+            where: { id, user_id }
         });
 
         if (!result) return result;

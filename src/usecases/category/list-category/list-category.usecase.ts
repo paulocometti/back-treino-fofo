@@ -1,4 +1,5 @@
 import { Category } from "../../../domain/category/entities/category";
+import { User } from "../../../domain/category/entities/user";
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
 import { Usecase } from "../../usecase";
 
@@ -25,9 +26,10 @@ export class ListCategoryUsecase implements Usecase<ListCategoryInputDto, ListCa
         return new ListCategoryUsecase(categoryGateway);
     };
 
-    public async execute(input: ListCategoryInputDto, user: ListCategoryUserDto): Promise<ListCategoryOutputDto> {
-        const { id: user_id } = user; 
-        const aCategories = await this.categoryGateway.list(user_id);
+    public async execute(_: ListCategoryInputDto, user: ListCategoryUserDto): Promise<ListCategoryOutputDto> {
+        const { id: userId, role: userRole } = User.with(user);
+        const userIdCondition = userRole === 'ADMIN' ? undefined : userId;
+        const aCategories = await this.categoryGateway.list(userIdCondition);
         const output = this.presentOutput(aCategories);
         return output;
     };
