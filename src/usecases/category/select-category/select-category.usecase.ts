@@ -31,7 +31,7 @@ export class SelectCategoryUsecase implements Usecase<SelectCategoryInputDto, Se
     public async execute(input: SelectCategoryInputDto, user: SelectCategoryUserDto): Promise<SelectCategoryOutputDto> {
         const { id } = input;
         const { id: userId, role: userRole } = User.with(user);
-        const userIdCondition = userRole === 'ADMIN' ? undefined : userId;
+        const userIdCondition = userRole === 'ADMIN' ? null : userId;
         const aCategory = await this.categoryGateway.select(id, userIdCondition);
         if (aCategory === null) throw new Error('Nada encontrado.');
         const output = this.presentOutput(aCategory);

@@ -36,7 +36,23 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
-    public async select(id: string, user_id?: string): Promise<Category | null> {
+    public async update(input: Category): Promise<Category> {
+        const { id } = input;
+        const data = {
+            name: input.name
+        };
+        const result = await this.prismaClient.category.update({
+            data, where: { id }
+        });
+        const output = Category.with({
+            id: result.id,
+            name: result.name,
+            user_id: result.user_id
+        });
+        return output;
+    };
+
+    public async select(id: string, user_id?: string | null): Promise<Category | null> {
         const result = await this.prismaClient.category.findUnique({
             where: { id, user_id }
         });
@@ -52,7 +68,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
-    public async list(user_id?: string): Promise<Category[]> {
+    public async list(user_id?: string | null): Promise<Category[]> {
         const whereUserId = (user_id) ? { user_id } : {};
         const result = await this.prismaClient.category.findMany({
             where: { OR: [{ user_id: null }, { ...whereUserId }] }

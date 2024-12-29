@@ -28,7 +28,7 @@ export class ListCategoryUsecase implements Usecase<ListCategoryInputDto, ListCa
 
     public async execute(_: ListCategoryInputDto, user: ListCategoryUserDto): Promise<ListCategoryOutputDto> {
         const { id: userId, role: userRole } = User.with(user);
-        const userIdCondition = userRole === 'ADMIN' ? undefined : userId;
+        const userIdCondition = userRole === 'ADMIN' ? null : userId;
         const aCategories = await this.categoryGateway.list(userIdCondition);
         const output = this.presentOutput(aCategories);
         return output;

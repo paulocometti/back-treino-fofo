@@ -12,23 +12,14 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
 
     public async existsByName(input: Category, user_id?: string): Promise<boolean> {
         const { id, name } = input;
-
-        console.log("input >> ", input);
-        console.log("user_id >> ", user_id);
-        console.log("this.categoris >> ", this.categories);
         const found = this.categories.find((category) => {
             if (id && category.id === id) return false;
-            console.log("category.name >> ", category.name);
-            console.log("name >> ", name);
             if (name && category.name !== name) return false;
-
             if (user_id) {
                 if (category.user_id !== null && category.user_id !== user_id) return false;
             };
-
             return true;
         });
-
         return !!found;
     };
 
@@ -42,13 +33,25 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return output;
     };
 
-    public async select(id: string, user_id?: string): Promise<Category | null>{
+    public async update(input: Category): Promise<Category> {
+        const { id, name } = input;
+        const index = this.categories.findIndex((category) => category.id === id);
+        const newCategory = Category.with({
+            id: this.categories[index].id,
+            name,
+            user_id: this.categories[index].user_id,
+        });
+        this.categories[index] = newCategory;
+        return newCategory;
+    };
+
+    public async select(id: string, user_id?: string): Promise<Category | null> {
         const category = this.categories.find(t => {
             if (user_id) return t.id === id && t.user_id === user_id;
             else return t.id === id;
-          });
-        
-        if(!category) return null;
+        });
+
+        if (!category) return null;
         const output = Category.with({
             id: category.id,
             name: category.name,
