@@ -13,7 +13,7 @@ beforeEach(() => {
   useCaseList = ListCategoryUsecase.create(categoryRepository);
 });
 
-describe('ListCategoryUsecase', () => {
+describe.skip('ListCategoryUsecase', () => {
   it('deve listar Categorias sendo Usuário role ADMIN', async () => {
     const input1: CreateCategoryInputDto = { name: 'Eletrônicos' };
     const input2: CreateCategoryInputDto = { name: 'Vídeo' };

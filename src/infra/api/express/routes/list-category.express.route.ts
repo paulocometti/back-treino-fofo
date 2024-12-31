@@ -33,11 +33,12 @@ export class ListCategoryRoute implements Route {
                     role: 'ADMIN'
                 };
                 const userFake: ListCategoryUserDto = {
-                    id: '14260c56-e1d3-48bc-8a36-b4b60f53564b',
+                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
                     name: 'Paulo',
                     role: 'USER'
                 };
                 const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                console.log("user >> ", user);
                 const result = await this.listCategorySerivce.execute(undefined, user);
                 const output = this.present(result);
                 response.status(200).json(output).send();

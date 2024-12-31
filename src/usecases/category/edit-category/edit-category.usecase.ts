@@ -1,12 +1,12 @@
 import { Category } from "../../../domain/category/entities/category";
-import { User } from "../../../domain/category/entities/user";
+import { User } from "../../../domain/user/entities/user";
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
 import { Usecase } from "../../usecase"
 
 export type EditCategoryInputDto = {
     id: string,
     name: string;
-    user_id: string | null;
+    user_id?: string | null;
 };
 
 export type EditCategoryUserDto = {
@@ -30,14 +30,14 @@ export class EditCategoryUsecase
         return new EditCategoryUsecase(categoryGateway);
     };
 
-    public async execute(input: EditCategoryInputDto, user: EditCategoryUserDto): Promise<EditCategoryOutputDto>{
-        const { id: categoryId, name: categoryName, user_id: categoryUserId } = input;
+    public async execute(req: EditCategoryInputDto, user: EditCategoryUserDto): Promise<EditCategoryOutputDto>{
+        const { id: categoryId, name: categoryName } = req;
         const { id: userId, role: userRole } = User.with(user);
-        const aCategory = Category.with({id: categoryId, name: categoryName, user_id: categoryUserId});
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
-        const test = await this.categoryGateway.existsByName(aCategory, userIdCondition);
+        const test = await this.categoryGateway.existsByName({id: categoryId, name: categoryName, user_id: userIdCondition});
         if(test) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
-        const result = await this.categoryGateway.update(aCategory);
+        const input: Category = Category.with({ id: categoryId, name: categoryName, user_id: userId});
+        const result = await this.categoryGateway.update(input);
         const output = this.presentOutput(result);
         return output;
     };

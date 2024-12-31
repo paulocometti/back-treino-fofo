@@ -9,6 +9,11 @@ export type CategoryCreateProps = {
     user_id: string | null;
 };
 
+export type CategoryUpdateProps = {
+    id: string;
+    name: string;
+};
+
 export class Category {
 
     private constructor(private props: CategoryProps){

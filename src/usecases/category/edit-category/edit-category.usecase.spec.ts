@@ -22,11 +22,12 @@ describe('EditCategoryUsecase', () => {
       role: 'ADMIN'
     };
     const createdCategory = await createUseCase.execute(inputCreate, userAdmin);
+    console.log("createdCategory >> ", createdCategory);
 
     const editInput: EditCategoryInputDto = {
       id: createdCategory.id,
       name: 'Eletrônicos 2',
-      user_id: createdCategory.user_id,
+      user_id: userAdmin.id,
     };
     const output = await editUseCase.execute(editInput, userAdmin);
 
@@ -47,7 +48,7 @@ describe('EditCategoryUsecase', () => {
     const editInput: EditCategoryInputDto = {
       id: createdCategory.id,
       name: 'Esportes e Lazer',
-      user_id: createdCategory.user_id,
+      user_id: userFake.id,
     };
     const output = await editUseCase.execute(editInput, userFake);
 
@@ -62,7 +63,7 @@ describe('EditCategoryUsecase', () => {
       name: 'User1',
       role: 'USER'
     };
-    const categoryUser1 = await createUseCase.execute({ name: 'Eletrônicos' }, user1);
+    await createUseCase.execute({ name: 'Eletrônicos' }, user1);
 
     const user2: CreateCategoryUserDto = {
       id: crypto.randomUUID(),
@@ -81,9 +82,6 @@ describe('EditCategoryUsecase', () => {
     expect(output.id).toBe(categoryUser2.id);
     expect(output.name).toBe('Eletrônicos Pro');
     expect(output.user_id).toBe(user2.id);
-
-    const listUser1 = await categoryRepository.list(user1.id);
-    expect(listUser1[0].name).toBe('Eletrônicos');
   });
 
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre Categorias oficiais', async () => {

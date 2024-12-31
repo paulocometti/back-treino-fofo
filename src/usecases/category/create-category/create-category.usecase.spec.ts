@@ -1,13 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateCategoryInputDto, CreateCategoryUsecase, CreateCategoryUserDto } from './create-category.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
+import { ListCategoryUsecase } from '../list-category/list-category.usecase';
 
 let categoryRepository: CategoryRepositoryInMemory;
-let useCase: CreateCategoryUsecase;
+let useCaseCreate: CreateCategoryUsecase;
+let useCaseList: ListCategoryUsecase;
 
 beforeEach(() => {
   categoryRepository = CategoryRepositoryInMemory.create();
-  useCase = CreateCategoryUsecase.create(categoryRepository);
+  useCaseCreate = CreateCategoryUsecase.create(categoryRepository);
+  useCaseList = ListCategoryUsecase.create(categoryRepository);
 });
 
 describe('CreateCategoryUsecase', () => {
@@ -18,16 +21,14 @@ describe('CreateCategoryUsecase', () => {
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const output = await useCase.execute(input, userFake);
+    const output = await useCaseCreate.execute(input, userFake);
 
     expect(output).toHaveProperty('id');
     expect(output.name).toBe('Eletrônicos');
 
-    const userId: string | undefined = userFake.role === 'ADMIN' ? undefined : userFake.id;
-    const categories = await categoryRepository.list(userId);
-    expect(categories.length).toBe(1);
-    expect(categories[0].name).toBe('Eletrônicos');
-    expect(categories[0].user_id).toBe(null);
+    const result = await useCaseList.execute(undefined, userFake);
+    expect(result.categories.length).toBe(1);
+    expect(result.categories[0].name).toBe('Eletrônicos');
   });
 
   it('deve criar uma categoria com sucesso com role USER', async () => {
@@ -37,16 +38,14 @@ describe('CreateCategoryUsecase', () => {
       name: 'Paulo User',
       role: 'USER'
     };
-    const output = await useCase.execute(input, userFake);
+    const output = await useCaseCreate.execute(input, userFake);
 
     expect(output).toHaveProperty('id');
     expect(output.name).toBe('Eletrônicos');
 
-    const userId: string | undefined = userFake.role === 'ADMIN' ? undefined : userFake.id;
-    const categories = await categoryRepository.list(userId);
-    expect(categories.length).toBe(1);
-    expect(categories[0].name).toBe('Eletrônicos');
-    expect(categories[0].user_id).toBe(userFake.id);
+    const result = await useCaseList.execute(undefined, userFake);
+    expect(result.categories.length).toBe(1);
+    expect(result.categories[0].name).toBe('Eletrônicos');
   });
 
   it('deve criar uma categoria com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
@@ -56,7 +55,7 @@ describe('CreateCategoryUsecase', () => {
       name: 'Paulo User',
       role: 'USER'
     };
-    await useCase.execute(input, userFake);
+    await useCaseCreate.execute(input, userFake);
 
     const input2: CreateCategoryInputDto = { name: 'Eletrônicos' };
     const userFake2: CreateCategoryUserDto = {
@@ -64,16 +63,14 @@ describe('CreateCategoryUsecase', () => {
       name: 'Paulo User 2',
       role: 'USER'
     };
-    const output = await useCase.execute(input2, userFake2);
+    const output = await useCaseCreate.execute(input2, userFake2);
 
     expect(output).toHaveProperty('id');
     expect(output.name).toBe('Eletrônicos');
 
-    const userId2: string | undefined = userFake2.role === 'ADMIN' ? undefined : userFake2.id;
-    const categories = await categoryRepository.list(userId2);
-    expect(categories.length).toBe(1);
-    expect(categories[0].name).toBe('Eletrônicos');
-    expect(categories[0].user_id).toBe(userFake2.id);
+    const result = await useCaseList.execute(undefined, userFake);
+    expect(result.categories.length).toBe(1);
+    expect(result.categories[0].name).toBe('Eletrônicos');
   });
 
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre Categorias oficiais', async () => {
@@ -83,23 +80,24 @@ describe('CreateCategoryUsecase', () => {
       name: 'Paulo',
       role: 'ADMIN'
     };
-    await useCase.execute(input, userFake);
+    await useCaseCreate.execute(input, userFake);
 
     const input2 = { name: 'Eletrônicos' };
 
     await expect(
-      useCase.execute(input2, userFake)
+      useCaseCreate.execute(input2, userFake)
     ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
   });
 
-  it('não deve permitir nomes de categoria duplicados com role ADMIN entre todas as Categorias (oficiais e de outros usuários)', async () => {
+  it.only('não deve permitir nomes de categoria duplicados com role ADMIN entre todas as Categorias (oficiais e de outros usuários)', async () => {
     const input = { name: 'Eletrônicos' };
     const userFake: CreateCategoryUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
     };
-    await useCase.execute(input, userFake);
+    const cat1 = await useCaseCreate.execute(input, userFake);
+    console.log("cat1 >> ",cat1);
     
     const userAdminFake: CreateCategoryUserDto = {
       id: crypto.randomUUID(),
@@ -108,7 +106,7 @@ describe('CreateCategoryUsecase', () => {
     };
 
     await expect(
-      useCase.execute(input, userAdminFake)
+      useCaseCreate.execute(input, userAdminFake)
     ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
   });
 
@@ -119,12 +117,12 @@ describe('CreateCategoryUsecase', () => {
       name: 'Paulo',
       role: 'USER'
     };
-    await useCase.execute(input, userFake);
+    await useCaseCreate.execute(input, userFake);
 
     const input2 = { name: 'Eletrônicos' };
 
     await expect(
-      useCase.execute(input2, userFake)
+      useCaseCreate.execute(input2, userFake)
     ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
   });
 });

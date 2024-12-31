@@ -5,6 +5,7 @@ export type HttpMethod = "get" | "post";
 export const HttpMethod = {
     GET: "get" as HttpMethod,
     POST: "post" as HttpMethod,
+    PUT: "put" as HttpMethod,
 } as const;
 
 export interface Route {

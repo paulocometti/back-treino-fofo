@@ -1,7 +1,8 @@
 import { Category } from "../../../domain/category/entities/category";
-import { User } from "../../../domain/category/entities/user";
+import { User } from "../../../domain/user/entities/user";
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
 import { Usecase } from "../../usecase";
+import { CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
 
 export type SelectCategoryInputDto = {
     id: string
@@ -28,11 +29,12 @@ export class SelectCategoryUsecase implements Usecase<SelectCategoryInputDto, Se
         return new SelectCategoryUsecase(categoryGateway);
     };
 
-    public async execute(input: SelectCategoryInputDto, user: SelectCategoryUserDto): Promise<SelectCategoryOutputDto> {
-        const { id } = input;
+    public async execute(req: SelectCategoryInputDto, user: SelectCategoryUserDto): Promise<SelectCategoryOutputDto> {
+        const { id } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
-        const aCategory = await this.categoryGateway.select(id, userIdCondition);
+        const input: CategoryGatewaySelectDTO = { id, user_id: userIdCondition };
+        const aCategory = await this.categoryGateway.select(input);
         if (aCategory === null) throw new Error('Nada encontrado.');
         const output = this.presentOutput(aCategory);
         return output;

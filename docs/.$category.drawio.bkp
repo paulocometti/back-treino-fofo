@@ -1,0 +1,118 @@
+<mxfile host="Electron" modified="2024-12-29T04:21:53.922Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="O-ab5fr-8tVf2ZMGU30x" version="21.6.8" type="device">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="1420" dy="1999" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="Hle5iWpks31SDlU5F4ay-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="WIyWlLk6GJQsqaUBKTNV-3" target="Hle5iWpks31SDlU5F4ay-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-3" value="Inserir um Nome" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="80" y="60" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-1" value="CATEGORY" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=20;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="40" y="-20" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-3" value="[x] - Criar/Editar uma nova categoria com ROLE Admin" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="40" y="20" width="310" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-4" target="Hle5iWpks31SDlU5F4ay-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-4" target="Hle5iWpks31SDlU5F4ay-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-4" value="Já existe entre todas as Categorias (Oficiais e de qualquer Usuário)" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="65" y="160" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-6" value="Erro" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="320" y="195" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-8" value="Sim" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="220" y="178" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-9" value="Cadastra a Categoria" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="80" y="350" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-11" value="Não" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="160" y="270" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-12" value="[x] - Criar/Editar uma nova categoria com ROLE User" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="25" y="460" width="310" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-13" target="Hle5iWpks31SDlU5F4ay-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-13" value="Inserir um Nome" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="80" y="520" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-16" target="Hle5iWpks31SDlU5F4ay-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-16" target="Hle5iWpks31SDlU5F4ay-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-16" value="Já existe entre as Categorias Oficiais" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="85" y="620" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-17" value="Erro" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="380" y="750" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-18" value="Sim" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="220" y="650" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-20" value="Não" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="155" y="730" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-21" target="Hle5iWpks31SDlU5F4ay-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-21" target="Hle5iWpks31SDlU5F4ay-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-21" value="Já existe entre as Categorias criada pelo próprio Usuário" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="85" y="810" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-25" value="Sim" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="220" y="830" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-27" value="Cadastra a Categoria" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="80" y="1000" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-29" value="Não" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="155" y="930" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-30" value="[x] - Listar Categorias" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="25" y="1100" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-31" target="Hle5iWpks31SDlU5F4ay-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-31" value="Listar Categorias" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="80" y="1140" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-32" target="Hle5iWpks31SDlU5F4ay-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Hle5iWpks31SDlU5F4ay-32" target="Hle5iWpks31SDlU5F4ay-34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-32" value="Usuário Admin?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="85" y="1241" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-33" value="Listar somente Categorias Oficiais" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="330" y="1276" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-34" value="Listar Categorias Oficiais + Categorias criadas pelo próprio Usuário." style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="80" y="1431" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-36" value="Sim" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="210" y="1269" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hle5iWpks31SDlU5F4ay-38" value="Não" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="155" y="1361" width="50" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
