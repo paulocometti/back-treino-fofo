@@ -38,8 +38,8 @@ export class EditCategoryRoute implements Route {
                     name: 'Paulo',
                     role: 'USER'
                 };
-                const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                console.log("user >> ", user);
+                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                const user = userAdminFake;
                 const result: EditCategoryOutputDto = 
                     await this.editCategoryService.execute(input, user);
     

@@ -34,9 +34,11 @@ export class EditCategoryUsecase
         const { id: categoryId, name: categoryName } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
-        const test = await this.categoryGateway.existsByName({id: categoryId, name: categoryName, user_id: userIdCondition});
-        if(test) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
-        const input: Category = Category.with({ id: categoryId, name: categoryName, user_id: userId});
+        const input: Category = Category.with({ id: categoryId, name: categoryName, user_id: userIdCondition});
+        const found = await this.categoryGateway.find({ id: categoryId, user_id: userIdCondition});
+        if(found === false) throw new Error('A Categoria que você está tentando editar não existe!');
+        const test = await this.categoryGateway.existsByName(input);
+        if(test === true) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
         const result = await this.categoryGateway.update(input);
         const output = this.presentOutput(result);
         return output;

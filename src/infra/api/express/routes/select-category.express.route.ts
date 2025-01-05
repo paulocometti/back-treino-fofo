@@ -39,8 +39,8 @@ export class SelectCategoryRoute implements Route {
                     name: 'Paulo',
                     role: 'USER'
                 };
-                const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                console.log("user >> ", user);
+                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                const user = userFake;
                 const result = await this.selectCategoryService.execute(input, user);
                 const output = this.present(result);
                 response.status(200).json(output).send();
@@ -62,7 +62,8 @@ export class SelectCategoryRoute implements Route {
         const category = input.category;
         const response = {
             id: category.id,
-            name: category.name
+            name: category.name,
+            user_id: category.user_id
         };
 
         return { category: response };

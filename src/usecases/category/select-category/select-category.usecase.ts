@@ -18,6 +18,7 @@ export type SelectCategoryOutputDto = {
     category: {
         id: string;
         name: string;
+        user_id: string | null;
     };
 };
 

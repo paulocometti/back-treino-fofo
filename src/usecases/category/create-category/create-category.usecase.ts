@@ -34,8 +34,7 @@ export class CreateCategoryUsecase
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
         const test = await this.categoryGateway.existsByName({name: categoryName, user_id: userIdCondition});
-        console.log("test >> ", test);        
-        if(test) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
+        if(test === true) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
         const aCategory = Category.create({name: categoryName, user_id: userIdCondition});
         const result = await this.categoryGateway.insert(aCategory);
         const output = this.presentOutput(result);

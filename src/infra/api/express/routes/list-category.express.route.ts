@@ -37,8 +37,8 @@ export class ListCategoryRoute implements Route {
                     name: 'Paulo',
                     role: 'USER'
                 };
-                const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                console.log("user >> ", user);
+                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                const user = userFake;
                 const result = await this.listCategorySerivce.execute(undefined, user);
                 const output = this.present(result);
                 response.status(200).json(output).send();

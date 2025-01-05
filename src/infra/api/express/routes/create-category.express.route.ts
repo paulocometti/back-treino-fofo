@@ -38,8 +38,8 @@ export class CreateCategoryRoute implements Route {
                     name: 'Paulo',
                     role: 'USER'
                 };
-                const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                console.log("user >> ", user);
+                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
+                const user = userAdminFake;
                 const result: CreateCategoryOutputDto = 
                     await this.createCategoryService.execute(input, user);
     

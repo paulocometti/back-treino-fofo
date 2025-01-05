@@ -1,6 +1,6 @@
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
-import { CategoryGatewayExistsDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
+import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
 
 export class CategoryRepositoryInMemory implements CategoryGateway {
     private categories: Category[] = [];
@@ -13,14 +13,24 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
 
     public async existsByName(input: CategoryGatewayExistsDTO): Promise<boolean> {
         const { id, name, user_id } = input;
-        console.log("this.categories >> ", this.categories);
-        const found = this.categories.find((category) => {
-            if (id && category.id === id) return false;
-            if (category.name !== name) return false;
-            if (category.user_id !== null && category.user_id !== user_id) return false;
+        for (const category of this.categories) {
+            if (category.name !== name) continue;
+            if (id && category.id === id) continue;
+            if (user_id) {
+                if (category.user_id !== null && category.user_id !== user_id) continue;
+            };
             return true;
-        });
-        return !!found;
+        };
+        return false;
+    };
+
+    public async find(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
+        const { id, user_id } = input;
+        for (const category of this.categories) {
+            if (category.id === id && category.user_id === user_id)
+                return true;
+        };
+        return false;
     };
 
     public async insert(input: Category): Promise<Category> {
@@ -35,11 +45,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
 
     public async update(input: Category): Promise<Category> {
         const { id, name, user_id } = input;
-        console.log("id >> ", id);
-        console.log("user_id >> ", user_id);
         const index = this.categories.findIndex((category) => category.id === id && category.user_id === user_id);
-        console.log("this.categories >> ", this.categories);
-        console.log("index >> ", index);
         const newCategory = Category.with({
             id: this.categories[index].id,
             name,
@@ -52,7 +58,16 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
     public async select(input: CategoryGatewaySelectDTO): Promise<Category | null> {
         const { id, user_id } = input;
         const category = this.categories.find(t => {
-            return t.id === id && t.user_id === user_id;
+            if (t.id !== id) return false;
+            
+            if (user_id) {
+                if (t.user_id !== null && t.user_id !== user_id) return false; 
+            }
+            else {
+                if (t.user_id !== null) return false; 
+            };
+
+            return true;
         });
 
         if (!category) return null;

@@ -13,7 +13,7 @@ beforeEach(() => {
   useCaseSelect = SelectCategoryUsecase.create(categoryRepository);
 });
 
-describe.skip('SelectCategoryUsecase', () => {
+describe('SelectCategoryUsecase', () => {
   it('deve dar Select em uma Categoria sendo Usuário role ADMIN', async () => {
     const input1: CreateCategoryInputDto = { name: 'Eletrônicos' };
     const userAdminFake: CreateCategoryUserDto = {
@@ -24,10 +24,12 @@ describe.skip('SelectCategoryUsecase', () => {
     const output1 = await useCaseCreate.execute(input1, userAdminFake);
 
     expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe('Eletrônicos');
+    expect(output1.name).toBe(input1.name);
+    expect(output1.user_id).toBe(null);
 
     const select = (await useCaseSelect.execute(output1, userAdminFake)).category;
-    expect(select.name).toBe('Eletrônicos');
+    expect(select.name).toBe(input1.name);
+    expect(output1.user_id).toBe(null);
   });
 
   it('deve dar Select em uma Categoria sendo Usuário role USER', async () => {
@@ -40,10 +42,35 @@ describe.skip('SelectCategoryUsecase', () => {
     const output1 = await useCaseCreate.execute(input1, userFake);
 
     expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe('Eletrônicos');
+    expect(output1.name).toBe(input1.name);
+    expect(output1.user_id).toBe(userFake.id);
 
     const select = (await useCaseSelect.execute(output1, userFake)).category;
-    expect(select.name).toBe('Eletrônicos');
+    expect(select.name).toBe(input1.name);
+    expect(select.user_id).toBe(userFake.id);
+  });
+
+  it('deve dar Select em uma Categoria OFICIAL sendo Usuário role USER', async () => {
+    const input1: CreateCategoryInputDto = { name: 'Eletrônicos' };
+    const userAdminFake: CreateCategoryUserDto = {
+      id: crypto.randomUUID(),
+      name: 'Paulo Admin',
+      role: 'ADMIN'
+    };
+    const userFake: CreateCategoryUserDto = {
+      id: crypto.randomUUID(),
+      name: 'Paulo User',
+      role: 'USER'
+    };
+    const output1 = await useCaseCreate.execute(input1, userAdminFake);
+
+    expect(output1).toHaveProperty('id');
+    expect(output1.name).toBe(input1.name);
+    expect(output1.user_id).toBe(null);
+
+    const select = (await useCaseSelect.execute(output1, userFake)).category;
+    expect(select.name).toBe(input1.name);
+    expect(select.user_id).toBe(null);
   });
 
   it('não deve dar Select em uma Categoria de outro USUÁRIO sendo Usuário role ADMIN', async () => {
@@ -89,5 +116,4 @@ describe.skip('SelectCategoryUsecase', () => {
       useCaseSelect.execute(output1, userFake2)
         ).rejects.toThrow('Nada encontrado.');
   });
-
 });

@@ -22,7 +22,6 @@ describe('EditCategoryUsecase', () => {
       role: 'ADMIN'
     };
     const createdCategory = await createUseCase.execute(inputCreate, userAdmin);
-    console.log("createdCategory >> ", createdCategory);
 
     const editInput: EditCategoryInputDto = {
       id: createdCategory.id,
@@ -70,20 +69,66 @@ describe('EditCategoryUsecase', () => {
       name: 'User2',
       role: 'USER'
     };
-    const categoryUser2 = await createUseCase.execute({ name: 'Eletrônicos' }, user2);
+    const categoryUser2 = await createUseCase.execute({ name: 'Eletrônicos Pro' }, user2);
 
     const editInput: EditCategoryInputDto = {
       id: categoryUser2.id,
-      name: 'Eletrônicos Pro',
+      name: 'Eletrônicos',
       user_id: user2.id,
     };
     const output = await editUseCase.execute(editInput, user2);
 
     expect(output.id).toBe(categoryUser2.id);
-    expect(output.name).toBe('Eletrônicos Pro');
+    expect(output.name).toBe('Eletrônicos');
     expect(output.user_id).toBe(user2.id);
   });
 
+  it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias oficiais', async () => {
+    const userFake: CreateCategoryUserDto = {
+      id: crypto.randomUUID(),
+      name: 'User Test',
+      role: 'USER'
+    };
+    const categoryOfUser = await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
+
+    const userAdmin: CreateCategoryUserDto = {
+      id: crypto.randomUUID(),
+      name: 'Admin Test',
+      role: 'ADMIN'
+    };
+    const categoryOfAdmin = await createUseCase.execute({ name: 'Domésticos' }, userAdmin);
+
+    const editInput: EditCategoryInputDto = {
+      id: categoryOfUser.id,
+      name: categoryOfAdmin.name,
+      user_id: userFake.id,
+    };
+
+    await expect(
+      editUseCase.execute(editInput, userFake)
+    ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
+  });
+
+  it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias criadas pelo usuário logado (mesmo USER)', async () => {
+    const userFake: CreateCategoryUserDto = {
+      id: crypto.randomUUID(),
+      name: 'User Test',
+      role: 'USER'
+    };
+    const category1 = await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
+    const category2 = await createUseCase.execute({ name: 'Domésticos' }, userFake);
+
+    const editInput: EditCategoryInputDto = {
+      id: category2.id,
+      name: category1.name,
+      user_id: userFake.id,
+    };
+
+    await expect(
+      editUseCase.execute(editInput, userFake)
+    ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
+  });
+  
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre Categorias oficiais', async () => {
     const userAdmin: CreateCategoryUserDto = {
       id: crypto.randomUUID(),
@@ -110,17 +155,17 @@ describe('EditCategoryUsecase', () => {
       name: 'User Test',
       role: 'USER'
     };
-    const userCategory = await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
+   await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
 
     const userAdmin: CreateCategoryUserDto = {
       id: crypto.randomUUID(),
       name: 'Admin Test',
       role: 'ADMIN'
     };
-    const adminCategory = await createUseCase.execute({ name: 'Oficial Cat' }, userAdmin);
+    const categoryByAdmin = await createUseCase.execute({ name: 'Oficial Cat' }, userAdmin);
 
     const editInput: EditCategoryInputDto = {
-      id: adminCategory.id,
+      id: categoryByAdmin.id,
       name: 'Eletrônicos',
       user_id: null,
     };
@@ -130,30 +175,5 @@ describe('EditCategoryUsecase', () => {
     ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
   });
 
-  it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias (oficiais e criadas pelo usuário logado)', async () => {
-
-    const userFake: CreateCategoryUserDto = {
-      id: crypto.randomUUID(),
-      name: 'User Test',
-      role: 'USER'
-    };
-    await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
-
-    const userAdmin: CreateCategoryUserDto = {
-      id: crypto.randomUUID(),
-      name: 'Admin Test',
-      role: 'ADMIN'
-    };
-    const catUser2 = await createUseCase.execute({ name: 'Domésticos' }, userAdmin);
-
-    const editInput: EditCategoryInputDto = {
-      id: catUser2.id,
-      name: 'Eletrônicos',
-      user_id: userFake.id,
-    };
-
-    await expect(
-      editUseCase.execute(editInput, userFake)
-    ).rejects.toThrow('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
-  });
+  
 });
