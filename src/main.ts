@@ -1,8 +1,8 @@
-import { ApiExpress } from "./infra/api/express/routes/api.express";
-import { CreateCategoryRoute } from "./infra/api/express/routes/create-category.express.route";
-import { EditCategoryRoute } from "./infra/api/express/routes/edit-category.express.route";
-import { ListCategoryRoute } from "./infra/api/express/routes/list-category.express.route";
-import { SelectCategoryRoute } from "./infra/api/express/routes/select-category.express.route";
+import { ApiExpress } from "./infra/api/express/api.express";
+import { CreateCategoryRoute } from "./infra/api/express/routes/category/create-category.express.route";
+import { EditCategoryRoute } from "./infra/api/express/routes/category/edit-category.express.route";
+import { ListCategoryRoute } from "./infra/api/express/routes/category/list-category.express.route";
+import { SelectCategoryRoute } from "./infra/api/express/routes/category/select-category.express.route";
 import { CategoryRepositoryPrisma } from "./infra/repositories/category/category.repository.prisma";
 import { prisma } from "./package/prisma/prisma";
 import { CreateCategoryUsecase } from "./usecases/category/create-category/create-category.usecase";

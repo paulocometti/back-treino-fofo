@@ -1,26 +1,27 @@
 import { Request, Response, } from "express";
-import { HttpMethod, Route } from "./route";
-import { SelectCategoryInputDto, SelectCategoryOutputDto, SelectCategoryUsecase, SelectCategoryUserDto } from "../../../../usecases/category/select-category/select-category.usecase";
+import { HttpMethod, Route } from "../route";
+import { SelectExerciseInputDto, SelectExerciseOutputDto, SelectExerciseUsecase, SelectExerciseUserDto } from "../../../../../usecases/exercise/select-exercise/select-exercise.usecase";
 
-export type SelectCategoryResponseDto = {
-    category: {
+export type SelectExerciseResponseDto = {
+    exercise: {
         id: string;
         name: string;
+        category_id: string | null;
     };
 };
 
-export class SelectCategoryRoute implements Route {
+export class SelectExerciseRoute implements Route {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
-        private readonly selectCategoryService: SelectCategoryUsecase
+        private readonly selectExerciseService: SelectExerciseUsecase
     ) { };
 
-    public static create(selectCategorySerivce: SelectCategoryUsecase) {
-        return new SelectCategoryRoute(
-            "/category/:id",
+    public static create(selectExerciseSerivce: SelectExerciseUsecase) {
+        return new SelectExerciseRoute(
+            "/exercise/:id",
             HttpMethod.GET,
-            selectCategorySerivce
+            selectExerciseSerivce
         )
     };
 
@@ -28,20 +29,20 @@ export class SelectCategoryRoute implements Route {
         return async (request: Request, response: Response) => {
             try {
                 const { id } = request.params;
-                const input: SelectCategoryInputDto = { id };
-                const userAdminFake: SelectCategoryUserDto = {
+                const input: SelectExerciseInputDto = { id };
+                const userAdminFake: SelectExerciseUserDto = {
                     id: crypto.randomUUID(),
                     name: 'Paulo',
                     role: 'ADMIN'
                 };
-                const userFake: SelectCategoryUserDto = {
+                const userFake: SelectExerciseUserDto = {
                     id: 'beee6914-5b09-46d2-be94-b09284a31811',
                     name: 'Paulo',
                     role: 'USER'
                 };
                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
                 const user = userFake;
-                const result = await this.selectCategoryService.execute(input, user);
+                const result = await this.selectExerciseService.execute(input, user);
                 const output = this.present(result);
                 response.status(200).json(output).send();
             } catch (error: any) {
@@ -58,15 +59,16 @@ export class SelectCategoryRoute implements Route {
         return this.method;
     };
 
-    private present(input: SelectCategoryOutputDto): SelectCategoryResponseDto {
-        const category = input.category;
+    private present(input: SelectExerciseOutputDto): SelectExerciseResponseDto {
+        const exercise = input.exercise;
         const response = {
-            id: category.id,
-            name: category.name,
-            user_id: category.user_id
+            id: exercise.id,
+            name: exercise.name,
+            category_id: exercise.category_id,
+            user_id: exercise.user_id
         };
 
-        return { category: response };
+        return { exercise: response };
 
     };
 

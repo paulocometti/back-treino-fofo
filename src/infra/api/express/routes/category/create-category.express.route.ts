@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CreateCategoryInputDto, CreateCategoryOutputDto, CreateCategoryUsecase, CreateCategoryUserDto } from "../../../../usecases/category/create-category/create-category.usecase";
-import { HttpMethod, Route } from "./route";
+import { CreateCategoryInputDto, CreateCategoryOutputDto, CreateCategoryUsecase, CreateCategoryUserDto } from "../../../../../usecases/category/create-category/create-category.usecase";
+import { HttpMethod, Route } from "../route";
 
 type CreateCategoryResponseDto = 
 {

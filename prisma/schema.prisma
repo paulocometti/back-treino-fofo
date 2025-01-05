@@ -13,10 +13,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id      String  @id
+model Exercise {
+  id      String  @id @unique
   name    String
   user_id String?
+
+  category    Category? @relation(fields: [category_id], references: [id])
+  category_id String?
+
+  @@map("exercise")
+}
+
+model Category {
+  id      String  @id @unique
+  name    String
+  user_id String?
+
+  exercise Exercise[]
 
   @@map("category")
 }

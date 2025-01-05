@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
-import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
+import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayFindByIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
 import { Category } from "../../../domain/category/entities/category";
 
 export class CategoryRepositoryPrisma implements CategoryGateway {
@@ -28,7 +28,15 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return true;
     };
 
-    public async find(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
+    public async findById(input: CategoryGatewayFindByIdDTO): Promise<boolean> {
+        const { id } = input;
+        const where = { id };
+        const result = await this.prismaClient.category.findUnique({ where });
+        if (result === null) return false;
+        return true;
+    };
+
+    public async findByIdAndUserId(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
         const { id, user_id } = input;
         const where = { id, user_id };
         const result = await this.prismaClient.category.findUnique({ where });

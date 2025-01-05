@@ -5,7 +5,8 @@
   "scripts": {
     "t:e": "vitest src/domain",
     "t:u": "vitest src/usecases",
-    "dev": "ts-node src/main.ts"
+    "dev": "ts-node src/main.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

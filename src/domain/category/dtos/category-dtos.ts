@@ -4,6 +4,10 @@ export interface CategoryGatewayExistsDTO {
     user_id: string | null;
 };
 
+export interface CategoryGatewayFindByIdDTO {
+    id: string;
+};
+
 export interface CategoryGatewayFindByIdAndUserIdDTO {
     id: string;
     user_id: string | null;

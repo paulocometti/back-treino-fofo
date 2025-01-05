@@ -1,6 +1,6 @@
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
-import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
+import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayFindByIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
 
 export class CategoryRepositoryInMemory implements CategoryGateway {
     private categories: Category[] = [];
@@ -24,7 +24,16 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return false;
     };
 
-    public async find(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
+
+    public async findById(input: CategoryGatewayFindByIdDTO): Promise<boolean> {
+        const { id } = input;
+        for (const category of this.categories) {
+            if (category.id === id) return true;
+        };
+        return false;
+    };
+
+    public async findByIdAndUserId(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
         const { id, user_id } = input;
         for (const category of this.categories) {
             if (category.id === id && category.user_id === user_id)

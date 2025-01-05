@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { ListCategoryOutputDto, ListCategoryUsecase, ListCategoryUserDto } from "../../../../usecases/category/list-category/list-category.usecase";
-import { HttpMethod, Route } from "./route";
+import { ListCategoryOutputDto, ListCategoryUsecase, ListCategoryUserDto } from "../../../../../usecases/category/list-category/list-category.usecase";
+import { HttpMethod, Route } from "../route";
 
 export type ListCategoryResponseDto = {
     categories: {

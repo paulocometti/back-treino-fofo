@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { EditCategoryInputDto, EditCategoryOutputDto, EditCategoryUsecase, EditCategoryUserDto } from "../../../../usecases/category/edit-category/edit-category.usecase";
-import { HttpMethod, Route } from "./route";
+import { EditCategoryInputDto, EditCategoryOutputDto, EditCategoryUsecase, EditCategoryUserDto } from "../../../../../usecases/category/edit-category/edit-category.usecase";
+import { HttpMethod, Route } from "../route";
 
 type EditCategoryResponseDto = 
 {

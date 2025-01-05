@@ -1,6 +1,6 @@
-import { Api } from "../../api";
+import { Api } from "../api";
 import express, { Express } from 'express';
-import { Route } from "./route";
+import { Route } from "./routes/route";
 
 export class ApiExpress implements Api {
     
