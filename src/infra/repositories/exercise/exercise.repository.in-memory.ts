@@ -1,9 +1,11 @@
 import { ExerciseGateway } from "../../../domain/exercise/gateway/exercise.gateway";
 import { Exercise } from "../../../domain/exercise/entities/exercise";
 import { ExerciseGatewayExistsDTO, ExerciseGatewayFindByIdAndUserIdDTO, ExerciseGatewayListDTO, ExerciseGatewaySelectDTO } from "../../../domain/exercise/dtos/exercise-dtos";
+import { Category } from "../../../domain/category/entities/category";
 
 export class ExerciseRepositoryInMemory implements ExerciseGateway {
     private exercises: Exercise[] = [];
+    private exercisesCategories: { exercise_id: string, category_id: string }[] = [];
 
     private constructor() { }
 
@@ -33,24 +35,36 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
         return false;
     };
 
-    public async insert(input: Exercise): Promise<Exercise> {
-        this.exercises.push(input);
+    public async insert(inputExercise: Exercise, inputCategories: Category[]): Promise<any> {
+        this.exercises.push(inputExercise);
+
+        for(const t of inputCategories){
+            this.exercisesCategories.push({
+                exercise_id: inputExercise.id,
+                category_id: t.id
+            });
+        };
+
+        const index = this.exercises.length - 1;
+        const exerciseId = this.exercises[index].id;
+        const exerciseName = this.exercises[index].name;
+        const exerciseUserId = this.exercises[index].user_id;
+        const exercisesCategories = this.exercisesCategories.filter(th => th.exercise_id === exerciseId);
+        
         const output = Exercise.with({
-            id: this.exercises[this.exercises.length - 1].id,
-            name: this.exercises[this.exercises.length - 1].name,
-            category_id: this.exercises[this.exercises.length - 1].category_id,
-            user_id: this.exercises[this.exercises.length - 1].user_id
+            id: exerciseId,
+            name: exerciseName,
+            user_id: exerciseUserId
         });
         return output;
     };
 
-    public async update(input: Exercise): Promise<Exercise> {
-        const { id, name, category_id, user_id } = input;
+    public async update(inputExercise: Exercise, inputCategories: Category[]): Promise<any> {
+        const { id, name, user_id } = inputExercise;
         const index = this.exercises.findIndex((exercise) => exercise.id === id && exercise.user_id === user_id);
         const newExercise = Exercise.with({
             id: this.exercises[index].id,
             name,
-            category_id,
             user_id: this.exercises[index].user_id,
         });
         this.exercises[index] = newExercise;
@@ -76,7 +90,6 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
         const output = Exercise.with({
             id: exercise.id,
             name: exercise.name,
-            category_id: exercise.category_id,
             user_id: exercise.user_id
         });
         return output;
@@ -96,7 +109,6 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
             const exercise: Exercise = Exercise.with({
                 id: t.id,
                 name: t.name,
-                category_id: t.category_id,
                 user_id: t.user_id
             })
             output.push(exercise);

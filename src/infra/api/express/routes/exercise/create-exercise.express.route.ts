@@ -4,7 +4,7 @@ import { HttpMethod, Route } from "../route";
 
 type CreateExerciseResponseDto = 
 {
-    exercise: { id: string, name: string, category_id: string | null, user_id: string | null }
+    exercise: { id: string, name: string, categories: string | null, user_id: string | null }
 };
 
 export class CreateExerciseRoute implements Route {
@@ -26,8 +26,8 @@ export class CreateExerciseRoute implements Route {
     public getHandler(){
         return async(request: Request, response: Response) => {
             try {
-                const { name, category_id } = request.body;
-                const input: CreateExerciseInputDto = { name, category_id };
+                const { name, categories } = request.body;
+                const input: CreateExerciseInputDto = { name, categories };
                 const userAdminFake: CreateExerciseUserDto = {
                     id: crypto.randomUUID(),
                     name: 'Paulo',

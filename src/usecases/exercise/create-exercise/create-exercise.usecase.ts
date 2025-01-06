@@ -3,10 +3,11 @@ import { User } from "../../../domain/user/entities/user";
 import { ExerciseGateway } from "../../../domain/exercise/gateway/exercise.gateway";
 import { Usecase } from "../../usecase"
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { Category } from "../../../domain/category/entities/category";
 
 export type CreateExerciseInputDto = {
     name: string;
-    category_id: string | null;
+    categories: Category[];
     user_id?: string | null;
 };
 
@@ -19,7 +20,7 @@ export type CreateExerciseUserDto = {
 export type CreateExerciseOutputDto = {
     id: string;
     name: string;
-    category_id: string | null;
+    categories: Category[];
     user_id: string | null;
 };
 
@@ -33,17 +34,19 @@ export class CreateExerciseUsecase
     };
 
     public async execute(req: CreateExerciseInputDto, user: CreateExerciseUserDto): Promise<CreateExerciseOutputDto>{
-        const { name: exerciseName, category_id: categoryId } = req;
+        const { name: exerciseName, categories } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
         const testExerciseExistsByName = await this.exerciseGateway.existsByName({name: exerciseName, user_id: userIdCondition});
         if(testExerciseExistsByName === true) throw new Error('Já existe um Exercício com este nome. Por favor, tente outro nome!');
-        if(categoryId){
-            const testCategoryIsValid = await this.categoryGateway.findById({ id: categoryId });
-            if(testCategoryIsValid === false) throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
+        if(categories && Array.isArray(categories) && categories.length > 0){
+            for(const t of categories){
+                const testCategoryIsValid = await this.categoryGateway.findById({ id: t.id });
+                if(testCategoryIsValid === false) throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
+            };
         };
-        const aExercise = Exercise.create({name: exerciseName, category_id: categoryId, user_id: userIdCondition});
-        const result = await this.exerciseGateway.insert(aExercise);
+        const aExercise = Exercise.create({name: exerciseName, user_id: userIdCondition});
+        const result = await this.exerciseGateway.insert(aExercise, categories);
         const output = this.presentOutput(result);
         return output;
     };

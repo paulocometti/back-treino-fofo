@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,23 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Exercise {
-  id      String  @id @unique
-  name    String
-  user_id String?
-
-  category    Category? @relation(fields: [category_id], references: [id])
-  category_id String?
-
-  @@map("exercise")
-}
-
 model Category {
   id      String  @id @unique
   name    String
   user_id String?
 
-  exercise Exercise[]
+  categoryExercise ExerciseCategory[]
 
   @@map("category")
+}
+
+model Exercise {
+  id      String  @id @unique
+  name    String
+  user_id String?
+
+  categoryExercise ExerciseCategory[]
+
+  @@map("exercise")
+}
+
+model ExerciseCategory {
+  exercise_id String
+  exercise    Exercise @relation(fields: [exercise_id], references: [id])
+
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id])
+
+  @@id([exercise_id, category_id])
+  @@map("exercise_category")
 }

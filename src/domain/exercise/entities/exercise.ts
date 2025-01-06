@@ -1,20 +1,17 @@
 export type ExerciseProps = {
     id: string;
     name: string;
-    category_id: string | null;
     user_id: string | null;
 };
 
 export type ExerciseCreateProps = {
     name: string;
-    category_id: string | null;
     user_id: string | null;
 };
 
 export type ExerciseUpdateProps = {
     id: string;
     name: string;
-    category_id: string | null;
 };
 
 export class Exercise {
@@ -45,10 +42,6 @@ export class Exercise {
         return this.props.name;
     };
 
-    public get category_id(){
-        return this.props.category_id
-    }
-
     public get user_id(){
         return this.props.user_id;
     };
@@ -64,9 +57,6 @@ export class Exercise {
         const trimmedName = this.props.name.trim();
         if (trimmedName.length === 0 || trimmedName.length > 30) 
             throw new Error("Digite um Nome corretamente!");
-
-        if (this.props.category_id && !uuidRegex.test(this.props.category_id))
-            throw new Error("Selecione uma Categoria válida!");
 
         if (this.props.user_id && !uuidRegex.test(this.props.user_id)) 
             throw new Error("Selecione um Usuário válido!");
