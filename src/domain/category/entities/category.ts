@@ -1,26 +1,21 @@
-export type CategoryProps = {
+export type CategoryEntityProps = {
     id: string;
     name: string;
     user_id: string | null;
 };
 
-export type CategoryCreateProps = {
+export type CategoryEntityCreateProps = {
     name: string;
     user_id: string | null;
-};
-
-export type CategoryUpdateProps = {
-    id: string;
-    name: string;
 };
 
 export class Category {
 
-    private constructor(private props: CategoryProps){
+    private constructor(private props: CategoryEntityProps) {
         this.validate();
     };
 
-    public static create(data: CategoryCreateProps){
+    public static create(data: CategoryEntityCreateProps) {
         const categoryId: string = crypto.randomUUID();
         const category = new Category({
             id: categoryId,
@@ -29,7 +24,7 @@ export class Category {
         return category;
     };
 
-    public static with(props: CategoryProps){
+    public static with(props: CategoryEntityProps) {
         const category = new Category(props);
         return category;
     };
@@ -38,27 +33,27 @@ export class Category {
         return this.props.id;
     };
 
-    public get name(){
+    public get name() {
         return this.props.name;
     };
 
-    public get user_id(){
+    public get user_id() {
         return this.props.user_id;
     };
 
-    private validate(){
+    private validate() {
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(this.props.id))
             throw new Error("Id inválido, não é um UUID.");
 
-        if (typeof this.props.name !== 'string') 
-            throw new Error("Digite um Nome corretamente!");
-        
-        const trimmedName = this.props.name.trim();
-        if (trimmedName.length === 0 || trimmedName.length > 30) 
+        if (typeof this.props.name !== 'string')
             throw new Error("Digite um Nome corretamente!");
 
-        if (this.props.user_id && !uuidRegex.test(this.props.user_id)) 
+        const trimmedName = this.props.name.trim();
+        if (trimmedName.length === 0 || trimmedName.length > 30)
+            throw new Error("Digite um Nome corretamente!");
+
+        if (this.props.user_id && !uuidRegex.test(this.props.user_id))
             throw new Error("Selecione um Usuário válido!");
     };
 

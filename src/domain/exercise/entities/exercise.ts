@@ -1,29 +1,24 @@
 import { Category } from "../../category/entities/category";
 
-export type ExerciseProps = {
+export type ExerciseEntityProps = {
     id: string;
     name: string;
     user_id: string | null;
 };
 
-export type ExerciseCreateProps = {
+export type ExerciseEntityCreateProps = {
     name: string;
     user_id: string | null;
-    categories: any[];
-};
-
-export type ExerciseUpdateProps = {
-    id: string;
-    name: string;
+    categories: Category[];
 };
 
 export class Exercise {
 
-    private constructor(private props: ExerciseProps & { categories: Category[] }) {
+    private constructor(private props: ExerciseEntityProps & { categories: Category[] }) {
         this.validate();
     };
 
-    public static create(data: ExerciseCreateProps & { categories: Category[] }) {
+    public static create(data: ExerciseEntityCreateProps) {
         const exerciseId: string = crypto.randomUUID();
         const exercise = new Exercise({
             id: exerciseId,
@@ -32,7 +27,7 @@ export class Exercise {
         return exercise;
     };
 
-    public static with(props: ExerciseProps & { categories: Category[] }) {
+    public static with(props: ExerciseEntityProps & { categories: Category[] }) {
         const exercise = new Exercise(props);
         return exercise;
     };

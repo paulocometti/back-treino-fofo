@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
-import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayFindByIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
+import { CategoryGateway, CategoryGatewayExistsByNameInputDto, CategoryGatewayFindByIdAndUserIdInputDTO, CategoryGatewayFindByIdInputDTO, CategoryGatewayListInputDTO, CategoryGatewaySelectInputDTO } from "../../../domain/category/gateway/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
 
 export class CategoryRepositoryPrisma implements CategoryGateway {
@@ -11,13 +10,13 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return new CategoryRepositoryPrisma(prismaClient);
     };
 
-    public async existsByName(input: CategoryGatewayExistsDTO): Promise<boolean> {
+    public async existsByName(input: CategoryGatewayExistsByNameInputDto): Promise<boolean> {
         const { id, name, user_id } = input;
 
         const whereSameName = { name };
-        
+
         const whereSameIdWhenUpdate = { not: id };
-        const whereSameAdminOrUser = [ { user_id: null }, { user_id } ];
+        const whereSameAdminOrUser = [{ user_id: null }, { user_id }];
 
         let where: any = whereSameName;
         if (id) where.id = whereSameIdWhenUpdate;
@@ -28,7 +27,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return true;
     };
 
-    public async findById(input: CategoryGatewayFindByIdDTO): Promise<boolean> {
+    public async findById(input: CategoryGatewayFindByIdInputDTO): Promise<boolean> {
         const { id } = input;
         const where = { id };
         const result = await this.prismaClient.category.findUnique({ where });
@@ -36,7 +35,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return true;
     };
 
-    public async findByIdAndUserId(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
+    public async findByIdAndUserId(input: CategoryGatewayFindByIdAndUserIdInputDTO): Promise<boolean> {
         const { id, user_id } = input;
         const where = { id, user_id };
         const result = await this.prismaClient.category.findUnique({ where });
@@ -69,15 +68,15 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
-    public async select(input: CategoryGatewaySelectDTO): Promise<Category | null> {
+    public async select(input: CategoryGatewaySelectInputDTO): Promise<Category | null> {
         const { id, user_id } = input;
 
         let where: any = { id };
-        const whereSameAdminOrUser = [ { user_id: null }, { user_id } ];
+        const whereSameAdminOrUser = [{ user_id: null }, { user_id }];
         const whereSameOnlyAdmin = { user_id: null };
-        if(user_id) where.OR = whereSameAdminOrUser;
+        if (user_id) where.OR = whereSameAdminOrUser;
         else where = { ...where, ...whereSameOnlyAdmin }
- 
+
         const result = await this.prismaClient.category.findUnique({ where });
 
         if (!result) return result;
@@ -91,7 +90,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return output;
     };
 
-    public async list(input: CategoryGatewayListDTO): Promise<Category[]> {
+    public async list(input: CategoryGatewayListInputDTO): Promise<Category[]> {
         const { user_id } = input;
         const whereUserId = (user_id) ? { user_id } : {};
         const result = await this.prismaClient.category.findMany({

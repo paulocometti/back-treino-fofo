@@ -3,6 +3,7 @@ import { User } from "../../../domain/user/entities/user";
 import { ExerciseGateway } from "../../../domain/exercise/gateway/exercise.gateway";
 import { Usecase } from "../../usecase"
 import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { Category } from "../../../domain/category/entities/category";
 
 export type CreateExerciseInputDto = {
     name: string;
@@ -42,18 +43,24 @@ export class CreateExerciseUsecase
 
     public async execute(req: CreateExerciseInputDto, user: CreateExerciseUserInputDto): Promise<CreateExerciseOutputDto> {
         const { name: exerciseName, categories } = req;
+        let aCategories: Category[] = [];
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
         const testExerciseExistsByName = await this.exerciseGateway.existsByName({ name: exerciseName, user_id: userIdCondition });
         if (testExerciseExistsByName === true) throw new Error('Já existe um Exercício com este nome. Por favor, tente outro nome!');
         if (categories && Array.isArray(categories) && categories.length > 0) {
             for (const t of categories) {
-                const testCategoryIsValid = await this.categoryGateway.findById({ id: t.id });
-                if (testCategoryIsValid === false) throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
+                const category = await this.categoryGateway.findById({ id: t.id });
+                aCategories.push(Category.with({
+                    id: t.id,
+                    name: t.name,
+                    user_id: t.user_id
+                }));
+                if (category === false) throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
             };
         };
-        const aExercise = Exercise.create({ name: exerciseName, user_id: userIdCondition, categories });
-        const result = await this.exerciseGateway.insert(aExercise, categories);
+        const aExercise = Exercise.create({ name: exerciseName, user_id: userIdCondition, categories: aCategories });
+        const result = await this.exerciseGateway.insert(aExercise, aCategories);
         const output = this.presentOutput(result);
         return output;
     };

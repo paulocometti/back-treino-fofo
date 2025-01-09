@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
-import { CreateCategoryInputDto, CreateCategoryOutputDto, CreateCategoryUsecase, CreateCategoryUserDto } from "../../../../../usecases/category/create-category/create-category.usecase";
+import { CreateCategoryUsecaseInputDto, CreateCategoryUsecaseOutputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from "../../../../../usecases/category/create-category/create-category.usecase";
 import { HttpMethod, Route } from "../route";
-
-type CreateCategoryResponseDto = 
-{
-    category: { id: string, name: string, user_id: string | null }
-};
 
 export class CreateCategoryRoute implements Route {
 
@@ -13,9 +8,9 @@ export class CreateCategoryRoute implements Route {
         private readonly path: string,
         private readonly method: HttpMethod,
         private readonly createCategoryService: CreateCategoryUsecase
-    ){}
+    ) { }
 
-    public static create(createCategoryService: CreateCategoryUsecase){
+    public static create(createCategoryService: CreateCategoryUsecase) {
         return new CreateCategoryRoute(
             "/category/create",
             HttpMethod.POST,
@@ -23,30 +18,29 @@ export class CreateCategoryRoute implements Route {
         );
     };
 
-    public getHandler(){
-        return async(request: Request, response: Response) => {
+    public getHandler() {
+        return async (request: Request, response: Response) => {
             try {
                 const { name } = request.body;
-                const input: CreateCategoryInputDto = { name };
-                const userAdminFake: CreateCategoryUserDto = {
+                const input: CreateCategoryUsecaseInputDto = { name };
+                const userAdminFake: CreateCategoryUsecaseUserDto = {
                     id: crypto.randomUUID(),
                     name: 'Paulo',
                     role: 'ADMIN'
                 };
-                const userFake: CreateCategoryUserDto = {
+                const userFake: CreateCategoryUsecaseUserDto = {
                     id: 'beee6914-5b09-46d2-be94-b09284a31811',
                     name: 'Paulo',
                     role: 'USER'
                 };
                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
                 const user = userAdminFake;
-                const result: CreateCategoryOutputDto = 
+                const result: CreateCategoryUsecaseOutputDto =
                     await this.createCategoryService.execute(input, user);
-    
-                const output = this.presente(result);
-                response.status(201).json(output);
+
+                response.status(201).json({ ...result });
             } catch (error: any) {
-                response.status(500).json({ message: error?.message || "Error Interno do Servidor." });  
+                response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };
         };
     };
@@ -57,13 +51,6 @@ export class CreateCategoryRoute implements Route {
 
     public getMethod(): HttpMethod {
         return this.method;
-    };
-
-    private presente(input: CreateCategoryOutputDto): CreateCategoryResponseDto {
-        const response = { id: input.id, name: input.name, user_id: input.user_id };
-        return {
-            category: response
-        };
     };
 
 };

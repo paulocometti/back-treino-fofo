@@ -21,8 +21,6 @@ export interface ExerciseGatewayListInputDTO {
     user_id?: string | null;
 };
 
-
-
 export interface ExerciseGateway {
     existsByName(dto: ExerciseGatewayExistsxistsByNameInputDTO): Promise<boolean>;
     findByIdAndUserId(dto: ExerciseGatewayFindByIdAndUserIdInputDTO): Promise<boolean>;

@@ -1,14 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { faker } from '@faker-js/faker';
-import { Exercise, ExerciseCreateProps } from "../../exercise/entities/exercise";
+import { Exercise, ExerciseEntityCreateProps } from "../../exercise/entities/exercise";
 import { z } from "zod";
-import { Category, CategoryCreateProps } from "../../category/entities/category";
+import { Category, CategoryEntityCreateProps } from "../../category/entities/category";
 
 describe("Exercise Entity Test ", () => {
     function createCategory() {
         const categoryName: string = faker.person.firstName('female');
         const categoryUserIdAdmin: string | null = null;
-        const categoryData: CategoryCreateProps = {
+        const categoryData: CategoryEntityCreateProps = {
             name: categoryName,
             user_id: categoryUserIdAdmin
         };
@@ -18,18 +18,17 @@ describe("Exercise Entity Test ", () => {
     it("deve criar um Exercicio com nome e id válidos para um Usuario com role Admin", () => {
         const categoryName: string = faker.person.firstName('female');
         const categoryUserIdAdmin: string | null = null;
-        const categoryData: CategoryCreateProps = {
+        const categoryData: CategoryEntityCreateProps = {
             name: categoryName,
             user_id: categoryUserIdAdmin
         };
         const category = Category.create(categoryData);
-
         const exerciseName: string = faker.person.firstName('female');
         const exerciseUserIdAdmin: string | null = null;
-        const exerciseData: ExerciseCreateProps = {
+        const exerciseData: ExerciseEntityCreateProps = {
             name: exerciseName,
             user_id: exerciseUserIdAdmin,
-            categories: [category],
+            categories: [category]
         };
         const exercise = Exercise.create(exerciseData);
         expect(exercise.id).toBeDefined();
@@ -45,7 +44,7 @@ describe("Exercise Entity Test ", () => {
         const exerciseName: string = faker.person.firstName('female');
         const exerciseUserIdUser: string | null = crypto.randomUUID();
         const category = createCategory();
-        const data: ExerciseCreateProps = {
+        const data: ExerciseEntityCreateProps = {
             name: exerciseName,
             user_id: exerciseUserIdUser,
             categories: [category]
@@ -65,7 +64,7 @@ describe("Exercise Entity Test ", () => {
         const categoryIdRandom: string | null = crypto.randomUUID();
         const exerciseUserIdUser: string | null = crypto.randomUUID();
         const category = createCategory();
-        const data: ExerciseCreateProps = {
+        const data: ExerciseEntityCreateProps = {
             name: exerciseName,
             user_id: exerciseUserIdUser,
             categories: [category]
@@ -85,7 +84,7 @@ describe("Exercise Entity Test ", () => {
         const categoryIdRandom: string | null = null;
         const exerciseUserIdUser: string | null = crypto.randomUUID();
         const category = createCategory();
-        const data: ExerciseCreateProps = {
+        const data: ExerciseEntityCreateProps = {
             name: exerciseName,
             user_id: exerciseUserIdUser,
             categories: [category]
@@ -104,7 +103,7 @@ describe("Exercise Entity Test ", () => {
         const name = "";
         const exerciseUserIdAdmin: string | null = null;
         const category = createCategory();
-        const data: ExerciseCreateProps = {
+        const data: ExerciseEntityCreateProps = {
             name,
             user_id: exerciseUserIdAdmin,
             categories: [category]
@@ -118,7 +117,7 @@ describe("Exercise Entity Test ", () => {
         const longName = "a".repeat(31);
         const exerciseUserIdAdmin: string | null = null;
         const category = createCategory();
-        const data: ExerciseCreateProps = {
+        const data: ExerciseEntityCreateProps = {
             name: longName,
             user_id: exerciseUserIdAdmin,
             categories: [category]

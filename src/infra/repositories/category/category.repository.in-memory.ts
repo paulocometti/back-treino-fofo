@@ -1,6 +1,5 @@
-import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway, CategoryGatewayExistsByNameInputDto, CategoryGatewayFindByIdAndUserIdInputDTO, CategoryGatewayFindByIdInputDTO, CategoryGatewayListInputDTO, CategoryGatewaySelectInputDTO } from "../../../domain/category/gateway/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
-import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayFindByIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../../../domain/category/dtos/category-dtos";
 
 export class CategoryRepositoryInMemory implements CategoryGateway {
     private categories: Category[] = [];
@@ -11,7 +10,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return new CategoryRepositoryInMemory();
     };
 
-    public async existsByName(input: CategoryGatewayExistsDTO): Promise<boolean> {
+    public async existsByName(input: CategoryGatewayExistsByNameInputDto): Promise<boolean> {
         const { id, name, user_id } = input;
         for (const category of this.categories) {
             if (category.name !== name) continue;
@@ -25,7 +24,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
     };
 
 
-    public async findById(input: CategoryGatewayFindByIdDTO): Promise<boolean> {
+    public async findById(input: CategoryGatewayFindByIdInputDTO): Promise<boolean> {
         const { id } = input;
         for (const category of this.categories) {
             if (category.id === id) return true;
@@ -33,7 +32,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return false;
     };
 
-    public async findByIdAndUserId(input: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean> {
+    public async findByIdAndUserId(input: CategoryGatewayFindByIdAndUserIdInputDTO): Promise<boolean> {
         const { id, user_id } = input;
         for (const category of this.categories) {
             if (category.id === id && category.user_id === user_id)
@@ -64,16 +63,16 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return newCategory;
     };
 
-    public async select(input: CategoryGatewaySelectDTO): Promise<Category | null> {
+    public async select(input: CategoryGatewaySelectInputDTO): Promise<Category | null> {
         const { id, user_id } = input;
         const category = this.categories.find(t => {
             if (t.id !== id) return false;
-            
+
             if (user_id) {
-                if (t.user_id !== null && t.user_id !== user_id) return false; 
+                if (t.user_id !== null && t.user_id !== user_id) return false;
             }
             else {
-                if (t.user_id !== null) return false; 
+                if (t.user_id !== null) return false;
             };
 
             return true;
@@ -88,7 +87,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return output;
     };
 
-    public async list(input: CategoryGatewayListDTO): Promise<Category[]> {
+    public async list(input: CategoryGatewayListInputDTO): Promise<Category[]> {
         let { user_id } = input;
         const categoriesWithUserIdNull: Category[] = this.categories.filter(t => t.user_id === null);
         let categoriesWithUserIdSameEqualsUser: Category[] = [];

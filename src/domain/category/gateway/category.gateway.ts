@@ -1,12 +1,35 @@
-import { CategoryGatewayExistsDTO, CategoryGatewayFindByIdAndUserIdDTO, CategoryGatewayFindByIdDTO, CategoryGatewayListDTO, CategoryGatewaySelectDTO } from "../dtos/category-dtos";
 import { Category } from "../entities/category";
 
+export interface CategoryGatewayExistsByNameInputDto {
+    id?: string;
+    name: string;
+    user_id: string | null;
+};
+
+export interface CategoryGatewayFindByIdInputDTO {
+    id: string;
+};
+
+export interface CategoryGatewayFindByIdAndUserIdInputDTO {
+    id: string;
+    user_id: string | null;
+};
+
+export interface CategoryGatewaySelectInputDTO {
+    id: string;
+    user_id: string | null;
+};
+
+export interface CategoryGatewayListInputDTO {
+    user_id?: string | null;
+};
+
 export interface CategoryGateway {
-    existsByName(dto: CategoryGatewayExistsDTO): Promise<boolean>;
-    findById(dto: CategoryGatewayFindByIdDTO): Promise<boolean>;
-    findByIdAndUserId(dto: CategoryGatewayFindByIdAndUserIdDTO): Promise<boolean>;
+    existsByName(dto: CategoryGatewayExistsByNameInputDto): Promise<boolean>;
+    findById(dto: CategoryGatewayFindByIdInputDTO): Promise<boolean>;
+    findByIdAndUserId(dto: CategoryGatewayFindByIdAndUserIdInputDTO): Promise<boolean>;
     insert(dto: Category): Promise<Category>;
     update(dto: Category): Promise<Category>;
-    select(dto: CategoryGatewaySelectDTO): Promise<Category | null>;
-    list(dto: CategoryGatewayListDTO): Promise<Category[]>;
+    select(dto: CategoryGatewaySelectInputDTO): Promise<Category | null>;
+    list(dto: CategoryGatewayListInputDTO): Promise<Category[]>;
 };

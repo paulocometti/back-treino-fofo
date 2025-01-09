@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { faker } from '@faker-js/faker';
-import { Category, CategoryCreateProps } from "./category";
+import { Category, CategoryEntityCreateProps } from "./category";
 import { z } from "zod";
 
 describe("Category Entity Test ", () => {
     it("deve criar uma Categoria com nome e id válidos para um Usuario com role Admin", () => {
         const categoryName: string = faker.person.firstName('female');
         const categoryUserIdAdmin: string | null = null;
-        const data: CategoryCreateProps = {
+        const data: CategoryEntityCreateProps = {
             name: categoryName,
             user_id: categoryUserIdAdmin
         };
@@ -24,7 +24,7 @@ describe("Category Entity Test ", () => {
     it("deve criar uma Categoria com nome e id válidos para um Usuario com role User", () => {
         const categoryName: string = faker.person.firstName('female');
         const categoryUserIdUser: string | null = crypto.randomUUID();
-        const data: CategoryCreateProps = {
+        const data: CategoryEntityCreateProps = {
             name: categoryName,
             user_id: categoryUserIdUser
         };
@@ -41,7 +41,7 @@ describe("Category Entity Test ", () => {
     it("deve lançar um erro ao criar uma Categoria com nome inválido", () => {
         const name = "";
         const categoryUserIdAdmin: string | null = null;
-        const data: CategoryCreateProps = {
+        const data: CategoryEntityCreateProps = {
             name,
             user_id: categoryUserIdAdmin
         };
@@ -53,7 +53,7 @@ describe("Category Entity Test ", () => {
     it("deve lançar um erro ao criar uma Categoria com nome muito longo", () => {
         const longName = "a".repeat(31);
         const categoryUserIdAdmin: string | null = null;
-        const data: CategoryCreateProps = {
+        const data: CategoryEntityCreateProps = {
             name: longName,
             user_id: categoryUserIdAdmin
         };
@@ -61,7 +61,7 @@ describe("Category Entity Test ", () => {
             Category.create(data);
         }).toThrowError("Digite um Nome corretamente!");
     });
-    
+
     it("deve criar uma Categoria usando o método 'with' com props válidas e user_id de Usuário com role Admin", () => {
         const id = faker.string.uuid();
         const name = faker.person.firstName('female');

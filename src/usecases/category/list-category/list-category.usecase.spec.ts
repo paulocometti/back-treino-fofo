@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { ListCategoryUsecase } from './list-category.usecase';
-import { CreateCategoryInputDto, CreateCategoryUsecase, CreateCategoryUserDto } from '../create-category/create-category.usecase';
+import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from '../create-category/create-category.usecase';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let useCaseCreate: CreateCategoryUsecase;
@@ -15,15 +15,15 @@ beforeEach(() => {
 
 describe('ListCategoryUsecase', () => {
   it('deve listar Categorias sendo Usuário role ADMIN', async () => {
-    const input1: CreateCategoryInputDto = { name: 'Eletrônicos' };
-    const input2: CreateCategoryInputDto = { name: 'Vídeo' };
-    const input3: CreateCategoryInputDto = { name: 'Ferramentas' };
-    const userAdminFake: CreateCategoryUserDto = {
+    const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
+    const input2: CreateCategoryUsecaseInputDto = { name: 'Vídeo' };
+    const input3: CreateCategoryUsecaseInputDto = { name: 'Ferramentas' };
+    const userAdminFake: CreateCategoryUsecaseUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const userFake: CreateCategoryUserDto = {
+    const userFake: CreateCategoryUsecaseUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -46,21 +46,21 @@ describe('ListCategoryUsecase', () => {
   });
 
   it('deve listar Categorias sendo Usuário role USER', async () => {
-    const input1: CreateCategoryInputDto = { name: 'Eletrônicos' };
-    const input2: CreateCategoryInputDto = { name: 'Vídeo' };
-    const input3: CreateCategoryInputDto = { name: 'Ferramentas' };
-    const input4: CreateCategoryInputDto = { name: 'Nao Aparecer' };
-    const userAdminFake: CreateCategoryUserDto = {
+    const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
+    const input2: CreateCategoryUsecaseInputDto = { name: 'Vídeo' };
+    const input3: CreateCategoryUsecaseInputDto = { name: 'Ferramentas' };
+    const input4: CreateCategoryUsecaseInputDto = { name: 'Nao Aparecer' };
+    const userAdminFake: CreateCategoryUsecaseUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const userFake: CreateCategoryUserDto = {
+    const userFake: CreateCategoryUsecaseUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
     };
-    const userFake2: CreateCategoryUserDto = {
+    const userFake2: CreateCategoryUsecaseUserDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User2',
       role: 'USER'
