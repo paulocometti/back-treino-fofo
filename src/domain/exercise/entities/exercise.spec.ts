@@ -81,7 +81,6 @@ describe("Exercise Entity Test ", () => {
 
     it("deve criar um Exercicio com nome e id válidos e category = null para um Usuario com role User", () => {
         const exerciseName: string = faker.person.firstName('female');
-        const categoryIdRandom: string | null = null;
         const exerciseUserIdUser: string | null = crypto.randomUUID();
         const category = createCategory();
         const data: ExerciseEntityCreateProps = {

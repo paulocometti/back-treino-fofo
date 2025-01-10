@@ -45,10 +45,10 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         return true;
     };
 
-    public async insert(input: Exercise, inputCategories: Category[]): Promise<Exercise> {
-        const { id, name, user_id } = input;
+    public async insert(input: Exercise): Promise<Exercise> {
+        const { id, name, user_id, categories } = input;
         let categoryExercise: { exercise_id: string, category_id: string }[] = [];
-        for (const t of inputCategories) {
+        for (const t of categories) {
             categoryExercise.push({
                 exercise_id: id,
                 category_id: t.id
@@ -72,10 +72,10 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         return output;
     };
 
-    public async update(input: Exercise, inputCategories: Category[]): Promise<Exercise> {
-        const { id, name, user_id } = input;
+    public async update(input: Exercise): Promise<Exercise> {
+        const { id, name, user_id, categories } = input;
         let categoryExercise: { exercise_id: string, category_id: string }[] = [];
-        for (const t of inputCategories) {
+        for (const t of categories) {
             categoryExercise.push({
                 exercise_id: id,
                 category_id: t.id

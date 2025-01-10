@@ -37,17 +37,10 @@ export class ListCategoryUsecase implements Usecase<ListCategoryInputDto, ListCa
 
     private presentOutput(categories: Category[]): ListCategoryOutputDto {
         let formatCategories = [];
+        for (const t of categories)
+            formatCategories.push({ id: t.id, name: t.name });
 
-        for (const t of categories) {
-            formatCategories.push({
-                id: t.id,
-                name: t.name
-            });
-        };
-
-        return {
-            categories: formatCategories
-        };
+        return { categories: formatCategories };
     };
 
 };

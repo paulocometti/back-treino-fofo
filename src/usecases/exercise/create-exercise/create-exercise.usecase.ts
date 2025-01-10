@@ -22,14 +22,16 @@ export type CreateExerciseUserInputDto = {
 };
 
 export type CreateExerciseOutputDto = {
-    id: string;
-    name: string;
-    user_id: string | null;
-    categories: {
+    exercise: {
         id: string;
         name: string;
         user_id: string | null;
-    }[];
+        categories: {
+            id: string;
+            name: string;
+            user_id: string | null;
+        }[];
+    }
 };
 
 export class CreateExerciseUsecase
@@ -60,18 +62,18 @@ export class CreateExerciseUsecase
             };
         };
         const aExercise = Exercise.create({ name: exerciseName, user_id: userIdCondition, categories: aCategories });
-        const result = await this.exerciseGateway.insert(aExercise, aCategories);
+        const result = await this.exerciseGateway.insert(aExercise);
         const output = this.presentOutput(result);
         return output;
     };
 
     private presentOutput(exercise: Exercise): CreateExerciseOutputDto {
-        const output: CreateExerciseOutputDto = {
+        const output = {
             id: exercise.id,
             name: exercise.name,
             user_id: exercise.user_id,
             categories: exercise.categories
         };
-        return output;
+        return { exercise: output };
     }
 };

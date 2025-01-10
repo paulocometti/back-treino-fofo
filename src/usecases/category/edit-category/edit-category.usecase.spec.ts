@@ -24,15 +24,15 @@ describe('EditCategoryUsecase', () => {
     const createdCategory = await createUseCase.execute(inputCreate, userAdmin);
 
     const editInput: EditCategoryInputDto = {
-      id: createdCategory.id,
+      id: createdCategory.category.id,
       name: 'Eletrônicos 2',
       user_id: userAdmin.id,
     };
     const output = await editUseCase.execute(editInput, userAdmin);
 
-    expect(output.id).toBe(createdCategory.id);
-    expect(output.name).toBe('Eletrônicos 2');
-    expect(output.user_id).toBe(null);
+    expect(output.category.id).toBe(createdCategory.category.id);
+    expect(output.category.name).toBe('Eletrônicos 2');
+    expect(output.category.user_id).toBe(null);
   });
 
   it('deve atualizar uma categoria com sucesso com role USER', async () => {
@@ -45,15 +45,15 @@ describe('EditCategoryUsecase', () => {
     const createdCategory = await createUseCase.execute(inputCreate, userFake);
 
     const editInput: EditCategoryInputDto = {
-      id: createdCategory.id,
+      id: createdCategory.category.id,
       name: 'Esportes e Lazer',
       user_id: userFake.id,
     };
     const output = await editUseCase.execute(editInput, userFake);
 
-    expect(output.id).toBe(createdCategory.id);
-    expect(output.name).toBe('Esportes e Lazer');
-    expect(output.user_id).toBe(userFake.id);
+    expect(output.category.id).toBe(createdCategory.category.id);
+    expect(output.category.name).toBe('Esportes e Lazer');
+    expect(output.category.user_id).toBe(userFake.id);
   });
 
   it('deve atualizar uma categoria com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
@@ -72,15 +72,15 @@ describe('EditCategoryUsecase', () => {
     const categoryUser2 = await createUseCase.execute({ name: 'Eletrônicos Pro' }, user2);
 
     const editInput: EditCategoryInputDto = {
-      id: categoryUser2.id,
+      id: categoryUser2.category.id,
       name: 'Eletrônicos',
       user_id: user2.id,
     };
     const output = await editUseCase.execute(editInput, user2);
 
-    expect(output.id).toBe(categoryUser2.id);
-    expect(output.name).toBe('Eletrônicos');
-    expect(output.user_id).toBe(user2.id);
+    expect(output.category.id).toBe(categoryUser2.category.id);
+    expect(output.category.name).toBe('Eletrônicos');
+    expect(output.category.user_id).toBe(user2.id);
   });
 
   it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias oficiais', async () => {
@@ -99,8 +99,8 @@ describe('EditCategoryUsecase', () => {
     const categoryOfAdmin = await createUseCase.execute({ name: 'Domésticos' }, userAdmin);
 
     const editInput: EditCategoryInputDto = {
-      id: categoryOfUser.id,
-      name: categoryOfAdmin.name,
+      id: categoryOfUser.category.id,
+      name: categoryOfAdmin.category.name,
       user_id: userFake.id,
     };
 
@@ -119,8 +119,8 @@ describe('EditCategoryUsecase', () => {
     const category2 = await createUseCase.execute({ name: 'Domésticos' }, userFake);
 
     const editInput: EditCategoryInputDto = {
-      id: category2.id,
-      name: category1.name,
+      id: category2.category.id,
+      name: category1.category.name,
       user_id: userFake.id,
     };
 
@@ -135,11 +135,11 @@ describe('EditCategoryUsecase', () => {
       name: 'Admin Test',
       role: 'ADMIN'
     };
-    const cat1 = await createUseCase.execute({ name: 'Eletrônicos' }, userAdmin);
+    await createUseCase.execute({ name: 'Eletrônicos' }, userAdmin);
     const cat2 = await createUseCase.execute({ name: 'Domésticos' }, userAdmin);
 
     const editInput: EditCategoryInputDto = {
-      id: cat2.id,
+      id: cat2.category.id,
       name: 'Eletrônicos',
       user_id: null,
     };
@@ -165,7 +165,7 @@ describe('EditCategoryUsecase', () => {
     const categoryByAdmin = await createUseCase.execute({ name: 'Oficial Cat' }, userAdmin);
 
     const editInput: EditCategoryInputDto = {
-      id: categoryByAdmin.id,
+      id: categoryByAdmin.category.id,
       name: 'Eletrônicos',
       user_id: null,
     };

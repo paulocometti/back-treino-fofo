@@ -32,12 +32,12 @@ describe('ListCategoryUsecase', () => {
     const output2 = await useCaseCreate.execute(input2, userAdminFake);
     const output3 = await useCaseCreate.execute(input3, userFake);
 
-    expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe('Eletrônicos');
-    expect(output2).toHaveProperty('id');
-    expect(output2.name).toBe('Vídeo');
-    expect(output3).toHaveProperty('id');
-    expect(output3.name).toBe('Ferramentas');
+    expect(output1.category).toHaveProperty('id');
+    expect(output1.category.name).toBe('Eletrônicos');
+    expect(output2.category).toHaveProperty('id');
+    expect(output2.category.name).toBe('Vídeo');
+    expect(output3.category).toHaveProperty('id');
+    expect(output3.category.name).toBe('Ferramentas');
 
     const list = (await useCaseList.execute(undefined, userAdminFake)).categories;
     expect(list.length).toBe(2);
@@ -70,14 +70,14 @@ describe('ListCategoryUsecase', () => {
     const output3 = await useCaseCreate.execute(input3, userFake);
     const output4 = await useCaseCreate.execute(input4, userFake2);
 
-    expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe('Eletrônicos');
-    expect(output2).toHaveProperty('id');
-    expect(output2.name).toBe('Vídeo');
-    expect(output3).toHaveProperty('id');
-    expect(output3.name).toBe('Ferramentas');
-    expect(output4).toHaveProperty('id');
-    expect(output4.name).toBe('Nao Aparecer');
+    expect(output1.category).toHaveProperty('id');
+    expect(output1.category.name).toBe('Eletrônicos');
+    expect(output2.category).toHaveProperty('id');
+    expect(output2.category.name).toBe('Vídeo');
+    expect(output3.category).toHaveProperty('id');
+    expect(output3.category.name).toBe('Ferramentas');
+    expect(output4.category).toHaveProperty('id');
+    expect(output4.category.name).toBe('Nao Aparecer');
 
     const list = (await useCaseList.execute(undefined, userFake)).categories;
     expect(list.length).toBe(3);

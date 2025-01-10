@@ -23,13 +23,13 @@ describe('SelectCategoryUsecase', () => {
     };
     const output1 = await useCaseCreate.execute(input1, userAdminFake);
 
-    expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe(input1.name);
-    expect(output1.user_id).toBe(null);
+    expect(output1.category).toHaveProperty('id');
+    expect(output1.category.name).toBe(input1.name);
+    expect(output1.category.user_id).toBe(null);
 
-    const select = (await useCaseSelect.execute(output1, userAdminFake)).category;
+    const select = (await useCaseSelect.execute(output1.category, userAdminFake)).category;
     expect(select.name).toBe(input1.name);
-    expect(output1.user_id).toBe(null);
+    expect(output1.category.user_id).toBe(null);
   });
 
   it('deve dar Select em uma Categoria sendo Usuário role USER', async () => {
@@ -41,11 +41,11 @@ describe('SelectCategoryUsecase', () => {
     };
     const output1 = await useCaseCreate.execute(input1, userFake);
 
-    expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe(input1.name);
-    expect(output1.user_id).toBe(userFake.id);
+    expect(output1.category).toHaveProperty('id');
+    expect(output1.category.name).toBe(input1.name);
+    expect(output1.category.user_id).toBe(userFake.id);
 
-    const select = (await useCaseSelect.execute(output1, userFake)).category;
+    const select = (await useCaseSelect.execute(output1.category, userFake)).category;
     expect(select.name).toBe(input1.name);
     expect(select.user_id).toBe(userFake.id);
   });
@@ -64,11 +64,11 @@ describe('SelectCategoryUsecase', () => {
     };
     const output1 = await useCaseCreate.execute(input1, userAdminFake);
 
-    expect(output1).toHaveProperty('id');
-    expect(output1.name).toBe(input1.name);
-    expect(output1.user_id).toBe(null);
+    expect(output1.category).toHaveProperty('id');
+    expect(output1.category.name).toBe(input1.name);
+    expect(output1.category.user_id).toBe(null);
 
-    const select = (await useCaseSelect.execute(output1, userFake)).category;
+    const select = (await useCaseSelect.execute(output1.category, userFake)).category;
     expect(select.name).toBe(input1.name);
     expect(select.user_id).toBe(null);
   });
@@ -91,7 +91,7 @@ describe('SelectCategoryUsecase', () => {
     const output2 = await useCaseCreate.execute(input2, userFake2);
 
     await expect(
-      useCaseSelect.execute(output2, userFake)
+      useCaseSelect.execute(output2.category, userFake)
     ).rejects.toThrow('Nada encontrado.');
   });
 
@@ -113,7 +113,7 @@ describe('SelectCategoryUsecase', () => {
     await useCaseCreate.execute(input2, userFake2);
 
     await expect(
-      useCaseSelect.execute(output1, userFake2)
+      useCaseSelect.execute(output1.category, userFake2)
     ).rejects.toThrow('Nada encontrado.');
   });
 });

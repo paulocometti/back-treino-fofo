@@ -4,6 +4,7 @@ export type ExerciseEntityProps = {
     id: string;
     name: string;
     user_id: string | null;
+    categories: Category[];
 };
 
 export type ExerciseEntityCreateProps = {
@@ -14,7 +15,7 @@ export type ExerciseEntityCreateProps = {
 
 export class Exercise {
 
-    private constructor(private props: ExerciseEntityProps & { categories: Category[] }) {
+    private constructor(private props: ExerciseEntityProps) {
         this.validate();
     };
 
@@ -27,7 +28,7 @@ export class Exercise {
         return exercise;
     };
 
-    public static with(props: ExerciseEntityProps & { categories: Category[] }) {
+    public static with(props: ExerciseEntityProps) {
         const exercise = new Exercise(props);
         return exercise;
     };

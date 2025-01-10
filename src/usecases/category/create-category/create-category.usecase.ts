@@ -44,13 +44,7 @@ export class CreateCategoryUsecase
     };
 
     private presentOutput(category: Category): CreateCategoryUsecaseOutputDto {
-        const output: CreateCategoryUsecaseOutputDto = {
-            category: {
-                id: category.id,
-                name: category.name,
-                user_id: category.user_id
-            }
-        };
-        return output;
+        const output = { id: category.id, name: category.name, user_id: category.user_id };
+        return { category: output };
     }
 };

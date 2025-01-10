@@ -11,7 +11,7 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
 
     public static create() {
         return new ExerciseRepositoryInMemory();
-    };
+    }
 
     private findCategoriesByExerciseId(exerciseId: string): Category[] {
         return this.exercisesCategories
@@ -21,66 +21,82 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
                 if (!foundCategory) throw new Error("Category not found");
                 return Category.with(foundCategory);
             });
-    };
+    }
 
     public async existsByName(input: ExerciseGatewayExistsxistsByNameInputDTO): Promise<boolean> {
         const { id, name, user_id } = input;
-        return this.exercises.some(exercise => exercise.name === name && (!id || exercise.id !== id) && (!user_id || exercise.user_id === user_id));
-    };
+        return this.exercises.some(exercise =>
+            exercise.name === name &&
+            (!id || exercise.id !== id) &&
+            (!user_id || exercise.user_id === user_id)
+        );
+    }
 
     public async findByIdAndUserId(input: ExerciseGatewayFindByIdAndUserIdInputDTO): Promise<boolean> {
         const { id, user_id } = input;
         return this.exercises.some(exercise => exercise.id === id && exercise.user_id === user_id);
-    };
+    }
 
-    public async insert(inputExercise: Exercise, inputCategories: Category[]): Promise<Exercise> {
-        this.exercises.push(inputExercise);
-        inputCategories.forEach(category => {
+    public async insert(input: Exercise): Promise<Exercise> {
+        this.exercises.push(input);
+
+        input.categories.forEach(category => {
             this.exercisesCategories.push({
-                exercise_id: inputExercise.id,
+                exercise_id: input.id,
                 category_id: category.id
             });
             if (!this.categories.find(c => c.id === category.id)) {
                 this.categories.push(category);
             }
         });
-        const categories = this.findCategoriesByExerciseId(inputExercise.id);
+
+        const categories = this.findCategoriesByExerciseId(input.id);
         return Exercise.with({
-            id: inputExercise.id,
-            name: inputExercise.name,
-            user_id: inputExercise.user_id,
+            id: input.id,
+            name: input.name,
+            user_id: input.user_id,
             categories: categories
         });
     };
 
-    public async update(inputExercise: Exercise, inputCategories: Category[]): Promise<Exercise> {
-        const index = this.exercises.findIndex(ex => ex.id === inputExercise.id && ex.user_id === inputExercise.user_id);
-        //if (index === -1) throw new Error("Exercise not found");
-        this.exercisesCategories = this.exercisesCategories.filter(ec => ec.exercise_id !== inputExercise.id);
+    public async update(input: Exercise): Promise<Exercise> {
+        const index = this.exercises.findIndex(ex => ex.id === input.id && ex.user_id === input.user_id);
+        if (index === -1) throw new Error("Exercise not found");
 
-        inputCategories.forEach(category => {
+        // Atualiza os dados do exercício
+        this.exercises[index] = input;
+
+        // Remove relacionamentos antigos
+        this.exercisesCategories = this.exercisesCategories.filter(ec => ec.exercise_id !== input.id);
+
+        const categoriesInput = input.categories;
+        categoriesInput.forEach(category => {
             this.exercisesCategories.push({
-                exercise_id: inputExercise.id,
+                exercise_id: input.id,
                 category_id: category.id
             });
+            if (!this.categories.find(c => c.id === category.id)) {
+                this.categories.push(category);
+            }
         });
 
-        const categories = this.findCategoriesByExerciseId(inputExercise.id);
-
-        this.exercises[index] = Exercise.with({
-            id: inputExercise.id,
-            name: inputExercise.name,
-            user_id: inputExercise.user_id,
+        const categories = this.findCategoriesByExerciseId(input.id);
+        return Exercise.with({
+            id: input.id,
+            name: input.name,
+            user_id: input.user_id,
             categories: categories
         });
-
-        return this.exercises[index];
-    };
+    }
 
     public async select(input: ExerciseGatewaySelectInputDTO): Promise<Exercise | null> {
         const { id, user_id } = input;
-        const foundExercise = this.exercises.find(ex => ex.id === id && (!user_id || ex.user_id === user_id));
+        const foundExercise = this.exercises.find(ex =>
+            ex.id === id &&
+            (!user_id || ex.user_id === user_id)
+        );
         if (!foundExercise) return null;
+
         const categories = this.findCategoriesByExerciseId(foundExercise.id);
         return Exercise.with({
             id: foundExercise.id,
@@ -88,11 +104,13 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
             user_id: foundExercise.user_id,
             categories: categories
         });
-    };
+    }
 
     public async list(input: ExerciseGatewayListInputDTO): Promise<Exercise[]> {
         const { user_id } = input;
-        const filteredExercises = this.exercises.filter(ex => ex.user_id === user_id || ex.user_id === null);
+        const filteredExercises = this.exercises.filter(ex =>
+            ex.user_id === user_id || ex.user_id === null
+        );
         return filteredExercises.map(ex => {
             const categories = this.findCategoriesByExerciseId(ex.id);
             return Exercise.with({
@@ -102,5 +120,5 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
                 categories: categories
             });
         });
-    };
-};
+    }
+}
