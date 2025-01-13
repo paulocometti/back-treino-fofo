@@ -40,8 +40,7 @@ export class ListCategoryRoute implements Route {
                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
                 const user = userFake;
                 const result = await this.listCategorySerivce.execute(undefined, user);
-                const output = this.present(result);
-                response.status(200).json(output).send();
+                response.status(200).json(result).send();
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };
@@ -54,19 +53,6 @@ export class ListCategoryRoute implements Route {
 
     public getMethod(): HttpMethod {
         return this.method;
-    };
-
-    private present(input: ListCategoryOutputDto): ListCategoryResponseDto {
-        const response = [];
-        const categories = input.categories;
-        for (const t of categories) {
-            response.push({
-                id: t.id,
-                name: t.name
-            })
-        };
-
-        return { categories: response };
     };
 
 };

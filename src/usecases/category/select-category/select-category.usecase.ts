@@ -41,9 +41,8 @@ export class SelectCategoryUsecase implements Usecase<SelectCategoryInputDto, Se
     };
 
     private presentOutput(category: Category): SelectCategoryOutputDto {
-        return {
-            category: category
-        };
+        const output = { id: category.id, name: category.name, user_id: category.user_id };
+        return { category: output };
     };
 
 };

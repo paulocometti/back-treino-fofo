@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from './create-category.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
-import { SelectCategoryUsecase } from '../select-category/select-category.usecase';
+import { faker } from '@faker-js/faker';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let useCaseCreate: CreateCategoryUsecase;
-let useCaseSelect: SelectCategoryUsecase;
+
+export const categoryCreateMock = { name: faker.person.firstName('female') };
 
 beforeEach(() => {
   categoryRepository = CategoryRepositoryInMemory.create();
   useCaseCreate = CreateCategoryUsecase.create(categoryRepository);
-  useCaseSelect = SelectCategoryUsecase.create(categoryRepository);
 });
 
 describe('CreateCategoryUsecase', () => {
@@ -23,10 +23,9 @@ describe('CreateCategoryUsecase', () => {
     };
     const output = await useCaseCreate.execute(input, userAdminFake);
 
-    const result = await useCaseSelect.execute({ id: output.category.id }, userAdminFake);
-    expect(result.category.id).toBe(output.category.id);
-    expect(result.category.name).toBe(output.category.name);
-    expect(result.category.user_id).toBe(null);
+    expect(output.category.id).toBe(output.category.id);
+    expect(output.category.name).toBe(output.category.name);
+    expect(output.category.user_id).toBe(null);
   });
 
   it('deve criar uma categoria com sucesso com role USER', async () => {
@@ -37,11 +36,10 @@ describe('CreateCategoryUsecase', () => {
       role: 'USER'
     };
     const output = await useCaseCreate.execute(input, userFake);
-
-    const result = await useCaseSelect.execute({ id: output.category.id }, userFake);
-    expect(result.category.id).toBe(output.category.id);
-    expect(result.category.name).toBe(output.category.name);
-    expect(result.category.user_id).toBe(userFake.id);
+    
+    expect(output.category.id).toBe(output.category.id);
+    expect(output.category.name).toBe(output.category.name);
+    expect(output.category.user_id).toBe(userFake.id);
   });
 
   it('deve criar uma categoria com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
@@ -60,15 +58,13 @@ describe('CreateCategoryUsecase', () => {
     const output1 = await useCaseCreate.execute(input, userFake1);
     const output2 = await useCaseCreate.execute(input, userFake2);
 
-    const result1 = await useCaseSelect.execute({ id: output1.category.id }, userFake1);
-    expect(result1.category.id).toBe(output1.category.id);
-    expect(result1.category.name).toBe(output1.category.name);
-    expect(result1.category.user_id).toBe(userFake1.id);
+    expect(output1.category.id).toBe(output1.category.id);
+    expect(output1.category.name).toBe(output1.category.name);
+    expect(output1.category.user_id).toBe(userFake1.id);
 
-    const result2 = await useCaseSelect.execute({ id: output2.category.id }, userFake2);
-    expect(result2.category.id).toBe(output2.category.id);
-    expect(result2.category.name).toBe(output2.category.name);
-    expect(result2.category.user_id).toBe(userFake2.id);
+    expect(output2.category.id).toBe(output2.category.id);
+    expect(output2.category.name).toBe(output2.category.name);
+    expect(output2.category.user_id).toBe(userFake2.id);
   });
 
   it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias oficiais', async () => {

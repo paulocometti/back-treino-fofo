@@ -1,63 +1,99 @@
-// import { Exercise } from "../../../domain/exercise/entities/exercise";
-// import { User } from "../../../domain/user/entities/user";
-// import { ExerciseGateway } from "../../../domain/exercise/gateway/exercise.gateway";
-// import { Usecase } from "../../usecase"
-// import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { Exercise } from "../../../domain/exercise/entities/exercise";
+import { User } from "../../../domain/user/entities/user";
+import { ExerciseGateway } from "../../../domain/exercise/gateway/exercise.gateway";
+import { Usecase } from "../../usecase"
+import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { Category } from "../../../domain/category/entities/category";
 
-// export type EditExerciseInputDto = {
-//     id: string,
-//     name: string;
-//     category_id: string | null;
-//     user_id?: string | null;
-// };
+export type EditExerciseInputDto = {
+    id: string,
+    name: string;
+    user_id?: string | null;
+    categories: {
+        id: string;
+        name: string;
+        user_id: string | null;
+    }[];
+};
 
-// export type EditExerciseUserDto = {
-//     id: string,
-//     name: string,
-//     role: 'USER' | 'ADMIN'
-// };
+export type EditExerciseUserDto = {
+    id: string,
+    name: string,
+    role: 'USER' | 'ADMIN'
+};
 
-// export type EditExerciseOutputDto = {
-//     id: string;
-//     name: string;
-//     categories: string | null;
-//     user_id: string | null;
-// };
+export type EditExerciseOutputDto = {
+    exercise: {
+        id: string;
+        name: string;
+        user_id: string | null;
+        categories: {
+            id: string;
+            name: string;
+            user_id: string | null;
+        }[];
+    }
+};
 
-// export class EditExerciseUsecase
-//     implements Usecase<EditExerciseInputDto, EditExerciseUserDto, EditExerciseOutputDto>{
+export class EditExerciseUsecase
+    implements Usecase<EditExerciseInputDto, EditExerciseUserDto, EditExerciseOutputDto> {
 
-//     private constructor(private readonly categoryGateway: CategoryGateway, private readonly exerciseGateway: ExerciseGateway){}
+    private constructor(private readonly categoryGateway: CategoryGateway, private readonly exerciseGateway: ExerciseGateway) { }
 
-//     public static create(categoryGateway: CategoryGateway,exerciseGateway: ExerciseGateway){
-//         return new EditExerciseUsecase(categoryGateway, exerciseGateway);
-//     };
+    public static create(categoryGateway: CategoryGateway, exerciseGateway: ExerciseGateway) {
+        return new EditExerciseUsecase(categoryGateway, exerciseGateway);
+    };
 
-//     public async execute(req: EditExerciseInputDto, user: EditExerciseUserDto): Promise<EditExerciseOutputDto>{
-//         const { id: exerciseId, name: exerciseName, category_id: categoryId } = req;
-//         const { id: userId, role: userRole } = User.with(user);
-//         const userIdCondition = userRole === 'ADMIN' ? null : userId;
-//         const input: Exercise = Exercise.with({ id: exerciseId, name: exerciseName, categories: [], user_id: userIdCondition});
-//         const found = await this.exerciseGateway.findByIdAndUserId({ id: exerciseId, user_id: userIdCondition});
-//         if(found === false) throw new Error('O Exercício que você está tentando editar não existe!');
-//         const testExerciseExistsByName = await this.exerciseGateway.existsByName({name: exerciseName, user_id: userIdCondition});
-//         if(testExerciseExistsByName === true) throw new Error('Já existe um Exercício com este nome. Por favor, tente outro nome!');
-//         if(categoryId){
-//             const testCategoryIsValid = await this.categoryGateway.findById({ id: categoryId });
-//             if(testCategoryIsValid === false) throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
-//         };
-//         const result = await this.exerciseGateway.update(input);
-//         const output = this.presentOutput(result);
-//         return output;
-//     };
+    public async execute(req: EditExerciseInputDto, user: EditExerciseUserDto): Promise<EditExerciseOutputDto> {
+        const { id: exerciseId, name: exerciseName, categories } = req;
+        let aCategories: Category[] = [];
+        const { id: userId, role: userRole } = User.with(user);
+        const userIdCondition = userRole === 'ADMIN' ? null : userId;
 
-//     private presentOutput(exercise: Exercise): EditExerciseOutputDto {
-//         const output: EditExerciseOutputDto = {
-//             id: exercise.id,
-//             name: exercise.name,
-//             user_id: exercise.user_id,
-//             categories: exercise.categories
-//         };
-//         return output;
-//     }
-// };
+        const found = await this.exerciseGateway.findByIdAndUserId({ id: exerciseId, user_id: userIdCondition });
+        if (found === false) throw new Error('O Exercício que você está tentando editar não existe!');
+
+        const testExerciseExistsByName = await this.exerciseGateway.existsByName({ name: exerciseName, user_id: userIdCondition });
+        if (testExerciseExistsByName === true) throw new Error('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+
+        if (categories && Array.isArray(categories) && categories.length > 0) {
+            for (const t of categories) {
+                const category = await this.categoryGateway.select(t);
+                if (category === null)
+                    throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
+                const categoryNotOfficial = category.user_id !== null;
+                if (categoryNotOfficial && category.user_id !== user.id)
+                    throw new Error('A Categoria existe porém não pode ser selecionada pois não é válida. Por favor, tente escolher outra!');
+                aCategories.push(Category.with({
+                    id: category.id,
+                    name: category.name,
+                    user_id: category.user_id
+                }));
+            };
+        };
+        const aExercise = Exercise.with({ id: exerciseId, name: exerciseName, user_id: userIdCondition, categories: aCategories });
+
+        const result = await this.exerciseGateway.update(aExercise);
+        if (result === null) throw new Error();
+        const output = this.presentOutput(result);
+        return output;
+    };
+
+    private presentOutput(exercise: Exercise): EditExerciseOutputDto {
+        let categories = [];
+        for (const t of exercise.categories) {
+            categories.push({
+                id: t.id,
+                name: t.name,
+                user_id: t.user_id
+            });
+        };
+        const output = {
+            id: exercise.id,
+            name: exercise.name,
+            user_id: exercise.user_id,
+            categories: categories
+        };
+        return { exercise: output };
+    }
+};

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { CreateCategoryUsecase, CreateCategoryUsecaseInputDto, CreateCategoryUsecaseUserDto } from '../create-category/create-category.usecase';
-import { EditCategoryUsecase, EditCategoryInputDto, EditCategoryUserDto } from './edit-category.usecase';
+import { EditCategoryUsecase, EditCategoryInputDto } from './edit-category.usecase';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let createUseCase: CreateCategoryUsecase;

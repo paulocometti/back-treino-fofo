@@ -23,8 +23,8 @@ export interface ExerciseGatewayListInputDTO {
 export interface ExerciseGateway {
     existsByName(dto: ExerciseGatewayExistsxistsByNameInputDTO): Promise<boolean>;
     findByIdAndUserId(dto: ExerciseGatewayFindByIdAndUserIdInputDTO): Promise<boolean>;
-    insert(dto: Exercise): Promise<Exercise>;
-    update(dto: Exercise): Promise<Exercise>;
+    insert(dto: Exercise): Promise<Exercise | null>;
+    update(dto: Exercise): Promise<Exercise | null>;
     select(dto: ExerciseGatewaySelectInputDTO): Promise<Exercise | null>;
     list(dto: ExerciseGatewayListInputDTO): Promise<Exercise[]>;
 };

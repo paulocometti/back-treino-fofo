@@ -42,8 +42,7 @@ export class SelectCategoryRoute implements Route {
                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
                 const user = userFake;
                 const result = await this.selectCategoryService.execute(input, user);
-                const output = this.present(result);
-                response.status(200).json(output).send();
+                response.status(200).json(result).send();
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });  
             };
@@ -56,18 +55,6 @@ export class SelectCategoryRoute implements Route {
 
     public getMethod(): HttpMethod {
         return this.method;
-    };
-
-    private present(input: SelectCategoryOutputDto): SelectCategoryResponseDto {
-        const category = input.category;
-        const response = {
-            id: category.id,
-            name: category.name,
-            user_id: category.user_id
-        };
-
-        return { category: response };
-
     };
 
 };

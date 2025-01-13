@@ -34,10 +34,8 @@ export class CreateCategoryRoute implements Route {
                     role: 'USER'
                 };
                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userAdminFake;
-                const result: CreateCategoryUsecaseOutputDto =
-                    await this.createCategoryService.execute(input, user);
-
+                const user = userFake;
+                const result = await this.createCategoryService.execute(input, user);
                 response.status(201).json({ ...result });
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });

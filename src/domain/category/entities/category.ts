@@ -50,8 +50,11 @@ export class Category {
             throw new Error("Digite um Nome corretamente!");
 
         const trimmedName = this.props.name.trim();
-        if (trimmedName.length === 0 || trimmedName.length > 30)
+        if (trimmedName.length === 0)
             throw new Error("Digite um Nome corretamente!");
+
+        if (trimmedName.length > 30)
+            throw new Error("Digite um Nome abaixo de 30 caracteres!");
 
         if (this.props.user_id && !uuidRegex.test(this.props.user_id))
             throw new Error("Selecione um Usuário válido!");

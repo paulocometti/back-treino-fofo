@@ -2,9 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateExerciseInputDto, CreateExerciseUsecase, CreateExerciseUserInputDto } from './create-exercise.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { ExerciseRepositoryInMemory } from '../../../infra/repositories/exercise/exercise.repository.in-memory';
-import { CreateCategoryUsecase, CreateCategoryUsecaseInputDto, CreateCategoryUsecaseUserDto } from '../../category/create-category/create-category.usecase';
-import { Category } from '../../../domain/category/entities/category';
-import { createMockCategory } from '../../category/mock-category';
+import { CreateCategoryUsecase } from '../../category/create-category/create-category.usecase';
+import { categoryCreateMock } from '../../category/create-category/create-category.usecase.spec';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let exerciseRepository: ExerciseRepositoryInMemory;
@@ -20,65 +19,36 @@ beforeEach(() => {
 
 describe('CreateExerciseUsecase', () => {
     it('deve criar um Exercício com sucesso com role ADMIN', async () => {
-        const categoryMock: Category = createMockCategory('ADMIN');
-        console.log("categoryMock >> ", categoryMock);
-        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryMock] };
         const userAdminFake: CreateExerciseUserInputDto = {
             id: crypto.randomUUID(),
-            name: 'Paulo User',
+            name: 'Paulo Admin',
             role: 'ADMIN'
         };
+        const categoryOutput = await categoryUseCaseCreate.execute(categoryCreateMock, userAdminFake); 
+        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
         const output = await exerciseUseCaseCreate.execute(input, userAdminFake);
         expect(output.exercise.id).toBeDefined();
         expect(output.exercise.name).toBe('Yoga Practice');
         expect(output.exercise.user_id).toBe(null);
+        expect(output.exercise.categories[0].name).toBe(categoryCreateMock.name);
     });
 
     it('deve criar um Exercício com sucesso com role USER', async () => {
-        const categoryMock: Category = createMockCategory('ADMIN');
-        console.log("categoryMock >> ", categoryMock);
-        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryMock] };
         const userFake: CreateExerciseUserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
         };
+        const categoryOutput = await categoryUseCaseCreate.execute(categoryCreateMock, userFake); 
+        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
         const output = await exerciseUseCaseCreate.execute(input, userFake);
         expect(output.exercise.id).toBeDefined();
         expect(output.exercise.name).toBe('Yoga Practice');
         expect(output.exercise.user_id).toBe(userFake.id);
+        expect(output.exercise.categories[0].name).toBe(categoryCreateMock.name);
     });
 
-    /*it('deve criar um Exercício com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
-        const categoryUserFake1: CreateCategoryUsecaseUserDto = {
-            id: crypto.randomUUID(),
-            name: 'Paulo User 1',
-            role: 'USER'
-        };
-        const categoryUserFake2: CreateCategoryUsecaseUserDto = {
-            id: crypto.randomUUID(),
-            name: 'Paulo User 2',
-            role: 'USER'
-
-        };
-        const categoryInput: CreateCategoryUsecaseInputDto = { name: 'Strength Training' };
-        const categoryOutput1 = await categoryUseCaseCreate.execute(categoryInput, categoryUserFake1);
-        const categoryOutput2 = await categoryUseCaseCreate.execute(categoryInput, categoryUserFake2);
-
-        const aCategory1 = Category.with({
-            id: categoryOutput1.category.id,
-            name: categoryOutput1.category.name,
-            user_id: categoryOutput1.category.user_id,
-        });
-        const aCategory2 = Category.with({
-            id: categoryOutput2.category.id,
-            name: categoryOutput2.category.name,
-            user_id: categoryOutput2.category.user_id,
-        });
-
-        const input1: CreateExerciseInputDto = { name: 'Lift Weights', categories: [aCategory1] };
-        const input2: CreateExerciseInputDto = { name: 'Lift Weights', categories: [aCategory2] };
-
+    it('deve criar um Exercício com sucesso com role USER mesmo se existir a mesma Exercício para outro USER', async () => {
         const userFake1: CreateExerciseUserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User 1',
@@ -89,73 +59,116 @@ describe('CreateExerciseUsecase', () => {
             name: 'Paulo User 2',
             role: 'USER'
         };
-
+        const categoryOutput1 = await categoryUseCaseCreate.execute(categoryCreateMock, userFake1); 
+        const input1: CreateExerciseInputDto = { name: 'Yoga Practice 1', categories: [categoryOutput1.category] };
         const output1 = await exerciseUseCaseCreate.execute(input1, userFake1);
-        const output2 = await exerciseUseCaseCreate.execute(input2, userFake2);
-
         expect(output1.exercise.id).toBeDefined();
-        expect(output2.exercise.id).toBeDefined();
-        expect(output1.exercise.name).toBe('Lift Weights');
-        expect(output2.exercise.name).toBe('Lift Weights');
+        expect(output1.exercise.name).toBe('Yoga Practice 1');
         expect(output1.exercise.user_id).toBe(userFake1.id);
+        expect(output1.exercise.categories[0].name).toBe(categoryCreateMock.name);
+        
+        const categoryOutput2 = await categoryUseCaseCreate.execute(categoryCreateMock, userFake2); 
+        const input2: CreateExerciseInputDto = { name: 'Yoga Practice 1', categories: [categoryOutput2.category] };
+        const output2 = await exerciseUseCaseCreate.execute(input2, userFake2);
+        expect(output2.exercise.id).toBeDefined();
+        expect(output2.exercise.name).toBe('Yoga Practice 1');
         expect(output2.exercise.user_id).toBe(userFake2.id);
+        expect(output2.exercise.categories[0].name).toBe(categoryCreateMock.name);
     });
 
     it('não deve permitir nomes de exercicio duplicados com role USER entre as Exercícios oficiais', async () => {
-        const categoryInput = { name: 'Cardio' };
-        const categoryUserFake: CreateCategoryUsecaseUserDto = {
-            id: crypto.randomUUID(),
-            name: 'Paulo Admin',
-            role: 'ADMIN'
-        };
-        const categoryOutput = await categoryUseCaseCreate.execute(categoryInput, categoryUserFake);
-        const aCategory = Category.with({
-            id: categoryOutput.category.id,
-            name: categoryOutput.category.name,
-            user_id: categoryOutput.category.user_id,
-        });
-        const input: CreateExerciseInputDto = { name: 'Run Marathon', categories: [aCategory] };
         const userAdminFake: CreateExerciseUserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        await exerciseUseCaseCreate.execute(input, userAdminFake);
-
+        const categoryOutput = await categoryUseCaseCreate.execute(categoryCreateMock, userAdminFake); 
+        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = await exerciseUseCaseCreate.execute(input, userAdminFake);
+        expect(output.exercise.id).toBeDefined();
+        expect(output.exercise.name).toBe('Yoga Practice');
+        expect(output.exercise.user_id).toBe(null);
+        expect(output.exercise.categories[0].name).toBe(categoryCreateMock.name);
+        
         const userFake: CreateExerciseUserInputDto = {
             id: crypto.randomUUID(),
-            name: 'Paulo User',
-            role: 'USER'
+            name: 'Paulo Admin',
+            role: 'ADMIN'
         };
         await expect(
             exerciseUseCaseCreate.execute(input, userFake)
         ).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
     });
 
-    it('não deve permitir nomes de exercicio duplicados com role ADMIN entre Exercícios oficiais', async () => {
-        const categoryInput = { name: 'Aerobics' };
-        const categoryUserFake: CreateCategoryUserDto = {
-            id: crypto.randomUUID(),
-            name: 'Paulo Admin',
-            role: 'ADMIN'
-        };
-        const categoryOutput = await categoryUseCaseCreate.execute(categoryInput, categoryUserFake);
-        const aCategory = Category.with({
-            id: categoryOutput.id,
-            name: categoryOutput.name,
-            user_id: categoryOutput.user_id,
-        });
-        const input: CreateExerciseInputDto = { name: 'High Intensity Interval Training', categories: [aCategory] };
+    it('não deve permitir nomes de exercicio duplicados com role USER entre as Exercícios criadas pelo usuário logado (mesmo USER)', async () => {
         const userFake: CreateExerciseUserInputDto = {
             id: crypto.randomUUID(),
+            name: 'Paulo User',
+            role: 'USER'
+        };
+        const categoryOutput = await categoryUseCaseCreate.execute(categoryCreateMock, userFake); 
+        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = await exerciseUseCaseCreate.execute(input, userFake);
+        expect(output.exercise.id).toBeDefined();
+        expect(output.exercise.name).toBe('Yoga Practice');
+        expect(output.exercise.user_id).toBe(userFake.id);
+        expect(output.exercise.categories[0].name).toBe(categoryCreateMock.name);
+        
+        await expect(
+            exerciseUseCaseCreate.execute(input, userFake)
+        ).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    });
+
+    it('não deve permitir nomes de exercicio duplicados com role ADMIN entre Exercícios oficiais', async () => {
+        const userAdminFake1: CreateExerciseUserInputDto = {
+            id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        await exerciseUseCaseCreate.execute(input, userFake);
+        const categoryOutput = await categoryUseCaseCreate.execute(categoryCreateMock, userAdminFake1); 
+        const input: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = await exerciseUseCaseCreate.execute(input, userAdminFake1);
+        expect(output.exercise.id).toBeDefined();
+        expect(output.exercise.name).toBe('Yoga Practice');
+        expect(output.exercise.user_id).toBe(null);
+        expect(output.exercise.categories[0].name).toBe(categoryCreateMock.name);
+
+        const userAdminFake2: CreateExerciseUserInputDto = {
+            id: crypto.randomUUID(),
+            name: 'Paulo Admin 2',
+            role: 'ADMIN'
+        };
 
         await expect(
-            exerciseUseCaseCreate.execute(input, userFake)
-        ).rejects.toThrow('Já existe um Exercício com este nomePor favor, tente outro nome!');
-    });*/
+            exerciseUseCaseCreate.execute(input, userAdminFake2)
+        ).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    });
+
+    it('não deve permitir nomes de exercicio duplicados com role ADMIN entre todas os Exercícios (oficiais e de outros usuários)', async () => {
+        const userFake: CreateExerciseUserInputDto = {
+            id: crypto.randomUUID(),
+            name: 'Paulo User',
+            role: 'USER'
+        };
+        const userAdminFake: CreateExerciseUserInputDto = {
+            id: crypto.randomUUID(),
+            name: 'Paulo Admin',
+            role: 'ADMIN'
+        };
+
+        const categoryOutput = await categoryUseCaseCreate.execute(categoryCreateMock, userAdminFake); 
+        const input1: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = await exerciseUseCaseCreate.execute(input1, userFake);
+        expect(output.exercise.id).toBeDefined();
+        expect(output.exercise.name).toBe('Yoga Practice');
+        expect(output.exercise.user_id).toBe(userFake.id);
+        expect(output.exercise.categories[0].name).toBe(categoryCreateMock.name);
+
+        const input2: CreateExerciseInputDto = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+
+        await expect(
+            exerciseUseCaseCreate.execute(input2, userAdminFake)
+        ).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    });
 
 });

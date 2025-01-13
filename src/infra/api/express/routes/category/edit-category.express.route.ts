@@ -2,11 +2,6 @@ import { Request, Response } from "express";
 import { EditCategoryInputDto, EditCategoryOutputDto, EditCategoryUsecase, EditCategoryUserDto } from "../../../../../usecases/category/edit-category/edit-category.usecase";
 import { HttpMethod, Route } from "../route";
 
-type EditCategoryResponseDto = 
-{
-    category: { id: string, name: string, user_id: string | null }
-};
-
 export class EditCategoryRoute implements Route {
 
     private constructor(
@@ -39,12 +34,9 @@ export class EditCategoryRoute implements Route {
                     role: 'USER'
                 };
                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userAdminFake;
-                const result: EditCategoryOutputDto = 
-                    await this.editCategoryService.execute(input, user);
-    
-                const output = this.presente(result);
-                response.status(201).json(output);
+                const user = userFake;
+                const result =  await this.editCategoryService.execute(input, user);
+                response.status(200).json({ ...result });
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });  
             };
@@ -57,11 +49,6 @@ export class EditCategoryRoute implements Route {
 
     public getMethod(): HttpMethod {
         return this.method;
-    };
-
-    private presente(input: EditCategoryOutputDto): EditCategoryResponseDto {
-        const response = { id: input.id, name: input.name, user_id: input.user_id };
-        return { category: response };
     };
 
 };

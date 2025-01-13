@@ -11,7 +11,7 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         return new ExerciseRepositoryPrisma(prismaClient);
     };
 
-    private async transformCategoryExercise(categoryExercise: { category: { id: string; name: string; user_id: string | null; }; exercise_id: string; category_id: string; }[]): Promise<Category[]> {
+    private async transformCategoryExerciseInCategory(categoryExercise: { exercise_id: string; category_id: string; category: { id: string; name: string; user_id: string | null; }; }[]): Promise<Category[]> {
         let resultCategories: Category[] = [];
         for (const t of categoryExercise) {
             const aCategory: Category = Category.with(t.category);
@@ -45,24 +45,27 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         return true;
     };
 
-    public async insert(input: Exercise): Promise<Exercise> {
+    public async insert(input: Exercise): Promise<Exercise | null> {
         const { id, name, user_id, categories } = input;
-        let categoryExercise: { exercise_id: string, category_id: string }[] = [];
+        const data = { id, name, user_id };
+
+        const exercise = await this.prismaClient.exercise.create({ data });
+
         for (const t of categories) {
-            categoryExercise.push({
-                exercise_id: id,
-                category_id: t.id
+            await this.prismaClient.exerciseCategory.create({
+                data: {
+                    exercise: { connect: { id: exercise.id }},
+                    category: { connect: { id: t.id }}
+                }
             });
         };
-        const data = { id, name, user_id };
-        const result = await this.prismaClient.exercise.create({
-            data: {
-                ...data,
-                categoryExercise: { createMany: { data: categoryExercise } }
-            },
-            include: { categoryExercise: { include: { category: true } } }
+
+        const result = await this.prismaClient.exercise.findUnique({
+            where: { id: exercise.id }, include: { categoryExercise: { include: { category: true } } }
         });
-        const resultCategories: Category[] = await this.transformCategoryExercise(result.categoryExercise);
+
+        if(result === null) return null;
+        const resultCategories: Category[] = await this.transformCategoryExerciseInCategory(result.categoryExercise);
         const output = Exercise.with({
             id: result.id,
             name: result.name,
@@ -72,26 +75,30 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         return output;
     };
 
-    public async update(input: Exercise): Promise<Exercise> {
+    public async update(input: Exercise): Promise<Exercise | null> {
         const { id, name, user_id, categories } = input;
-        let categoryExercise: { exercise_id: string, category_id: string }[] = [];
-        for (const t of categories) {
-            categoryExercise.push({
-                exercise_id: id,
-                category_id: t.id
-            });
-        };
         const data = { name };
         const where = { id, user_id };
-        await this.prismaClient.exerciseCategory.deleteMany({ where: { exercise_id: id } });
-        const result = await this.prismaClient.exercise.update({
-            data: {
-                ...data,
-                categoryExercise: { createMany: { data: categoryExercise } }
-            },
-            include: { categoryExercise: { include: { category: true } } }, where
+        
+        const exercise = await this.prismaClient.exercise.update({ data, where });
+        await this.prismaClient.exerciseCategory.deleteMany({ where: { exercise_id: exercise.id } });
+
+ 
+        for (const t of categories) {
+            await this.prismaClient.exerciseCategory.create({
+                data: {
+                    exercise: { connect: { id: exercise.id }},
+                    category: { connect: { id: t.id }}
+                }
+            });
+        };
+        
+        const result = await this.prismaClient.exercise.findUnique({
+            where: { id: exercise.id }, include: { categoryExercise: { include: { category: true } } }
         });
-        const resultCategories: Category[] = await this.transformCategoryExercise(result.categoryExercise);
+
+        if(result === null) return null;
+        const resultCategories: Category[] = await this.transformCategoryExerciseInCategory(result.categoryExercise);
         const output = Exercise.with({
             id: result.id,
             name: result.name,
@@ -108,7 +115,7 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         const whereSameAdminOrUser = [{ user_id: null }, { user_id }];
         const whereSameOnlyAdmin = { user_id: null };
         if (user_id) where.OR = whereSameAdminOrUser;
-        else where = { ...where, ...whereSameOnlyAdmin }
+        else where = { ...where, ...whereSameOnlyAdmin };
 
         const result = await this.prismaClient.exercise.findUnique({
             include: { categoryExercise: { include: { category: true } } },
@@ -117,7 +124,7 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
 
         if (!result) return result;
 
-        const resultCategories: Category[] = await this.transformCategoryExercise(result.categoryExercise);
+        const resultCategories: Category[] = await this.transformCategoryExerciseInCategory(result.categoryExercise);
         const output = Exercise.with({
             id: result.id,
             name: result.name,
@@ -138,7 +145,7 @@ export class ExerciseRepositoryPrisma implements ExerciseGateway {
         let output = [];
 
         for (const t of result) {
-            const resultCategories: Category[] = await this.transformCategoryExercise(t.categoryExercise);
+            const resultCategories: Category[] = await this.transformCategoryExerciseInCategory(t.categoryExercise);
             const exercise = Exercise.with({
                 id: t.id,
                 name: t.name,

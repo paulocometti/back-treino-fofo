@@ -54,13 +54,13 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
     public async update(input: Category): Promise<Category> {
         const { id, name, user_id } = input;
         const index = this.categories.findIndex((category) => category.id === id && category.user_id === user_id);
-        const newCategory = Category.with({
+        const output = Category.with({
             id: this.categories[index].id,
             name,
             user_id: this.categories[index].user_id,
         });
-        this.categories[index] = newCategory;
-        return newCategory;
+        this.categories[index] = output;
+        return output;
     };
 
     public async select(input: CategoryGatewaySelectInputDTO): Promise<Category | null> {

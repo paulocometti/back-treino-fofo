@@ -25,11 +25,16 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
 
     public async existsByName(input: ExerciseGatewayExistsxistsByNameInputDTO): Promise<boolean> {
         const { id, name, user_id } = input;
-        return this.exercises.some(exercise =>
-            exercise.name === name &&
-            (!id || exercise.id !== id) &&
-            (!user_id || exercise.user_id === user_id)
-        );
+        
+        for (const exercise of this.exercises) {
+            if (exercise.name !== name) continue;
+            if (id && exercise.id === id) continue;
+            if (user_id) {
+                if (exercise.user_id !== null && exercise.user_id !== user_id) continue;
+            };
+            return true;
+        };
+        return false;
     }
 
     public async findByIdAndUserId(input: ExerciseGatewayFindByIdAndUserIdInputDTO): Promise<boolean> {
@@ -37,71 +42,81 @@ export class ExerciseRepositoryInMemory implements ExerciseGateway {
         return this.exercises.some(exercise => exercise.id === id && exercise.user_id === user_id);
     }
 
-    public async insert(input: Exercise): Promise<Exercise> {
+    public async insert(input: Exercise): Promise<Exercise | null> {
         this.exercises.push(input);
 
-        input.categories.forEach(category => {
+        for(const category of input.categories){
+            if (!this.categories.find(c => c.id === category.id)) {
+                this.categories.push(category);
+            };
             this.exercisesCategories.push({
                 exercise_id: input.id,
                 category_id: category.id
             });
-            if (!this.categories.find(c => c.id === category.id)) {
-                this.categories.push(category);
-            }
-        });
+        };
 
         const categories = this.findCategoriesByExerciseId(input.id);
-        return Exercise.with({
-            id: input.id,
-            name: input.name,
-            user_id: input.user_id,
+        const output = Exercise.with({
+            id: this.exercises[this.exercises.length - 1].id,
+            name: this.exercises[this.exercises.length - 1].name,
+            user_id: this.exercises[this.exercises.length - 1].user_id,
             categories: categories
         });
+        return output;
     };
 
-    public async update(input: Exercise): Promise<Exercise> {
+    public async update(input: Exercise): Promise<Exercise | null> {
         const index = this.exercises.findIndex(ex => ex.id === input.id && ex.user_id === input.user_id);
-        if (index === -1) throw new Error("Exercise not found");
+        
+        if (index === -1) return null;
 
-        // Atualiza os dados do exercício
         this.exercises[index] = input;
 
-        // Remove relacionamentos antigos
         this.exercisesCategories = this.exercisesCategories.filter(ec => ec.exercise_id !== input.id);
 
         const categoriesInput = input.categories;
-        categoriesInput.forEach(category => {
+        
+        for(const category of categoriesInput){
+            if (!this.categories.find(c => c.id === category.id)) {
+                this.categories.push(category);
+            };
             this.exercisesCategories.push({
                 exercise_id: input.id,
                 category_id: category.id
             });
-            if (!this.categories.find(c => c.id === category.id)) {
-                this.categories.push(category);
-            }
-        });
+        };
 
         const categories = this.findCategoriesByExerciseId(input.id);
-        return Exercise.with({
+        const output = Exercise.with({
             id: input.id,
             name: input.name,
             user_id: input.user_id,
             categories: categories
         });
+        return output;
     }
 
     public async select(input: ExerciseGatewaySelectInputDTO): Promise<Exercise | null> {
         const { id, user_id } = input;
-        const foundExercise = this.exercises.find(ex =>
-            ex.id === id &&
-            (!user_id || ex.user_id === user_id)
-        );
-        if (!foundExercise) return null;
+        const exercise = this.exercises.find(t => {
+            if (t.id !== id) return false;
 
-        const categories = this.findCategoriesByExerciseId(foundExercise.id);
+            if (user_id) {
+                if (t.user_id !== null && t.user_id !== user_id) return false;
+            }
+            else {
+                if (t.user_id !== null) return false;
+            };
+
+            return true;
+        });
+        if (!exercise) return null;
+
+        const categories: Category[] = this.findCategoriesByExerciseId(exercise.id);
         return Exercise.with({
-            id: foundExercise.id,
-            name: foundExercise.name,
-            user_id: foundExercise.user_id,
+            id: exercise.id,
+            name: exercise.name,
+            user_id: exercise.user_id,
             categories: categories
         });
     }
