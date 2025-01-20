@@ -3,6 +3,16 @@ import { faker } from '@faker-js/faker';
 import { Category, CategoryEntityCreateProps } from "./category";
 import { z } from "zod";
 
+export function createCategory() {
+        const categoryName: string = faker.person.firstName('female');
+        const categoryUserIdAdmin: string | null = null;
+        const categoryData: CategoryEntityCreateProps = {
+            name: categoryName,
+            user_id: categoryUserIdAdmin
+        };
+        return Category.create(categoryData);
+    };
+
 describe("Category Entity Test ", () => {
     it("deve criar uma Categoria com nome e id válidos para um Usuario com role Admin", () => {
         const categoryName: string = faker.person.firstName('female');

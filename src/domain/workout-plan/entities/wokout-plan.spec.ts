@@ -3,13 +3,25 @@ import { faker } from '@faker-js/faker';
 import { z } from "zod";
 import { WorkoutPlan, WorkoutPlanEntityCreateProps } from "./workout-plan";
 
+export function createWorkoutPlan() {
+    const workoutPlanName: string = faker.person.firstName('female');
+    const workoutPlanUserIdAdmin: string | null = null;
+    const data: WorkoutPlanEntityCreateProps = {
+        name: workoutPlanName,
+        user_id: workoutPlanUserIdAdmin,
+        workoutDays: []
+    };
+    return WorkoutPlan.create(data);
+};
+
 describe("WorkoutPlan Entity Test ", () => {
     it("deve criar uma Workout Plan (Treino de Academia) com nome e id válidos para um Usuario com role Admin", () => {
         const workoutPlanName: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         const data: WorkoutPlanEntityCreateProps = {
             name: workoutPlanName,
-            user_id: workoutPlanUserIdAdmin
+            user_id: workoutPlanUserIdAdmin,
+            workoutDays: []
         };
         const workoutPlan = WorkoutPlan.create(data);
         expect(workoutPlan.id).toBeDefined();
@@ -26,7 +38,8 @@ describe("WorkoutPlan Entity Test ", () => {
         const workoutPlanUserIdUser: string | null = crypto.randomUUID();
         const data: WorkoutPlanEntityCreateProps = {
             name: workoutPlanName,
-            user_id: workoutPlanUserIdUser
+            user_id: workoutPlanUserIdUser,
+            workoutDays: []
         };
         const workoutPlan = WorkoutPlan.create(data);
         expect(workoutPlan.id).toBeDefined();
@@ -43,7 +56,8 @@ describe("WorkoutPlan Entity Test ", () => {
         const workoutPlanUserIdAdmin: string | null = null;
         const data: WorkoutPlanEntityCreateProps = {
             name,
-            user_id: workoutPlanUserIdAdmin
+            user_id: workoutPlanUserIdAdmin,
+            workoutDays: []
         };
         expect(() => {
             WorkoutPlan.create(data);
@@ -55,7 +69,8 @@ describe("WorkoutPlan Entity Test ", () => {
         const workoutPlanUserIdAdmin: string | null = null;
         const data: WorkoutPlanEntityCreateProps = {
             name: longName,
-            user_id: workoutPlanUserIdAdmin
+            user_id: workoutPlanUserIdAdmin,
+            workoutDays: []
         };
         expect(() => {
             WorkoutPlan.create(data);
@@ -66,7 +81,10 @@ describe("WorkoutPlan Entity Test ", () => {
         const id = faker.string.uuid();
         const name = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
-        const workoutPlan = WorkoutPlan.with({ id, name, user_id: workoutPlanUserIdAdmin });
+        const workoutPlan = WorkoutPlan.with({
+            id, name, user_id: workoutPlanUserIdAdmin,
+            workoutDays: []
+        });
 
         expect(workoutPlan).toBeInstanceOf(WorkoutPlan);
         expect(workoutPlan.id).toBe(id);
@@ -78,7 +96,10 @@ describe("WorkoutPlan Entity Test ", () => {
         const id = faker.string.uuid();
         const name = faker.person.firstName('female');
         const workoutPlanUserIdUser = crypto.randomUUID();
-        const workoutPlan = WorkoutPlan.with({ id, name, user_id: workoutPlanUserIdUser });
+        const workoutPlan = WorkoutPlan.with({
+            id, name, user_id: workoutPlanUserIdUser,
+            workoutDays: []
+        });
 
         expect(workoutPlan).toBeInstanceOf(WorkoutPlan);
         expect(workoutPlan.id).toBe(id);
@@ -91,7 +112,10 @@ describe("WorkoutPlan Entity Test ", () => {
         const workoutPlanName: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         expect(() => {
-            WorkoutPlan.with({ id, name: workoutPlanName, user_id: workoutPlanUserIdAdmin });
+            WorkoutPlan.with({
+                id, name: workoutPlanName, user_id: workoutPlanUserIdAdmin,
+                workoutDays: []
+            });
         }).toThrowError("Id inválido, não é um UUID.");
     });
 
@@ -99,7 +123,10 @@ describe("WorkoutPlan Entity Test ", () => {
         const id = faker.string.uuid();
         const workoutPlanUserIdAdmin: string | null = null;
         expect(() => {
-            WorkoutPlan.with({ id, name: "", user_id: workoutPlanUserIdAdmin });
+            WorkoutPlan.with({
+                id, name: "", user_id: workoutPlanUserIdAdmin,
+                workoutDays: []
+            });
         }).toThrowError("Digite um Nome corretamente!");
     });
 
@@ -108,7 +135,10 @@ describe("WorkoutPlan Entity Test ", () => {
         const workoutPlanName: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = "1";
         expect(() => {
-            WorkoutPlan.with({ id, name: workoutPlanName, user_id: workoutPlanUserIdAdmin });
+            WorkoutPlan.with({
+                id, name: workoutPlanName, user_id: workoutPlanUserIdAdmin,
+                workoutDays: []
+            });
         }).toThrowError("Selecione um Usuário válido!");
     });
 

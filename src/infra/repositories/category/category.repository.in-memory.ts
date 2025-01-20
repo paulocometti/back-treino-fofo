@@ -1,4 +1,4 @@
-import { CategoryGateway, CategoryGatewayExistsByNameInputDto, CategoryGatewayFindByIdAndUserIdInputDTO, CategoryGatewayFindByIdInputDTO, CategoryGatewayListInputDTO, CategoryGatewaySelectInputDTO } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway, CategoryGatewayExistsByNameInputDto, CategoryGatewayFindByIdAndUserIdInputDTO, CategoryGatewayFindByIdInputDTO, CategoryGatewayListInputDTO, CategoryGatewaySelectInputDTO } from "../../../domain/category/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
 
 export class CategoryRepositoryInMemory implements CategoryGateway {
@@ -41,7 +41,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return false;
     };
 
-    public async insert(input: Category): Promise<Category> {
+    public async insert(input: Category): Promise<Category | null> {
         this.categories.push(input);
         const output = Category.with({
             id: this.categories[this.categories.length - 1].id,
@@ -51,7 +51,7 @@ export class CategoryRepositoryInMemory implements CategoryGateway {
         return output;
     };
 
-    public async update(input: Category): Promise<Category> {
+    public async update(input: Category): Promise<Category | null> {
         const { id, name, user_id } = input;
         const index = this.categories.findIndex((category) => category.id === id && category.user_id === user_id);
         const output = Category.with({

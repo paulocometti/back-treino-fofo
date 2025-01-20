@@ -1,6 +1,6 @@
 import { Category } from "../../../domain/category/entities/category";
 import { User } from "../../../domain/user/entities/user";
-import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway } from "../../../domain/category/category.gateway";
 import { Usecase } from "../../usecase"
 
 export type EditCategoryInputDto = {
@@ -42,6 +42,7 @@ export class EditCategoryUsecase
         const test = await this.categoryGateway.existsByName(input);
         if (test === true) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
         const result = await this.categoryGateway.update(input);
+        if(result === null) throw new Error();
         const output = this.presentOutput(result);
         return output;
     };

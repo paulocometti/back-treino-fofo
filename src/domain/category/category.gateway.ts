@@ -1,4 +1,4 @@
-import { Category } from "../entities/category";
+import { Category } from "./entities/category";
 
 export interface CategoryGatewayExistsByNameInputDto {
     id?: string;
@@ -28,8 +28,8 @@ export interface CategoryGateway {
     existsByName(dto: CategoryGatewayExistsByNameInputDto): Promise<boolean>;
     findById(dto: CategoryGatewayFindByIdInputDTO): Promise<boolean>;
     findByIdAndUserId(dto: CategoryGatewayFindByIdAndUserIdInputDTO): Promise<boolean>;
-    insert(dto: Category): Promise<Category>;
-    update(dto: Category): Promise<Category>;
+    insert(dto: Category): Promise<Category | null>;
+    update(dto: Category): Promise<Category | null>;
     select(dto: CategoryGatewaySelectInputDTO): Promise<Category | null>;
     list(dto: CategoryGatewayListInputDTO): Promise<Category[]>;
 };

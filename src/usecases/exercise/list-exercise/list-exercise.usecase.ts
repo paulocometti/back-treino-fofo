@@ -1,6 +1,6 @@
 import { Exercise } from "../../../domain/exercise/entities/exercise";
 import { User } from "../../../domain/user/entities/user";
-import { ExerciseGateway, ExerciseGatewayListInputDTO } from "../../../domain/exercise/gateway/exercise.gateway";
+import { ExerciseGateway, ExerciseGatewayListInputDTO } from "../../../domain/exercise/exercise.gateway";
 import { Usecase } from "../../usecase";
 
 type ListExerciseInputDto = void;

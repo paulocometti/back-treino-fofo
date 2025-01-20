@@ -7,8 +7,10 @@ import { CreateExerciseRoute } from "./infra/api/express/routes/exercise/create-
 import { EditExerciseRoute } from "./infra/api/express/routes/exercise/edit-exercise.express.route";
 import { ListExerciseRoute } from "./infra/api/express/routes/exercise/list-exercise.express.route";
 import { SelectExerciseRoute } from "./infra/api/express/routes/exercise/select-exercise.express.route";
+import { CreateWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/create-workout-plan.express.route";
 import { CategoryRepositoryPrisma } from "./infra/repositories/category/category.repository.prisma";
 import { ExerciseRepositoryPrisma } from "./infra/repositories/exercise/exercise.repository.prisma";
+import { WorkoutPlanRepositoryPrisma } from "./infra/repositories/workout-plan/workout-plan.repository.prisma";
 import { prisma } from "./package/prisma/prisma";
 import { CreateCategoryUsecase } from "./usecases/category/create-category/create-category.usecase";
 import { EditCategoryUsecase } from "./usecases/category/edit-category/edit-category.usecase";
@@ -18,6 +20,7 @@ import { CreateExerciseUsecase } from "./usecases/exercise/create-exercise/creat
 import { EditExerciseUsecase } from "./usecases/exercise/edit-exercise/edit-exercise.usecase";
 import { ListExerciseUsecase } from "./usecases/exercise/list-exercise/list-exercise.usecase";
 import { SelectExerciseUsecase } from "./usecases/exercise/select-exercise/select-exercise.usecase";
+import { CreateWorkoutPlanUsecase } from "./usecases/workout-plan/create-workout-plan/create-workout-plan.usecase";
 
 function main(){
     //category
@@ -46,12 +49,22 @@ function main(){
     const listExerciseRoute = ListExerciseRoute.create(listExerciseUseCase);
     const getExerciseRoute = SelectExerciseRoute.create(getExerciseUseCase);
 
-    const allCategoriesRoutes = [createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute];
-    const allExercisesRoutes = [createExerciseRoute];
+    //workout-plan
+    const workoutPlanRepository = WorkoutPlanRepositoryPrisma.create(prisma);
+
+    const createWorkoutPlanUsecase = CreateWorkoutPlanUsecase.create(workoutPlanRepository);
+
+    const createWorkoutPlanRoute = CreateWorkoutPlanRoute.create(createWorkoutPlanUsecase);
+
+    //const allCategoriesRoutes = [createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute];
+    //const allExercisesRoutes = [createExerciseRoute];
     //const allRoutes = allCategoriesRoutes.concat(allExercisesRoutes);
+
     const api = ApiExpress.create([
         createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute, 
-        createExerciseRoute, editExerciseRoute, listExerciseRoute, getExerciseRoute]);
+        createExerciseRoute, editExerciseRoute, listExerciseRoute, getExerciseRoute,
+        createWorkoutPlanRoute
+    ]);
     const port = 8080;
     api.start(port);
 };

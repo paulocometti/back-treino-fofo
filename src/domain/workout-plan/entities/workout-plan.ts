@@ -1,12 +1,18 @@
+import { WorkoutDay } from "../../workout-day/entities/workout-day";
+
 export type WorkoutPlanEntityProps = {
     id: string;
     name: string;
     user_id: string | null;
+
+    workoutDays: WorkoutDay[];
 };
 
 export type WorkoutPlanEntityCreateProps = {
     name: string;
     user_id: string | null;
+
+    workoutDays: WorkoutDay[];
 };
 
 export class WorkoutPlan {
@@ -41,6 +47,10 @@ export class WorkoutPlan {
         return this.props.user_id;
     };
 
+    public get workoutDays() {
+        return this.props.workoutDays;
+    };
+
     private validate() {
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(this.props.id))
@@ -58,6 +68,9 @@ export class WorkoutPlan {
 
         if (this.props.user_id && !uuidRegex.test(this.props.user_id))
             throw new Error("Selecione um Usuário válido!");
+
+        if (this.props.workoutDays && !Array.isArray(this.props.workoutDays))
+            throw new Error("Selecione um Dia de Treino válido!");
     };
 
 };

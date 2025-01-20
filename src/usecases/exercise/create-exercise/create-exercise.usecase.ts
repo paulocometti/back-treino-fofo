@@ -1,8 +1,8 @@
 import { Exercise } from "../../../domain/exercise/entities/exercise";
 import { User } from "../../../domain/user/entities/user";
-import { ExerciseGateway } from "../../../domain/exercise/gateway/exercise.gateway";
+import { ExerciseGateway } from "../../../domain/exercise/exercise.gateway";
 import { Usecase } from "../../usecase"
-import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway } from "../../../domain/category/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
 
 export type CreateExerciseInputDto = {

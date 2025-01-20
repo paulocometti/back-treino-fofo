@@ -1,6 +1,6 @@
 import { Category } from "../../../domain/category/entities/category";
 import { User } from "../../../domain/user/entities/user";
-import { CategoryGateway } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway } from "../../../domain/category/category.gateway";
 import { Usecase } from "../../usecase"
 
 export type CreateCategoryUsecaseInputDto = {
@@ -39,6 +39,7 @@ export class CreateCategoryUsecase
         if (test === true) throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
         const aCategory = Category.create({ name: categoryName, user_id: userIdCondition });
         const result = await this.categoryGateway.insert(aCategory);
+        if(result === null) throw new Error();
         const output = this.presentOutput(result);
         return output;
     };

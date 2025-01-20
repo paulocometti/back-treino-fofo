@@ -2,29 +2,25 @@ import { describe, it, expect } from "vitest";
 import { faker } from '@faker-js/faker';
 import { Exercise, ExerciseEntityCreateProps } from "../../exercise/entities/exercise";
 import { z } from "zod";
-import { Category, CategoryEntityCreateProps } from "../../category/entities/category";
+import { createCategory } from "../../category/entities/categoria.spec";
+
+export function createExercise() {
+    const exerciseName: string = faker.person.firstName('female');
+    const exerciseUserIdAdmin: string | null = null;
+    const category = createCategory();
+    const exerciseData: ExerciseEntityCreateProps = {
+        name: exerciseName,
+        user_id: exerciseUserIdAdmin,
+        categories: [category]
+    };
+    return Exercise.create(exerciseData);
+};
 
 describe("Exercise Entity Test ", () => {
-    function createCategory() {
-        const categoryName: string = faker.person.firstName('female');
-        const categoryUserIdAdmin: string | null = null;
-        const categoryData: CategoryEntityCreateProps = {
-            name: categoryName,
-            user_id: categoryUserIdAdmin
-        };
-        return Category.create(categoryData);
-    }
-
     it("deve criar um Exercicio com nome e id válidos para um Usuario com role Admin", () => {
-        const categoryName: string = faker.person.firstName('female');
-        const categoryUserIdAdmin: string | null = null;
-        const categoryData: CategoryEntityCreateProps = {
-            name: categoryName,
-            user_id: categoryUserIdAdmin
-        };
-        const category = Category.create(categoryData);
         const exerciseName: string = faker.person.firstName('female');
         const exerciseUserIdAdmin: string | null = null;
+        const category = createCategory();
         const exerciseData: ExerciseEntityCreateProps = {
             name: exerciseName,
             user_id: exerciseUserIdAdmin,
@@ -61,7 +57,6 @@ describe("Exercise Entity Test ", () => {
 
     it("deve criar um Exercicio com nome, category e id válidos para um Usuario com role User", () => {
         const exerciseName: string = faker.person.firstName('female');
-        const categoryIdRandom: string | null = crypto.randomUUID();
         const exerciseUserIdUser: string | null = crypto.randomUUID();
         const category = createCategory();
         const data: ExerciseEntityCreateProps = {

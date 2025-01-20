@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CategoryGateway, CategoryGatewayExistsByNameInputDto, CategoryGatewayFindByIdAndUserIdInputDTO, CategoryGatewayFindByIdInputDTO, CategoryGatewayListInputDTO, CategoryGatewaySelectInputDTO } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway, CategoryGatewayExistsByNameInputDto, CategoryGatewayFindByIdAndUserIdInputDTO, CategoryGatewayFindByIdInputDTO, CategoryGatewayListInputDTO, CategoryGatewaySelectInputDTO } from "../../../domain/category/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
 
 export class CategoryRepositoryPrisma implements CategoryGateway {
@@ -43,7 +43,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
         return true;
     };
 
-    public async insert(input: Category): Promise<Category> {
+    public async insert(input: Category): Promise<Category | null> {
         const { id, name, user_id } = input;
         const data = { id, name, user_id };
         const result = await this.prismaClient.category.create({ data });
@@ -52,10 +52,11 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
             name: result.name,
             user_id: result.user_id
         });
+        if(output === null) return null;
         return output;
     };
 
-    public async update(input: Category): Promise<Category> {
+    public async update(input: Category): Promise<Category | null> {
         const { id, name, user_id } = input;
         const data = { name };
         const where = { id, user_id };
@@ -65,6 +66,7 @@ export class CategoryRepositoryPrisma implements CategoryGateway {
             name: result.name,
             user_id: result.user_id
         });
+        if(output === null) return null;
         return output;
     };
 

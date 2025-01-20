@@ -1,6 +1,6 @@
 import { Category } from "../../../domain/category/entities/category";
 import { User } from "../../../domain/user/entities/user";
-import { CategoryGateway, CategoryGatewaySelectInputDTO } from "../../../domain/category/gateway/category.gateway";
+import { CategoryGateway, CategoryGatewaySelectInputDTO } from "../../../domain/category/category.gateway";
 import { Usecase } from "../../usecase";
 
 export type SelectCategoryInputDto = {

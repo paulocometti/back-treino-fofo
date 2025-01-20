@@ -1,4 +1,4 @@
-import { Exercise } from "../entities/exercise";
+import { Exercise } from "./entities/exercise";
 
 export interface ExerciseGatewayExistsxistsByNameInputDTO {
     id?: string;
