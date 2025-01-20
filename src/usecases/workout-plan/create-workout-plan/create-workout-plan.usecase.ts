@@ -25,6 +25,7 @@ export type CreateWorkoutPlanUsecaseUserInputDto = {
     role: 'USER' | 'ADMIN'
 };
 
+// consertar exercise?
 export type CreateWorkoutPlanUsecaseOutputDto = {
     workoutPlan: {
         id: string;
@@ -36,7 +37,11 @@ export type CreateWorkoutPlanUsecaseOutputDto = {
                 sets: number,
                 reps: number,
                 observation: string | null,
-                exercise_id: string
+                exercise_id: string,
+                exercise?: {
+                    name: string,
+                    categories: string[]
+                }
             }[]
         }[];
     }

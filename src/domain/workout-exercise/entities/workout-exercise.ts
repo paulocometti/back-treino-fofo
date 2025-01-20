@@ -5,7 +5,10 @@ export type WorkoutExerciseEntityProps = {
     observation: string | null;
 
     exercise_id: string;
-    exercise?: string;
+    exercise?: {
+        name: string,
+        categories: string[]
+    };
     //workout_day_id: string;
 };
 
@@ -15,7 +18,10 @@ export type WorkoutExerciseEntityCreateProps = {
     observation: string | null;
 
     exercise_id: string;
-    exercise?: string;
+    exercise?: {
+        name: string,
+        categories: string[]
+    };
     //workout_day_id: string;
 };
 

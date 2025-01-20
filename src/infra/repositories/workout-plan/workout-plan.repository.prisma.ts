@@ -25,11 +25,11 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
                 data: {
                     id: workoutDayId,
                     name: workoutDayName,
-                    workoutPlan: { connect: { id: workoutPlan.id }}
+                    workoutPlan: { connect: { id: workoutPlan.id } }
                 }
             });
 
-            for(const th of workoutExercises){
+            for (const th of workoutExercises) {
                 const { id: workoutExercideId, sets, reps, observation, exercise_id } = th;
                 await this.prismaClient.workoutExercise.create({
                     data: {
@@ -37,31 +37,59 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
                         sets,
                         reps,
                         observation,
-                        exercise: { connect: { id: exercise_id }},
-                        workoutDay: { connect: { id: workoutDay.id }}
+                        exercise: { connect: { id: exercise_id } },
+                        workoutDay: { connect: { id: workoutDay.id } }
                     }
                 });
             };
         };
 
         const result = await this.prismaClient.workoutPlan.findUnique({
-            where: { id: workoutPlan.id }, include: { workoutDay: { include: { workoutExercise: { include: { exercise: true }} } } }
+            where: { id: workoutPlan.id }, 
+            include: { 
+                workoutDay: { 
+                    include: { 
+                        workoutExercise: { 
+                            include: { 
+                                exercise: { 
+                                    include: { 
+                                        categoryExercise: { 
+                                            include: { 
+                                                category: { 
+                                                    select: { name: true } 
+                                                } 
+                                            } 
+                                        } 
+                                    } 
+                                } 
+                            } 
+                        } 
+                    } 
+                } 
+            }
         });
 
-        if(result === null) return null;
+        if (result === null) return null;
 
         let resultWorkoutDays: WorkoutDay[] = [];
         let resultWorkoutExercises: WorkoutExercise[] = [];
-        for(const t of result.workoutDay){
+        let resultCategoriesOfWorkoutExercises: string[] = [];
+        for (const t of result.workoutDay) {
 
-            for(const th of t.workoutExercise){
+            for (const th of t.workoutExercise) {
+                for(const tha of th.exercise.categoryExercise){
+                    resultCategoriesOfWorkoutExercises.push(tha.category.name);
+                };
                 const wExercise = WorkoutExercise.with({
                     id: th.id,
                     sets: th.sets,
                     reps: th.reps,
                     observation: th.observation,
                     exercise_id: th.exercise_id,
-                    exercise: th.exercise.name
+                    exercise: {
+                        name: th.exercise.name,
+                        categories: resultCategoriesOfWorkoutExercises
+                    } 
                 });
                 resultWorkoutExercises.push(wExercise);
             };
