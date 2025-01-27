@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ListExerciseOutputDto, ListExerciseUsecase, ListExerciseUserDto } from "../../../../../usecases/exercise/list-exercise/list-exercise.usecase";
 import { HttpMethod, Route } from "../route";
+import { jwtDecode } from "jwt-decode";
 
 export type ListExerciseResponseDto = {
     exercises: {
@@ -26,20 +27,14 @@ export class ListExerciseRoute implements Route {
     };
 
     public getHandler() {
-        return async (_: Request, response: Response) => {
+        return async (request: Request, response: Response) => {
             try {
-                const userAdminFake: ListExerciseUserDto = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake: ListExerciseUserDto = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userAdminFake;
+                const auth: string = request.headers.authorization as string;
+                const decodedUser: { sid: string, given_name: string, resource_access: [] } = jwtDecode<{ sid: string, given_name: string, resource_access: [] }>(auth.replace(`Bearer `, ``));
+                const { sid: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
+                console.log("userAcessos >> ", userAcessos);
+                const user: ListExerciseUserDto = { id: userId, name: userNome, role: 'ADMIN' };
+                console.log("user >> ", user);
                 const result = await this.listExerciseSerivce.execute(undefined, user);
                 response.status(200).json(result).send();
             } catch (error: any) {

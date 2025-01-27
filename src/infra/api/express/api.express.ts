@@ -1,19 +1,22 @@
 import { Api } from "../api";
-import express, { Express } from 'express';
+import express, { Express, RequestHandler } from 'express';
 import { Route } from "./routes/route";
 
 export class ApiExpress implements Api {
     
     private app: Express;
 
-    private constructor(routes: Route[]) {
+    private constructor(routes: Route[], middlewares: any[] = []) {
         this.app = express();
         this.app.use(express.json());
+        middlewares.forEach(middleware => {
+            this.app.use(middleware);
+        });
         this.addRoutes(routes);
     };
 
-    public static create(routes: Route[]){
-        return new ApiExpress(routes);
+    public static create(routes: Route[], middlewares: any[] = []){
+        return new ApiExpress(routes, middlewares);
     };
 
     private addRoutes(routes: Route[]){

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { WorkoutPlan } from "../../../domain/workout-plan/entities/workout-plan";
-import { WorkoutPlanGateway, WorkoutPlanGatewaySelectInputDTO } from "../../../domain/workout-plan/workout-plan.gateway";
+import { WorkoutPlanGateway, WorkoutPlanGatewayListInputDTO, WorkoutPlanGatewaySelectInputDTO } from "../../../domain/workout-plan/workout-plan.gateway";
 import { WorkoutExercise } from "../../../domain/workout-exercise/entities/workout-exercise";
 import { WorkoutDay } from "../../../domain/workout-day/entities/workout-day";
 
@@ -45,27 +45,27 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         };
 
         const result = await this.prismaClient.workoutPlan.findUnique({
-            where: { id: workoutPlan.id }, 
-            include: { 
-                workoutDay: { 
-                    include: { 
-                        workoutExercise: { 
-                            include: { 
-                                exercise: { 
-                                    include: { 
-                                        categoryExercise: { 
-                                            include: { 
-                                                category: { 
-                                                    select: { name: true } 
-                                                } 
-                                            } 
-                                        } 
-                                    } 
-                                } 
-                            } 
-                        } 
-                    } 
-                } 
+            where: { id: workoutPlan.id },
+            include: {
+                workoutDay: {
+                    include: {
+                        workoutExercise: {
+                            include: {
+                                exercise: {
+                                    include: {
+                                        categoryExercise: {
+                                            include: {
+                                                category: {
+                                                    select: { name: true }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -77,7 +77,7 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         for (const t of result.workoutDay) {
 
             for (const th of t.workoutExercise) {
-                for(const tha of th.exercise.categoryExercise){
+                for (const tha of th.exercise.categoryExercise) {
                     resultCategoriesOfWorkoutExercises.push(tha.category.name);
                 };
                 const wExercise = WorkoutExercise.with({
@@ -89,7 +89,7 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
                     exercise: {
                         name: th.exercise.name,
                         categories: resultCategoriesOfWorkoutExercises
-                    } 
+                    }
                 });
                 resultWorkoutExercises.push(wExercise);
             };
@@ -112,4 +112,150 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         return output;
     };
 
+    public async select(input: WorkoutPlanGatewaySelectInputDTO): Promise<WorkoutPlan | null> {
+        const { id: workoutPlanId, user_id: userId } = input;
+        const whereUserId = (userId) ? { user_id: userId } : {};
+
+        const result = await this.prismaClient.workoutPlan.findUnique({
+            where: { id: workoutPlanId, ...whereUserId },
+            include: {
+                workoutDay: {
+                    include: {
+                        workoutExercise: {
+                            include: {
+                                exercise: {
+                                    include: {
+                                        categoryExercise: {
+                                            include: {
+                                                category: {
+                                                    select: { name: true }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (result === null) return null;
+
+        let resultWorkoutDays: WorkoutDay[] = [];
+        let resultWorkoutExercises: WorkoutExercise[] = [];
+        let resultCategoriesOfWorkoutExercises: string[] = [];
+        for (const t of result.workoutDay) {
+
+            for (const th of t.workoutExercise) {
+                for (const tha of th.exercise.categoryExercise) {
+                    resultCategoriesOfWorkoutExercises.push(tha.category.name);
+                };
+                const wExercise = WorkoutExercise.with({
+                    id: th.id,
+                    sets: th.sets,
+                    reps: th.reps,
+                    observation: th.observation,
+                    exercise_id: th.exercise_id,
+                    exercise: {
+                        name: th.exercise.name,
+                        categories: resultCategoriesOfWorkoutExercises
+                    }
+                });
+                resultWorkoutExercises.push(wExercise);
+            };
+
+            const wDay = WorkoutDay.with({
+                id: t.id,
+                name: t.name,
+                workoutExercises: resultWorkoutExercises
+            });
+            resultWorkoutDays.push(wDay);
+        };
+
+        const output = WorkoutPlan.with({
+            id: result.id,
+            name: result.name,
+            user_id: result.user_id,
+            workoutDays: resultWorkoutDays
+        });
+
+        return output;
+    };
+
+    public async list(input: WorkoutPlanGatewayListInputDTO): Promise<WorkoutPlan[]> {
+        const { user_id: userId } = input;
+        const whereUserId = (userId) ? { OR: [{ user_id: userId }, { user_id: null }] } : { user_id: null };
+
+        const result = await this.prismaClient.workoutPlan.findMany({
+            where: whereUserId,
+            include: {
+                workoutDay: {
+                    include: {
+                        workoutExercise: {
+                            include: {
+                                exercise: {
+                                    include: {
+                                        categoryExercise: {
+                                            include: {
+                                                category: {
+                                                    select: { name: true }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        let output = [];
+        for (const workout of result) {
+            let resultWorkoutDays: WorkoutDay[] = [];
+            let resultWorkoutExercises: WorkoutExercise[] = [];
+            let resultCategoriesOfWorkoutExercises: string[] = [];
+            for (const t of workout.workoutDay) {
+
+                for (const th of t.workoutExercise) {
+                    for (const tha of th.exercise.categoryExercise) {
+                        resultCategoriesOfWorkoutExercises.push(tha.category.name);
+                    };
+                    const wExercise = WorkoutExercise.with({
+                        id: th.id,
+                        sets: th.sets,
+                        reps: th.reps,
+                        observation: th.observation,
+                        exercise_id: th.exercise_id,
+                        exercise: {
+                            name: th.exercise.name,
+                            categories: resultCategoriesOfWorkoutExercises
+                        }
+                    });
+                    resultWorkoutExercises.push(wExercise);
+                };
+
+                const wDay = WorkoutDay.with({
+                    id: t.id,
+                    name: t.name,
+                    workoutExercises: resultWorkoutExercises
+                });
+                resultWorkoutDays.push(wDay);
+            };
+
+            const workoutPlan = WorkoutPlan.with({
+                id: workout.id,
+                name: workout.name,
+                user_id: workout.user_id,
+                workoutDays: resultWorkoutDays
+            });
+            output.push(workoutPlan);
+        };
+
+
+        return output;
+    };
 };

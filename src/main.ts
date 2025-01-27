@@ -7,10 +7,15 @@ import { CreateExerciseRoute } from "./infra/api/express/routes/exercise/create-
 import { EditExerciseRoute } from "./infra/api/express/routes/exercise/edit-exercise.express.route";
 import { ListExerciseRoute } from "./infra/api/express/routes/exercise/list-exercise.express.route";
 import { SelectExerciseRoute } from "./infra/api/express/routes/exercise/select-exercise.express.route";
+import { LoginKeycloakRoute } from "./infra/api/express/routes/keycloak/login-keycloak.express.route";
 import { CreateWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/create-workout-plan.express.route";
+import { ListWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/list-workout-plan.express.route";
+import { SelectWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/select-workout-plan.express.route";
 import { CategoryRepositoryPrisma } from "./infra/repositories/category/category.repository.prisma";
 import { ExerciseRepositoryPrisma } from "./infra/repositories/exercise/exercise.repository.prisma";
+import { KeycloakRepository } from "./infra/repositories/keycloak/keycloak.repository";
 import { WorkoutPlanRepositoryPrisma } from "./infra/repositories/workout-plan/workout-plan.repository.prisma";
+import { keycloakAuth } from "./middleware/keycloakAuth.middleware";
 import { prisma } from "./package/prisma/prisma";
 import { CreateCategoryUsecase } from "./usecases/category/create-category/create-category.usecase";
 import { EditCategoryUsecase } from "./usecases/category/edit-category/edit-category.usecase";
@@ -20,9 +25,12 @@ import { CreateExerciseUsecase } from "./usecases/exercise/create-exercise/creat
 import { EditExerciseUsecase } from "./usecases/exercise/edit-exercise/edit-exercise.usecase";
 import { ListExerciseUsecase } from "./usecases/exercise/list-exercise/list-exercise.usecase";
 import { SelectExerciseUsecase } from "./usecases/exercise/select-exercise/select-exercise.usecase";
+import { LoginKeycloakUsecase } from "./usecases/keycloak/login-keycloak/login-keycloak.usecase";
 import { CreateWorkoutPlanUsecase } from "./usecases/workout-plan/create-workout-plan/create-workout-plan.usecase";
+import { ListWorkoutPlanUsecase } from "./usecases/workout-plan/list-workout-plan/list-workout-plan.usecase";
+import { SelectWorkoutPlanUsecase } from "./usecases/workout-plan/select-workout-plan/select-workout-plan.usecase";
 
-function main(){
+function main() {
     //category
     const categoryRepository = CategoryRepositoryPrisma.create(prisma);
 
@@ -53,19 +61,35 @@ function main(){
     const workoutPlanRepository = WorkoutPlanRepositoryPrisma.create(prisma);
 
     const createWorkoutPlanUsecase = CreateWorkoutPlanUsecase.create(workoutPlanRepository);
+    const listWorkoutPlanUsecase = ListWorkoutPlanUsecase.create(workoutPlanRepository);
+    const getWorkoutPlanUsecase = SelectWorkoutPlanUsecase.create(workoutPlanRepository);
 
     const createWorkoutPlanRoute = CreateWorkoutPlanRoute.create(createWorkoutPlanUsecase);
+    const listWorkoutPlanRoute = ListWorkoutPlanRoute.create(listWorkoutPlanUsecase);
+    const getWorkoutPlanRoute = SelectWorkoutPlanRoute.create(getWorkoutPlanUsecase);
+
+    //keycloak
+    const keycloakRepository = KeycloakRepository.create();
+
+    const loginKeycloakUsecase = LoginKeycloakUsecase.create(keycloakRepository);
+    const loginKeycloakRoute = LoginKeycloakRoute.create(loginKeycloakUsecase);
 
     //const allCategoriesRoutes = [createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute];
     //const allExercisesRoutes = [createExerciseRoute];
     //const allRoutes = allCategoriesRoutes.concat(allExercisesRoutes);
 
-    const api = ApiExpress.create([
-        createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute, 
-        createExerciseRoute, editExerciseRoute, listExerciseRoute, getExerciseRoute,
-        createWorkoutPlanRoute
-    ]);
-    const port = 8080;
+    const api = ApiExpress.create(
+        [
+            createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute,
+            createExerciseRoute, editExerciseRoute, listExerciseRoute, getExerciseRoute,
+            createWorkoutPlanRoute, listWorkoutPlanRoute, getWorkoutPlanRoute,
+            loginKeycloakRoute
+        ],
+        [
+            keycloakAuth,
+        ]
+    );
+    const port: number = 8080;
     api.start(port);
 };
 

@@ -1,6 +1,6 @@
 import { Exercise } from "../../../domain/exercise/entities/exercise";
 import { User } from "../../../domain/user/entities/user";
-import { ExerciseGateway, ExerciseGatewaySelectInputDTO } from "../../../domain/exercise/exercise.gateway";
+import { ExerciseGateway } from "../../../domain/exercise/exercise.gateway";
 import { Usecase } from "../../usecase";
 
 export type SelectExerciseInputDto = {
@@ -38,7 +38,7 @@ export class SelectExerciseUsecase implements Usecase<SelectExerciseInputDto, Se
         const { id } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
-        const input: ExerciseGatewaySelectInputDTO = { id, user_id: userIdCondition };
+        const input = { id, user_id: userIdCondition };
         const aExercise = await this.exerciseGateway.select(input);
         if (aExercise === null) throw new Error('Nada encontrado.');
         const output = this.presentOutput(aExercise);

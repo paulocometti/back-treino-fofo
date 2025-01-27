@@ -12,6 +12,6 @@ export interface WorkoutPlanGatewayListInputDTO {
 export interface WorkoutPlanGateway {
     insert(dto: WorkoutPlan): Promise<WorkoutPlan | null>;
     //update(dto: WorkoutPlan): Promise<WorkoutPlan | null>;
-    //select(dto: WorkoutPlanGatewaySelectInputDTO): Promise<WorkoutPlan | null>;
-    //list(dto: WorkoutPlanGatewayListInputDTO): Promise<WorkoutPlan[]>;
+    select(dto: WorkoutPlanGatewaySelectInputDTO): Promise<WorkoutPlan | null>;
+    list(dto: WorkoutPlanGatewayListInputDTO): Promise<WorkoutPlan[]>;
 };
