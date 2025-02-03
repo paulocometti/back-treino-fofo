@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from './create-category.usecase';
+import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase } from './create-category.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { faker } from '@faker-js/faker';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let useCaseCreate: CreateCategoryUsecase;
@@ -16,7 +17,7 @@ beforeEach(() => {
 describe('CreateCategoryUsecase', () => {
   it('deve criar uma categoria com sucesso com role ADMIN', async () => {
     const input: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
@@ -30,7 +31,7 @@ describe('CreateCategoryUsecase', () => {
 
   it('deve criar uma categoria com sucesso com role USER', async () => {
     const input: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -44,12 +45,12 @@ describe('CreateCategoryUsecase', () => {
 
   it('deve criar uma categoria com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
     const input: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userFake1: CreateCategoryUsecaseUserDto = {
+    const userFake1: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
     };
-    const userFake2: CreateCategoryUsecaseUserDto = {
+    const userFake2: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User 2',
       role: 'USER'
@@ -69,12 +70,12 @@ describe('CreateCategoryUsecase', () => {
 
   it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias oficiais', async () => {
     const input = { name: 'Eletrônicos' };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -88,7 +89,7 @@ describe('CreateCategoryUsecase', () => {
 
   it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias criadas pelo usuário logado (mesmo USER)', async () => {
     const input = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo',
       role: 'USER'
@@ -102,7 +103,7 @@ describe('CreateCategoryUsecase', () => {
 
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre Categorias oficiais', async () => {
     const input = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo',
       role: 'ADMIN'
@@ -116,12 +117,12 @@ describe('CreateCategoryUsecase', () => {
 
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre todas as Categorias (oficiais e de outros usuários)', async () => {
     const input = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
     };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'

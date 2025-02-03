@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SelectCategoryRoute = void 0;
 const route_1 = require("../route");
+const keycloakAuth_middleware_1 = require("../../../../../middleware/keycloakAuth.middleware");
 class SelectCategoryRoute {
     constructor(path, method, selectCategoryService) {
         this.path = path;
@@ -27,21 +28,10 @@ class SelectCategoryRoute {
             try {
                 const { id } = request.params;
                 const input = { id };
-                const userAdminFake = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth = request.headers.authorization;
+                const user = (0, keycloakAuth_middleware_1.extractUserFromAuth)(auth);
                 const result = yield this.selectCategoryService.execute(input, user);
-                const output = this.present(result);
-                response.status(200).json(output).send();
+                response.status(200).json(result).send();
             }
             catch (error) {
                 response.status(500).json({ message: (error === null || error === void 0 ? void 0 : error.message) || "Error Interno do Servidor." });
@@ -56,16 +46,6 @@ class SelectCategoryRoute {
     ;
     getMethod() {
         return this.method;
-    }
-    ;
-    present(input) {
-        const category = input.category;
-        const response = {
-            id: category.id,
-            name: category.name,
-            user_id: category.user_id
-        };
-        return { category: response };
     }
     ;
 }

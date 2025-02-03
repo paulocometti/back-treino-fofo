@@ -4,6 +4,7 @@ import { ExerciseGateway } from "../../../domain/exercise/exercise.gateway";
 import { Usecase } from "../../usecase"
 import { CategoryGateway } from "../../../domain/category/category.gateway";
 import { Category } from "../../../domain/category/entities/category";
+import { UserInputDto } from "../../../middleware/keycloakAuth.middleware";
 
 export type CreateExerciseInputDto = {
     name: string;
@@ -13,12 +14,6 @@ export type CreateExerciseInputDto = {
         name: string;
         user_id: string | null;
     }[];
-};
-
-export type CreateExerciseUserInputDto = {
-    id: string,
-    name: string,
-    role: 'USER' | 'ADMIN'
 };
 
 export type CreateExerciseOutputDto = {
@@ -35,7 +30,7 @@ export type CreateExerciseOutputDto = {
 };
 
 export class CreateExerciseUsecase
-    implements Usecase<CreateExerciseInputDto, CreateExerciseUserInputDto, CreateExerciseOutputDto> {
+    implements Usecase<CreateExerciseInputDto, UserInputDto, CreateExerciseOutputDto> {
 
     private constructor(private readonly categoryGateway: CategoryGateway, private readonly exerciseGateway: ExerciseGateway,) { }
 
@@ -43,7 +38,7 @@ export class CreateExerciseUsecase
         return new CreateExerciseUsecase(categoryGateway, exerciseGateway);
     };
 
-    public async execute(req: CreateExerciseInputDto, user: CreateExerciseUserInputDto): Promise<CreateExerciseOutputDto> {
+    public async execute(req: CreateExerciseInputDto, user: UserInputDto): Promise<CreateExerciseOutputDto> {
         const { name: exerciseName, categories } = req;
         let aCategories: Category[] = [];
         const { id: userId, role: userRole } = User.with(user);

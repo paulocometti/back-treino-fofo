@@ -20,7 +20,7 @@ class ExerciseRepositoryPrisma {
         return new ExerciseRepositoryPrisma(prismaClient);
     }
     ;
-    transformCategoryExercise(categoryExercise) {
+    transformCategoryExerciseInCategory(categoryExercise) {
         return __awaiter(this, void 0, void 0, function* () {
             let resultCategories = [];
             for (const t of categoryExercise) {
@@ -61,23 +61,26 @@ class ExerciseRepositoryPrisma {
         });
     }
     ;
-    insert(input, inputCategories) {
+    insert(input) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, name, user_id } = input;
-            let categoryExercise = [];
-            for (const t of inputCategories) {
-                categoryExercise.push({
-                    exercise_id: id,
-                    category_id: t.id
+            const { id, name, user_id, categories } = input;
+            const data = { id, name, user_id };
+            const exercise = yield this.prismaClient.exercise.create({ data });
+            for (const t of categories) {
+                yield this.prismaClient.exerciseCategory.create({
+                    data: {
+                        exercise: { connect: { id: exercise.id } },
+                        category: { connect: { id: t.id } }
+                    }
                 });
             }
             ;
-            const data = { id, name, user_id };
-            const result = yield this.prismaClient.exercise.create({
-                data: Object.assign(Object.assign({}, data), { categoryExercise: { createMany: { data: categoryExercise } } }),
-                include: { categoryExercise: { include: { category: true } } }
+            const result = yield this.prismaClient.exercise.findUnique({
+                where: { id: exercise.id }, include: { categoryExercise: { include: { category: true } } }
             });
-            const resultCategories = yield this.transformCategoryExercise(result.categoryExercise);
+            if (result === null)
+                return null;
+            const resultCategories = yield this.transformCategoryExerciseInCategory(result.categoryExercise);
             const output = exercise_1.Exercise.with({
                 id: result.id,
                 name: result.name,
@@ -88,25 +91,28 @@ class ExerciseRepositoryPrisma {
         });
     }
     ;
-    update(input, inputCategories) {
+    update(input) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, name, user_id } = input;
-            let categoryExercise = [];
-            for (const t of inputCategories) {
-                categoryExercise.push({
-                    exercise_id: id,
-                    category_id: t.id
+            const { id, name, user_id, categories } = input;
+            const data = { name };
+            const where = { id, user_id };
+            const exercise = yield this.prismaClient.exercise.update({ data, where });
+            yield this.prismaClient.exerciseCategory.deleteMany({ where: { exercise_id: exercise.id } });
+            for (const t of categories) {
+                yield this.prismaClient.exerciseCategory.create({
+                    data: {
+                        exercise: { connect: { id: exercise.id } },
+                        category: { connect: { id: t.id } }
+                    }
                 });
             }
             ;
-            const data = { name };
-            const where = { id, user_id };
-            yield this.prismaClient.exerciseCategory.deleteMany({ where: { exercise_id: id } });
-            const result = yield this.prismaClient.exercise.update({
-                data: Object.assign(Object.assign({}, data), { categoryExercise: { createMany: { data: categoryExercise } } }),
-                include: { categoryExercise: { include: { category: true } } }, where
+            const result = yield this.prismaClient.exercise.findUnique({
+                where: { id: exercise.id }, include: { categoryExercise: { include: { category: true } } }
             });
-            const resultCategories = yield this.transformCategoryExercise(result.categoryExercise);
+            if (result === null)
+                return null;
+            const resultCategories = yield this.transformCategoryExerciseInCategory(result.categoryExercise);
             const output = exercise_1.Exercise.with({
                 id: result.id,
                 name: result.name,
@@ -133,7 +139,7 @@ class ExerciseRepositoryPrisma {
             });
             if (!result)
                 return result;
-            const resultCategories = yield this.transformCategoryExercise(result.categoryExercise);
+            const resultCategories = yield this.transformCategoryExerciseInCategory(result.categoryExercise);
             const output = exercise_1.Exercise.with({
                 id: result.id,
                 name: result.name,
@@ -154,7 +160,7 @@ class ExerciseRepositoryPrisma {
             });
             let output = [];
             for (const t of result) {
-                const resultCategories = yield this.transformCategoryExercise(t.categoryExercise);
+                const resultCategories = yield this.transformCategoryExerciseInCategory(t.categoryExercise);
                 const exercise = exercise_1.Exercise.with({
                     id: t.id,
                     name: t.name,

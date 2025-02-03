@@ -1,9 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createCategory = createCategory;
 const vitest_1 = require("vitest");
 const faker_1 = require("@faker-js/faker");
 const category_1 = require("./category");
 const zod_1 = require("zod");
+function createCategory() {
+    const categoryName = faker_1.faker.person.firstName('female');
+    const categoryUserIdAdmin = null;
+    const categoryData = {
+        name: categoryName,
+        user_id: categoryUserIdAdmin
+    };
+    return category_1.Category.create(categoryData);
+}
+;
 (0, vitest_1.describe)("Category Entity Test ", () => {
     (0, vitest_1.it)("deve criar uma Categoria com nome e id válidos para um Usuario com role Admin", () => {
         const categoryName = faker_1.faker.person.firstName('female');
@@ -57,7 +68,7 @@ const zod_1 = require("zod");
         };
         (0, vitest_1.expect)(() => {
             category_1.Category.create(data);
-        }).toThrowError("Digite um Nome corretamente!");
+        }).toThrowError("Digite um Nome abaixo de 30 caracteres!");
     });
     (0, vitest_1.it)("deve criar uma Categoria usando o método 'with' com props válidas e user_id de Usuário com role Admin", () => {
         const id = faker_1.faker.string.uuid();

@@ -32,16 +32,9 @@ class ListCategoryUsecase {
     ;
     presentOutput(categories) {
         let formatCategories = [];
-        for (const t of categories) {
-            formatCategories.push({
-                id: t.id,
-                name: t.name
-            });
-        }
-        ;
-        return {
-            categories: formatCategories
-        };
+        for (const t of categories)
+            formatCategories.push({ id: t.id, name: t.name });
+        return { categories: formatCategories };
     }
     ;
 }

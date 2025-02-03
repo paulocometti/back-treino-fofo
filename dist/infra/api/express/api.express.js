@@ -6,14 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiExpress = void 0;
 const express_1 = __importDefault(require("express"));
 class ApiExpress {
-    constructor(routes) {
+    constructor(routes, middlewares = []) {
         this.app = (0, express_1.default)();
         this.app.use(express_1.default.json());
+        middlewares.forEach(middleware => {
+            this.app.use(middleware);
+        });
         this.addRoutes(routes);
     }
     ;
-    static create(routes) {
-        return new ApiExpress(routes);
+    static create(routes, middlewares = []) {
+        return new ApiExpress(routes, middlewares);
     }
     ;
     addRoutes(routes) {

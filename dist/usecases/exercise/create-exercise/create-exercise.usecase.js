@@ -33,34 +33,49 @@ class CreateExerciseUsecase {
                 throw new Error('Já existe um Exercício com este nome. Por favor, tente outro nome!');
             if (categories && Array.isArray(categories) && categories.length > 0) {
                 for (const t of categories) {
-                    const category = yield this.categoryGateway.findById({ id: t.id });
-                    aCategories.push(category_1.Category.with({
-                        id: t.id,
-                        name: t.name,
-                        user_id: t.user_id
-                    }));
-                    if (category === false)
+                    const category = yield this.categoryGateway.select(t);
+                    if (category === null)
                         throw new Error('A Categoria selecionada não é válida. Por favor, tente escolher outra!');
+                    const categoryNotOfficial = category.user_id !== null;
+                    if (categoryNotOfficial && category.user_id !== user.id)
+                        throw new Error('A Categoria existe porém não pode ser selecionada pois não é válida. Por favor, tente escolher outra!');
+                    aCategories.push(category_1.Category.with({
+                        id: category.id,
+                        name: category.name,
+                        user_id: category.user_id
+                    }));
                 }
                 ;
             }
             ;
             const aExercise = exercise_1.Exercise.create({ name: exerciseName, user_id: userIdCondition, categories: aCategories });
-            const result = yield this.exerciseGateway.insert(aExercise, aCategories);
+            const result = yield this.exerciseGateway.insert(aExercise);
+            if (result === null)
+                throw new Error();
             const output = this.presentOutput(result);
             return output;
         });
     }
     ;
     presentOutput(exercise) {
+        let categories = [];
+        for (const t of exercise.categories) {
+            categories.push({
+                id: t.id,
+                name: t.name,
+                user_id: t.user_id
+            });
+        }
+        ;
         const output = {
             id: exercise.id,
             name: exercise.name,
             user_id: exercise.user_id,
-            categories: exercise.categories
+            categories: categories
         };
-        return output;
+        return { exercise: output };
     }
+    ;
 }
 exports.CreateExerciseUsecase = CreateExerciseUsecase;
 ;

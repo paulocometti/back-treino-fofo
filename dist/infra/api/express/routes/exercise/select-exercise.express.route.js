@@ -1,66 +1,53 @@
 "use strict";
-// import { Request, Response, } from "express";
-// import { HttpMethod, Route } from "../route";
-// import { SelectExerciseInputDto, SelectExerciseOutputDto, SelectExerciseUsecase, SelectExerciseUserDto } from "../../../../../usecases/exercise/select-exercise/select-exercise.usecase";
-// export type SelectExerciseResponseDto = {
-//     exercise: {
-//         id: string;
-//         name: string;
-//         category_id: string | null;
-//     };
-// };
-// export class SelectExerciseRoute implements Route {
-//     private constructor(
-//         private readonly path: string,
-//         private readonly method: HttpMethod,
-//         private readonly selectExerciseService: SelectExerciseUsecase
-//     ) { };
-//     public static create(selectExerciseSerivce: SelectExerciseUsecase) {
-//         return new SelectExerciseRoute(
-//             "/exercise/:id",
-//             HttpMethod.GET,
-//             selectExerciseSerivce
-//         )
-//     };
-//     public getHandler() {
-//         return async (request: Request, response: Response) => {
-//             try {
-//                 const { id } = request.params;
-//                 const input: SelectExerciseInputDto = { id };
-//                 const userAdminFake: SelectExerciseUserDto = {
-//                     id: crypto.randomUUID(),
-//                     name: 'Paulo',
-//                     role: 'ADMIN'
-//                 };
-//                 const userFake: SelectExerciseUserDto = {
-//                     id: 'beee6914-5b09-46d2-be94-b09284a31811',
-//                     name: 'Paulo',
-//                     role: 'USER'
-//                 };
-//                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-//                 const user = userFake;
-//                 const result = await this.selectExerciseService.execute(input, user);
-//                 const output = this.present(result);
-//                 response.status(200).json(output).send();
-//             } catch (error: any) {
-//                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
-//             };
-//         };
-//     };
-//     public getPath(): string {
-//         return this.path;
-//     };
-//     public getMethod(): HttpMethod {
-//         return this.method;
-//     };
-//     private present(input: SelectExerciseOutputDto): SelectExerciseResponseDto {
-//         const exercise = input.exercise;
-//         const response = {
-//             id: exercise.id,
-//             name: exercise.name,
-//             category_id: exercise.category_id,
-//             user_id: exercise.user_id
-//         };
-//         return { exercise: response };
-//     };
-// };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SelectExerciseRoute = void 0;
+const route_1 = require("../route");
+const keycloakAuth_middleware_1 = require("../../../../../middleware/keycloakAuth.middleware");
+class SelectExerciseRoute {
+    constructor(path, method, selectExerciseService) {
+        this.path = path;
+        this.method = method;
+        this.selectExerciseService = selectExerciseService;
+    }
+    ;
+    static create(selectExerciseSerivce) {
+        return new SelectExerciseRoute("/exercise/:id", route_1.HttpMethod.GET, selectExerciseSerivce);
+    }
+    ;
+    getHandler() {
+        return (request, response) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                const input = { id };
+                const auth = request.headers.authorization;
+                const user = (0, keycloakAuth_middleware_1.extractUserFromAuth)(auth);
+                const result = yield this.selectExerciseService.execute(input, user);
+                response.status(200).json(result).send();
+            }
+            catch (error) {
+                response.status(500).json({ message: (error === null || error === void 0 ? void 0 : error.message) || "Error Interno do Servidor." });
+            }
+            ;
+        });
+    }
+    ;
+    getPath() {
+        return this.path;
+    }
+    ;
+    getMethod() {
+        return this.method;
+    }
+    ;
+}
+exports.SelectExerciseRoute = SelectExerciseRoute;
+;

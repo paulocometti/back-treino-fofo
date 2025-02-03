@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ListCategoryRoute = void 0;
 const route_1 = require("../route");
+const keycloakAuth_middleware_1 = require("../../../../../middleware/keycloakAuth.middleware");
 class ListCategoryRoute {
     constructor(path, method, listCategorySerivce) {
         this.path = path;
@@ -23,23 +24,12 @@ class ListCategoryRoute {
     }
     ;
     getHandler() {
-        return (_, response) => __awaiter(this, void 0, void 0, function* () {
+        return (request, response) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const userAdminFake = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth = request.headers.authorization;
+                const user = (0, keycloakAuth_middleware_1.extractUserFromAuth)(auth);
                 const result = yield this.listCategorySerivce.execute(undefined, user);
-                const output = this.present(result);
-                response.status(200).json(output).send();
+                response.status(200).json(result).send();
             }
             catch (error) {
                 response.status(500).json({ message: (error === null || error === void 0 ? void 0 : error.message) || "Error Interno do Servidor." });
@@ -54,19 +44,6 @@ class ListCategoryRoute {
     ;
     getMethod() {
         return this.method;
-    }
-    ;
-    present(input) {
-        const response = [];
-        const categories = input.categories;
-        for (const t of categories) {
-            response.push({
-                id: t.id,
-                name: t.name
-            });
-        }
-        ;
-        return { categories: response };
     }
     ;
 }

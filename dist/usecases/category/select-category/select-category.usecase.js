@@ -34,9 +34,8 @@ class SelectCategoryUsecase {
     }
     ;
     presentOutput(category) {
-        return {
-            category: category
-        };
+        const output = { id: category.id, name: category.name, user_id: category.user_id };
+        return { category: output };
     }
     ;
 }

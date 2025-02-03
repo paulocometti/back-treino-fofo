@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
-import { CreateCategoryUsecase, CreateCategoryUsecaseInputDto, CreateCategoryUsecaseUserDto } from '../create-category/create-category.usecase';
+import { CreateCategoryUsecase, CreateCategoryUsecaseInputDto } from '../create-category/create-category.usecase';
 import { EditCategoryUsecase, EditCategoryInputDto } from './edit-category.usecase';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let createUseCase: CreateCategoryUsecase;
@@ -16,7 +17,7 @@ beforeEach(() => {
 describe('EditCategoryUsecase', () => {
   it('deve atualizar uma categoria com sucesso com role ADMIN', async () => {
     const inputCreate: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userAdmin: CreateCategoryUsecaseUserDto = {
+    const userAdmin: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Admin Test',
       role: 'ADMIN'
@@ -37,7 +38,7 @@ describe('EditCategoryUsecase', () => {
 
   it('deve atualizar uma categoria com sucesso com role USER', async () => {
     const inputCreate: CreateCategoryUsecaseInputDto = { name: 'Esportes' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'User Test',
       role: 'USER'
@@ -57,14 +58,14 @@ describe('EditCategoryUsecase', () => {
   });
 
   it('deve atualizar uma categoria com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
-    const user1: CreateCategoryUsecaseUserDto = {
+    const user1: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'User1',
       role: 'USER'
     };
     await createUseCase.execute({ name: 'Eletrônicos' }, user1);
 
-    const user2: CreateCategoryUsecaseUserDto = {
+    const user2: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'User2',
       role: 'USER'
@@ -84,14 +85,14 @@ describe('EditCategoryUsecase', () => {
   });
 
   it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias oficiais', async () => {
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'User Test',
       role: 'USER'
     };
     const categoryOfUser = await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
 
-    const userAdmin: CreateCategoryUsecaseUserDto = {
+    const userAdmin: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Admin Test',
       role: 'ADMIN'
@@ -110,7 +111,7 @@ describe('EditCategoryUsecase', () => {
   });
 
   it('não deve permitir nomes de categoria duplicados com role USER entre as Categorias criadas pelo usuário logado (mesmo USER)', async () => {
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'User Test',
       role: 'USER'
@@ -130,7 +131,7 @@ describe('EditCategoryUsecase', () => {
   });
 
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre Categorias oficiais', async () => {
-    const userAdmin: CreateCategoryUsecaseUserDto = {
+    const userAdmin: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Admin Test',
       role: 'ADMIN'
@@ -150,14 +151,14 @@ describe('EditCategoryUsecase', () => {
   });
 
   it('não deve permitir nomes de categoria duplicados com role ADMIN entre todas as Categorias (oficiais e de outros usuários)', async () => {
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'User Test',
       role: 'USER'
     };
     await createUseCase.execute({ name: 'Eletrônicos' }, userFake);
 
-    const userAdmin: CreateCategoryUsecaseUserDto = {
+    const userAdmin: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Admin Test',
       role: 'ADMIN'

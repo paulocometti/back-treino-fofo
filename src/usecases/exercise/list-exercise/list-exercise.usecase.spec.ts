@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ExerciseRepositoryInMemory } from '../../../infra/repositories/exercise/exercise.repository.in-memory';
 import { ListExerciseUsecase } from './list-exercise.usecase';
-import { CreateExerciseInputDto, CreateExerciseUsecase, CreateExerciseUserInputDto } from '../create-exercise/create-exercise.usecase';
-import { createCategoryWithAdmin } from '../../../utils/category.test.utils';
+import { CreateExerciseInputDto, CreateExerciseUsecase } from '../create-exercise/create-exercise.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { CreateCategoryUsecase } from '../../category/create-category/create-category.usecase';
 import { categoryCreateMock } from '../../category/create-category/create-category.usecase.spec';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let exerciseRepository: ExerciseRepositoryInMemory;
@@ -23,7 +23,7 @@ beforeEach(() => {
 
 describe('ListExerciseUsecase', () => {
     it('deve listar Categorias sendo Usuário role ADMIN', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -41,7 +41,7 @@ describe('ListExerciseUsecase', () => {
         expect(output2.name).toBe('Fight Practice');
         expect(output2.user_id).toBe(null);
 
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -59,7 +59,7 @@ describe('ListExerciseUsecase', () => {
     });
 
     it('deve listar Categorias sendo Usuário role USER', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -77,7 +77,7 @@ describe('ListExerciseUsecase', () => {
         expect(output2.name).toBe('Fight Practice');
         expect(output2.user_id).toBe(null);
 
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'

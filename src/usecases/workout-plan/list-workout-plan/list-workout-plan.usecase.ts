@@ -1,15 +1,10 @@
 import { User } from "../../../domain/user/entities/user";
 import { WorkoutPlan } from "../../../domain/workout-plan/entities/workout-plan";
 import { WorkoutPlanGateway } from "../../../domain/workout-plan/workout-plan.gateway";
+import { UserInputDto } from "../../../middleware/keycloakAuth.middleware";
 import { Usecase } from "../../usecase"
 
 export type ListWorkoutPlanUsecaseInputDto = void;
-
-export type ListWorkoutPlanUsecaseUserInputDto = {
-    id: string,
-    name: string,
-    role: 'USER' | 'ADMIN'
-};
 
 // consertar exercise?
 export type ListWorkoutPlanUsecaseOutputDto = {
@@ -34,7 +29,7 @@ export type ListWorkoutPlanUsecaseOutputDto = {
 };
 
 export class ListWorkoutPlanUsecase
-    implements Usecase<ListWorkoutPlanUsecaseInputDto, ListWorkoutPlanUsecaseUserInputDto, ListWorkoutPlanUsecaseOutputDto> {
+    implements Usecase<ListWorkoutPlanUsecaseInputDto, UserInputDto, ListWorkoutPlanUsecaseOutputDto> {
 
     private constructor(private readonly workoutPlanGateway: WorkoutPlanGateway) { }
 
@@ -42,7 +37,7 @@ export class ListWorkoutPlanUsecase
         return new ListWorkoutPlanUsecase(workoutPlanGateway);
     };
 
-    public async execute(req: ListWorkoutPlanUsecaseInputDto, user: ListWorkoutPlanUsecaseUserInputDto): Promise<ListWorkoutPlanUsecaseOutputDto> {
+    public async execute(req: ListWorkoutPlanUsecaseInputDto, user: UserInputDto): Promise<ListWorkoutPlanUsecaseOutputDto> {
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
         const input = { user_id: userIdCondition };

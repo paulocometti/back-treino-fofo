@@ -1,66 +1,51 @@
 "use strict";
-// import { Request, Response } from "express";
-// import { ListExerciseOutputDto, ListExerciseUsecase, ListExerciseUserDto } from "../../../../../usecases/exercise/list-exercise/list-exercise.usecase";
-// import { HttpMethod, Route } from "../route";
-// export type ListExerciseResponseDto = {
-//     exercises: {
-//         id: string;
-//         name: string;
-//         category_id: string | null;
-//     }[];
-// };
-// export class ListExerciseRoute implements Route {
-//     private constructor(
-//         private readonly path: string,
-//         private readonly method: HttpMethod,
-//         private readonly listExerciseSerivce: ListExerciseUsecase
-//     ) { };
-//     public static create(listExerciseSerivce: ListExerciseUsecase) {
-//         return new ListExerciseRoute(
-//             "/exercise/list",
-//             HttpMethod.GET,
-//             listExerciseSerivce
-//         )
-//     };
-//     public getHandler() {
-//         return async (_: Request, response: Response) => {
-//             try {
-//                 const userAdminFake: ListExerciseUserDto = {
-//                     id: crypto.randomUUID(),
-//                     name: 'Paulo',
-//                     role: 'ADMIN'
-//                 };
-//                 const userFake: ListExerciseUserDto = {
-//                     id: 'beee6914-5b09-46d2-be94-b09284a31811',
-//                     name: 'Paulo',
-//                     role: 'USER'
-//                 };
-//                 //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-//                 const user = userFake;
-//                 const result = await this.listExerciseSerivce.execute(undefined, user);
-//                 const output = this.present(result);
-//                 response.status(200).json(output).send();
-//             } catch (error: any) {
-//                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
-//             };
-//         };
-//     };
-//     public getPath(): string {
-//         return this.path;
-//     };
-//     public getMethod(): HttpMethod {
-//         return this.method;
-//     };
-//     private present(input: ListExerciseOutputDto): ListExerciseResponseDto {
-//         const response = [];
-//         const exercises = input.exercises;
-//         for (const t of exercises) {
-//             response.push({
-//                 id: t.id,
-//                 name: t.name,
-//                 category_id: t.category_id
-//             })
-//         };
-//         return { exercises: response };
-//     };
-// };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ListExerciseRoute = void 0;
+const route_1 = require("../route");
+const keycloakAuth_middleware_1 = require("../../../../../middleware/keycloakAuth.middleware");
+class ListExerciseRoute {
+    constructor(path, method, listExerciseSerivce) {
+        this.path = path;
+        this.method = method;
+        this.listExerciseSerivce = listExerciseSerivce;
+    }
+    ;
+    static create(listExerciseSerivce) {
+        return new ListExerciseRoute("/exercise/list", route_1.HttpMethod.GET, listExerciseSerivce);
+    }
+    ;
+    getHandler() {
+        return (request, response) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const auth = request.headers.authorization;
+                const user = (0, keycloakAuth_middleware_1.extractUserFromAuth)(auth);
+                const result = yield this.listExerciseSerivce.execute(undefined, user);
+                response.status(200).json(result).send();
+            }
+            catch (error) {
+                response.status(500).json({ message: (error === null || error === void 0 ? void 0 : error.message) || "Error Interno do Servidor." });
+            }
+            ;
+        });
+    }
+    ;
+    getPath() {
+        return this.path;
+    }
+    ;
+    getMethod() {
+        return this.method;
+    }
+    ;
+}
+exports.ListExerciseRoute = ListExerciseRoute;
+;

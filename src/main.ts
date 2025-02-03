@@ -89,6 +89,7 @@ function main() {
             keycloakAuth,
         ]
     );
+    
     const port: number = 8080;
     api.start(port);
 };

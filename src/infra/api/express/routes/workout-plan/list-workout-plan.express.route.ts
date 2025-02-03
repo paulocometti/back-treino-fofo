@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { HttpMethod, Route } from "../route";
-import { ListWorkoutPlanUsecase, ListWorkoutPlanUsecaseUserInputDto } from "../../../../../usecases/workout-plan/list-workout-plan/list-workout-plan.usecase";
+import { ListWorkoutPlanUsecase } from "../../../../../usecases/workout-plan/list-workout-plan/list-workout-plan.usecase";
+import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
 export class ListWorkoutPlanRoute implements Route {
 
@@ -21,18 +22,8 @@ export class ListWorkoutPlanRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response) => {
             try {
-                const userAdminFake: ListWorkoutPlanUsecaseUserInputDto = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake: ListWorkoutPlanUsecaseUserInputDto = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth: string = request.headers.authorization as string;
+                const user: UserInputDto = extractUserFromAuth(auth);
                 const result = await this.selectWorkoutPlanService.execute(undefined, user);
                 response.status(201).json(result);
             } catch (error: any) {

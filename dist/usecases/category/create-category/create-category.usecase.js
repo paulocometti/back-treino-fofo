@@ -30,18 +30,16 @@ class CreateCategoryUsecase {
                 throw new Error('Já existe uma Categoria com este nome. Por favor, tente outro nome!');
             const aCategory = category_1.Category.create({ name: categoryName, user_id: userIdCondition });
             const result = yield this.categoryGateway.insert(aCategory);
+            if (result === null)
+                throw new Error();
             const output = this.presentOutput(result);
             return output;
         });
     }
     ;
     presentOutput(category) {
-        const output = {
-            id: category.id,
-            name: category.name,
-            user_id: category.user_id
-        };
-        return output;
+        const output = { id: category.id, name: category.name, user_id: category.user_id };
+        return { category: output };
     }
 }
 exports.CreateCategoryUsecase = CreateCategoryUsecase;

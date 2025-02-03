@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { ListCategoryUsecase } from './list-category.usecase';
-import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from '../create-category/create-category.usecase';
+import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase } from '../create-category/create-category.usecase';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let useCaseCreate: CreateCategoryUsecase;
@@ -18,12 +19,12 @@ describe('ListCategoryUsecase', () => {
     const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
     const input2: CreateCategoryUsecaseInputDto = { name: 'Vídeo' };
     const input3: CreateCategoryUsecaseInputDto = { name: 'Ferramentas' };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -50,17 +51,17 @@ describe('ListCategoryUsecase', () => {
     const input2: CreateCategoryUsecaseInputDto = { name: 'Vídeo' };
     const input3: CreateCategoryUsecaseInputDto = { name: 'Ferramentas' };
     const input4: CreateCategoryUsecaseInputDto = { name: 'Nao Aparecer' };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
     };
-    const userFake2: CreateCategoryUsecaseUserDto = {
+    const userFake2: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User2',
       role: 'USER'

@@ -1,17 +1,64 @@
 import { Request, Response, NextFunction } from 'express';
 import { jwtDecode } from 'jwt-decode';
 
+interface ResourceAccess {
+    [key: string]: {
+        roles: string[];
+    };
+};
+
 interface DecodedToken {
     sid: string;
     given_name: string;
-    resource_access: any;
+    resource_access: ResourceAccess;
+};
+
+export interface UserInputDto {
+    id: string;
+    name: string;
+    role: 'USER' | 'ADMIN';
+};
+
+const userAdminFake: UserInputDto = {
+    id: crypto.randomUUID(),
+    name: 'Paulo',
+    role: 'ADMIN'
+};
+const userFake: UserInputDto = {
+    id: 'beee6914-5b09-46d2-be94-b09284a31811',
+    name: 'Paulo',
+    role: 'USER'
+};
+
+export function extractUserFromAuth(auth: string): UserInputDto {
+
+    if(process.env.NODE_ENV === 'local') return userAdminFake;
+    if (!auth) throw new Error("Authorization header is missing");
+
+    const token = auth.replace(/^Bearer\s+/, '');
+
+    const decodedUser: DecodedToken = jwtDecode<DecodedToken>(token);
+    const { sid: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
+    console.log("userAcessos >> ", userAcessos);
+
+    const treinoFofo = userAcessos['treino-fofo'];
+    if (!treinoFofo || !Array.isArray(treinoFofo.roles) || treinoFofo.roles.length === 0)
+        throw new Error("Erro de autenticação: Acesso de usuário inválido");
+
+    const firstRole: any = (treinoFofo.roles[0]).replace('ROLE_','');
+    console.log("Primeiro role:", firstRole);
+
+    return { id: userId, name: userNome, role: firstRole };
 }
+
 
 const keycloakAuth = (req: Request, res: Response, next: NextFunction) => {
     console.log(`teste middleware`);
 
-    const authHeader = req.headers.authorization;
+    if(process.env.NODE_ENV === 'local') return next();
+    if (req.method === 'POST' && req.url.endsWith('/login')) return next();
 
+    const authHeader = req.headers.authorization;
     if (!authHeader)
         return res.status(401).json({ message: 'Authorization header missing' });
 

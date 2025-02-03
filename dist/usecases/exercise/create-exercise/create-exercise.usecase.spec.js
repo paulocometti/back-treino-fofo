@@ -11,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vitest_1 = require("vitest");
 const create_exercise_usecase_1 = require("./create-exercise.usecase");
-const exercise_repository_in_memory_1 = require("../../../infra/repositories/exercise/exercise.repository.in-memory");
 const category_repository_in_memory_1 = require("../../../infra/repositories/category/category.repository.in-memory");
+const exercise_repository_in_memory_1 = require("../../../infra/repositories/exercise/exercise.repository.in-memory");
 const create_category_usecase_1 = require("../../category/create-category/create-category.usecase");
-const category_1 = require("../../../domain/category/entities/category");
+const create_category_usecase_spec_1 = require("../../category/create-category/create-category.usecase.spec");
 let categoryRepository;
 let exerciseRepository;
 let categoryUseCaseCreate;
@@ -27,79 +27,34 @@ let exerciseUseCaseCreate;
 });
 (0, vitest_1.describe)('CreateExerciseUsecase', () => {
     (0, vitest_1.it)('deve criar um Exercício com sucesso com role ADMIN', () => __awaiter(void 0, void 0, void 0, function* () {
-        const categoryUserFake = {
-            id: crypto.randomUUID(),
-            name: 'Paulo User',
-            role: 'USER'
-        };
-        const categoryInput = { name: 'Yoga' };
-        const categoryOutput = yield categoryUseCaseCreate.execute(categoryInput, categoryUserFake);
-        const aCategory = category_1.Category.with({
-            id: categoryOutput.id,
-            name: categoryOutput.name,
-            user_id: categoryOutput.user_id,
-        });
-        const input = { name: 'Yoga Practice', categories: [aCategory] };
         const userAdminFake = {
             id: crypto.randomUUID(),
-            name: 'Paulo User',
+            name: 'Paulo Admin',
             role: 'ADMIN'
         };
+        const categoryOutput = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userAdminFake);
+        const input = { name: 'Yoga Practice', categories: [categoryOutput.category] };
         const output = yield exerciseUseCaseCreate.execute(input, userAdminFake);
-        (0, vitest_1.expect)(output.id).toBeDefined();
-        (0, vitest_1.expect)(output.name).toBe('Yoga Practice');
-        (0, vitest_1.expect)(output.user_id).toBe(null);
+        (0, vitest_1.expect)(output.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output.exercise.name).toBe('Yoga Practice');
+        (0, vitest_1.expect)(output.exercise.user_id).toBe(null);
+        (0, vitest_1.expect)(output.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
     }));
     (0, vitest_1.it)('deve criar um Exercício com sucesso com role USER', () => __awaiter(void 0, void 0, void 0, function* () {
-        const categoryUserFake = {
-            id: crypto.randomUUID(),
-            name: 'Paulo User',
-            role: 'USER'
-        };
-        const categoryInput = { name: 'Yoga' };
-        const categoryOutput = yield categoryUseCaseCreate.execute(categoryInput, categoryUserFake);
-        const aCategory = category_1.Category.with({
-            id: categoryOutput.id,
-            name: categoryOutput.name,
-            user_id: categoryOutput.user_id,
-        });
-        const input = { name: 'Yoga Practice', categories: [aCategory] };
         const userFake = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
         };
+        const categoryOutput = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userFake);
+        const input = { name: 'Yoga Practice', categories: [categoryOutput.category] };
         const output = yield exerciseUseCaseCreate.execute(input, userFake);
-        (0, vitest_1.expect)(output.id).toBeDefined();
-        (0, vitest_1.expect)(output.name).toBe('Yoga Practice');
-        (0, vitest_1.expect)(output.user_id).toBe(userFake.id);
+        (0, vitest_1.expect)(output.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output.exercise.name).toBe('Yoga Practice');
+        (0, vitest_1.expect)(output.exercise.user_id).toBe(userFake.id);
+        (0, vitest_1.expect)(output.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
     }));
-    (0, vitest_1.it)('deve criar um Exercício com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', () => __awaiter(void 0, void 0, void 0, function* () {
-        const categoryUserFake1 = {
-            id: crypto.randomUUID(),
-            name: 'Paulo User 1',
-            role: 'USER'
-        };
-        const categoryUserFake2 = {
-            id: crypto.randomUUID(),
-            name: 'Paulo User 2',
-            role: 'USER'
-        };
-        const categoryInput = { name: 'Strength Training' };
-        const categoryOutput1 = yield categoryUseCaseCreate.execute(categoryInput, categoryUserFake1);
-        const categoryOutput2 = yield categoryUseCaseCreate.execute(categoryInput, categoryUserFake2);
-        const aCategory1 = category_1.Category.with({
-            id: categoryOutput1.id,
-            name: categoryOutput1.name,
-            user_id: categoryOutput1.user_id,
-        });
-        const aCategory2 = category_1.Category.with({
-            id: categoryOutput2.id,
-            name: categoryOutput2.name,
-            user_id: categoryOutput2.user_id,
-        });
-        const input1 = { name: 'Lift Weights', categories: [aCategory1] };
-        const input2 = { name: 'Lift Weights', categories: [aCategory2] };
+    (0, vitest_1.it)('deve criar um Exercício com sucesso com role USER mesmo se existir a mesma Exercício para outro USER', () => __awaiter(void 0, void 0, void 0, function* () {
         const userFake1 = {
             id: crypto.randomUUID(),
             name: 'Paulo User 1',
@@ -110,69 +65,95 @@ let exerciseUseCaseCreate;
             name: 'Paulo User 2',
             role: 'USER'
         };
+        const categoryOutput1 = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userFake1);
+        const input1 = { name: 'Yoga Practice 1', categories: [categoryOutput1.category] };
         const output1 = yield exerciseUseCaseCreate.execute(input1, userFake1);
+        (0, vitest_1.expect)(output1.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output1.exercise.name).toBe('Yoga Practice 1');
+        (0, vitest_1.expect)(output1.exercise.user_id).toBe(userFake1.id);
+        (0, vitest_1.expect)(output1.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
+        const categoryOutput2 = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userFake2);
+        const input2 = { name: 'Yoga Practice 1', categories: [categoryOutput2.category] };
         const output2 = yield exerciseUseCaseCreate.execute(input2, userFake2);
-        (0, vitest_1.expect)(output1.id).toBeDefined();
-        (0, vitest_1.expect)(output2.id).toBeDefined();
-        (0, vitest_1.expect)(output1.name).toBe('Lift Weights');
-        (0, vitest_1.expect)(output2.name).toBe('Lift Weights');
-        (0, vitest_1.expect)(output1.user_id).toBe(userFake1.id);
-        (0, vitest_1.expect)(output2.user_id).toBe(userFake2.id);
+        (0, vitest_1.expect)(output2.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output2.exercise.name).toBe('Yoga Practice 1');
+        (0, vitest_1.expect)(output2.exercise.user_id).toBe(userFake2.id);
+        (0, vitest_1.expect)(output2.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
     }));
-    /*it('não deve permitir nomes de exercicio duplicados com role USER entre as Exercícios oficiais', async () => {
-        const categoryInput: CreateCategoryInputDto = { name: 'Cardio' };
-        const categoryUserFake: CreateCategoryUserDto = {
+    (0, vitest_1.it)('não deve permitir nomes de exercicio duplicados com role USER entre as Exercícios oficiais', () => __awaiter(void 0, void 0, void 0, function* () {
+        const userAdminFake = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        const categoryOutput = await categoryUseCaseCreate.execute(categoryInput, categoryUserFake);
-        const aCategory = Category.with({
-            id: categoryOutput.id,
-            name: categoryOutput.name,
-            user_id: categoryOutput.user_id,
-        });
-        const input: CreateExerciseInputDto = { name: 'Run Marathon', categories: [aCategory] };
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const categoryOutput = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userAdminFake);
+        const input = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = yield exerciseUseCaseCreate.execute(input, userAdminFake);
+        (0, vitest_1.expect)(output.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output.exercise.name).toBe('Yoga Practice');
+        (0, vitest_1.expect)(output.exercise.user_id).toBe(null);
+        (0, vitest_1.expect)(output.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
+        const userFake = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        await exerciseUseCaseCreate.execute(input, userAdminFake);
-
-        const userFake: CreateExerciseUserInputDto = {
+        yield (0, vitest_1.expect)(exerciseUseCaseCreate.execute(input, userFake)).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    }));
+    (0, vitest_1.it)('não deve permitir nomes de exercicio duplicados com role USER entre as Exercícios criadas pelo usuário logado (mesmo USER)', () => __awaiter(void 0, void 0, void 0, function* () {
+        const userFake = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
         };
-        await expect(
-            exerciseUseCaseCreate.execute(input, userFake)
-        ).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
-    });
-
-    it('não deve permitir nomes de exercicio duplicados com role ADMIN entre Exercícios oficiais', async () => {
-        const categoryInput: CreateCategoryInputDto = { name: 'Aerobics' };
-        const categoryUserFake: CreateCategoryUserDto = {
+        const categoryOutput = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userFake);
+        const input = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = yield exerciseUseCaseCreate.execute(input, userFake);
+        (0, vitest_1.expect)(output.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output.exercise.name).toBe('Yoga Practice');
+        (0, vitest_1.expect)(output.exercise.user_id).toBe(userFake.id);
+        (0, vitest_1.expect)(output.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
+        yield (0, vitest_1.expect)(exerciseUseCaseCreate.execute(input, userFake)).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    }));
+    (0, vitest_1.it)('não deve permitir nomes de exercicio duplicados com role ADMIN entre Exercícios oficiais', () => __awaiter(void 0, void 0, void 0, function* () {
+        const userAdminFake1 = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        const categoryOutput = await categoryUseCaseCreate.execute(categoryInput, categoryUserFake);
-        const aCategory = Category.with({
-            id: categoryOutput.id,
-            name: categoryOutput.name,
-            user_id: categoryOutput.user_id,
-        });
-        const input: CreateExerciseInputDto = { name: 'High Intensity Interval Training', categories: [aCategory] };
-        const userFake: CreateExerciseUserInputDto = {
+        const categoryOutput = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userAdminFake1);
+        const input = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = yield exerciseUseCaseCreate.execute(input, userAdminFake1);
+        (0, vitest_1.expect)(output.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output.exercise.name).toBe('Yoga Practice');
+        (0, vitest_1.expect)(output.exercise.user_id).toBe(null);
+        (0, vitest_1.expect)(output.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
+        const userAdminFake2 = {
+            id: crypto.randomUUID(),
+            name: 'Paulo Admin 2',
+            role: 'ADMIN'
+        };
+        yield (0, vitest_1.expect)(exerciseUseCaseCreate.execute(input, userAdminFake2)).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    }));
+    (0, vitest_1.it)('não deve permitir nomes de exercicio duplicados com role ADMIN entre todas os Exercícios (oficiais e de outros usuários)', () => __awaiter(void 0, void 0, void 0, function* () {
+        const userFake = {
+            id: crypto.randomUUID(),
+            name: 'Paulo User',
+            role: 'USER'
+        };
+        const userAdminFake = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        await exerciseUseCaseCreate.execute(input, userFake);
-
-        await expect(
-            exerciseUseCaseCreate.execute(input, userFake)
-        ).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
-    });*/
+        const categoryOutput = yield categoryUseCaseCreate.execute(create_category_usecase_spec_1.categoryCreateMock, userAdminFake);
+        const input1 = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        const output = yield exerciseUseCaseCreate.execute(input1, userFake);
+        (0, vitest_1.expect)(output.exercise.id).toBeDefined();
+        (0, vitest_1.expect)(output.exercise.name).toBe('Yoga Practice');
+        (0, vitest_1.expect)(output.exercise.user_id).toBe(userFake.id);
+        (0, vitest_1.expect)(output.exercise.categories[0].name).toBe(create_category_usecase_spec_1.categoryCreateMock.name);
+        const input2 = { name: 'Yoga Practice', categories: [categoryOutput.category] };
+        yield (0, vitest_1.expect)(exerciseUseCaseCreate.execute(input2, userAdminFake)).rejects.toThrow('Já existe um Exercício com este nome. Por favor, tente outro nome!');
+    }));
 });

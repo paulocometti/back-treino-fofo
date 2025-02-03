@@ -69,6 +69,8 @@ class CategoryRepositoryPrisma {
                 name: result.name,
                 user_id: result.user_id
             });
+            if (output === null)
+                return null;
             return output;
         });
     }
@@ -84,6 +86,8 @@ class CategoryRepositoryPrisma {
                 name: result.name,
                 user_id: result.user_id
             });
+            if (output === null)
+                return null;
             return output;
         });
     }

@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { Category } from "../domain/category/entities/category";
-import { CreateExerciseUserInputDto } from "./exercise/create-exercise/create-exercise.usecase";
+import { UserInputDto } from "../middleware/keycloakAuth.middleware";
 
-export const createMockUser = (role: 'ADMIN' | 'USER'): CreateExerciseUserInputDto => {
+export const createMockUser = (role: 'ADMIN' | 'USER'): UserInputDto => {
     const name = faker.person.firstName('female');
-    const userFake: CreateExerciseUserInputDto = {
+    const userFake: UserInputDto = {
         id: crypto.randomUUID(),
         name: name,
         role: role

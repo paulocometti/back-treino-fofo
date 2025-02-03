@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
-import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from '../create-category/create-category.usecase';
+import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase } from '../create-category/create-category.usecase';
 import { SelectCategoryUsecase } from './select-category.usecase';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let useCaseCreate: CreateCategoryUsecase;
@@ -16,7 +17,7 @@ beforeEach(() => {
 describe('SelectCategoryUsecase', () => {
   it('deve dar Select em uma Categoria sendo Usuário role ADMIN', async () => {
     const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
@@ -34,7 +35,7 @@ describe('SelectCategoryUsecase', () => {
 
   it('deve dar Select em uma Categoria sendo Usuário role USER', async () => {
     const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -52,12 +53,12 @@ describe('SelectCategoryUsecase', () => {
 
   it('deve dar Select em uma Categoria OFICIAL sendo Usuário role USER', async () => {
     const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userAdminFake: CreateCategoryUsecaseUserDto = {
+    const userAdminFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo Admin',
       role: 'ADMIN'
     };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -75,7 +76,7 @@ describe('SelectCategoryUsecase', () => {
 
   it('não deve dar Select em uma Categoria de outro USUÁRIO sendo Usuário role ADMIN', async () => {
     const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'ADMIN'
@@ -83,7 +84,7 @@ describe('SelectCategoryUsecase', () => {
     await useCaseCreate.execute(input1, userFake);
 
     const input2: CreateCategoryUsecaseInputDto = { name: 'Vídeo' };
-    const userFake2: CreateCategoryUsecaseUserDto = {
+    const userFake2: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User2',
       role: 'USER'
@@ -97,7 +98,7 @@ describe('SelectCategoryUsecase', () => {
 
   it('não deve dar Select em uma Categoria de outro USUÁRIO sendo Usuário role USER', async () => {
     const input1: CreateCategoryUsecaseInputDto = { name: 'Eletrônicos' };
-    const userFake: CreateCategoryUsecaseUserDto = {
+    const userFake: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User',
       role: 'USER'
@@ -105,7 +106,7 @@ describe('SelectCategoryUsecase', () => {
     const output1 = await useCaseCreate.execute(input1, userFake);
 
     const input2: CreateCategoryUsecaseInputDto = { name: 'Vídeo' };
-    const userFake2: CreateCategoryUsecaseUserDto = {
+    const userFake2: UserInputDto = {
       id: crypto.randomUUID(),
       name: 'Paulo User2',
       role: 'USER'

@@ -1,6 +1,7 @@
 import { Request, Response, } from "express";
 import { HttpMethod, Route } from "../route";
-import { SelectExerciseInputDto, SelectExerciseOutputDto, SelectExerciseUsecase, SelectExerciseUserDto } from "../../../../../usecases/exercise/select-exercise/select-exercise.usecase";
+import { SelectExerciseInputDto, SelectExerciseUsecase } from "../../../../../usecases/exercise/select-exercise/select-exercise.usecase";
+import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
 export type SelectExerciseResponseDto = {
     exercise: {
@@ -30,18 +31,8 @@ export class SelectExerciseRoute implements Route {
             try {
                 const { id } = request.params;
                 const input: SelectExerciseInputDto = { id };
-                const userAdminFake: SelectExerciseUserDto = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake: SelectExerciseUserDto = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth: string = request.headers.authorization as string;
+                const user: UserInputDto = extractUserFromAuth(auth);
                 const result = await this.selectExerciseService.execute(input, user);
                 response.status(200).json(result).send();
             } catch (error: any) {

@@ -79,13 +79,13 @@ class CategoryRepositoryInMemory {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, name, user_id } = input;
             const index = this.categories.findIndex((category) => category.id === id && category.user_id === user_id);
-            const newCategory = category_1.Category.with({
+            const output = category_1.Category.with({
                 id: this.categories[index].id,
                 name,
                 user_id: this.categories[index].user_id,
             });
-            this.categories[index] = newCategory;
-            return newCategory;
+            this.categories[index] = output;
+            return output;
         });
     }
     ;

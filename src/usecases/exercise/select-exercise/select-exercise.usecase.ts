@@ -2,15 +2,10 @@ import { Exercise } from "../../../domain/exercise/entities/exercise";
 import { User } from "../../../domain/user/entities/user";
 import { ExerciseGateway } from "../../../domain/exercise/exercise.gateway";
 import { Usecase } from "../../usecase";
+import { UserInputDto } from "../../../middleware/keycloakAuth.middleware";
 
 export type SelectExerciseInputDto = {
     id: string
-};
-
-export type SelectExerciseUserDto = {
-    id: string,
-    name: string,
-    role: 'USER' | 'ADMIN'
 };
 
 export type SelectExerciseOutputDto = {
@@ -26,7 +21,7 @@ export type SelectExerciseOutputDto = {
     };
 };
 
-export class SelectExerciseUsecase implements Usecase<SelectExerciseInputDto, SelectExerciseUserDto, SelectExerciseOutputDto> {
+export class SelectExerciseUsecase implements Usecase<SelectExerciseInputDto, UserInputDto, SelectExerciseOutputDto> {
 
     private constructor(private readonly exerciseGateway: ExerciseGateway) { }
 
@@ -34,7 +29,7 @@ export class SelectExerciseUsecase implements Usecase<SelectExerciseInputDto, Se
         return new SelectExerciseUsecase(exerciseGateway);
     };
 
-    public async execute(req: SelectExerciseInputDto, user: SelectExerciseUserDto): Promise<SelectExerciseOutputDto> {
+    public async execute(req: SelectExerciseInputDto, user: UserInputDto): Promise<SelectExerciseOutputDto> {
         const { id } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;

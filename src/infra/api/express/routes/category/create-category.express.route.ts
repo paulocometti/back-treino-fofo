@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase, CreateCategoryUsecaseUserDto } from "../../../../../usecases/category/create-category/create-category.usecase";
+import { CreateCategoryUsecaseInputDto, CreateCategoryUsecase } from "../../../../../usecases/category/create-category/create-category.usecase";
 import { HttpMethod, Route } from "../route";
+import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
 export class CreateCategoryRoute implements Route {
 
@@ -23,18 +24,8 @@ export class CreateCategoryRoute implements Route {
             try {
                 const { name } = request.body;
                 const input: CreateCategoryUsecaseInputDto = { name };
-                const userAdminFake: CreateCategoryUsecaseUserDto = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake: CreateCategoryUsecaseUserDto = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth: string = request.headers.authorization as string;
+                const user: UserInputDto = extractUserFromAuth(auth);
                 const result = await this.createCategoryService.execute(input, user);
                 response.status(201).json({ ...result });
             } catch (error: any) {

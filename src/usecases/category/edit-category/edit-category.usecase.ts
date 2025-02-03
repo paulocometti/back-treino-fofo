@@ -2,17 +2,12 @@ import { Category } from "../../../domain/category/entities/category";
 import { User } from "../../../domain/user/entities/user";
 import { CategoryGateway } from "../../../domain/category/category.gateway";
 import { Usecase } from "../../usecase"
+import { UserInputDto } from "../../../middleware/keycloakAuth.middleware";
 
 export type EditCategoryInputDto = {
     id: string,
     name: string;
     user_id?: string | null;
-};
-
-export type EditCategoryUserDto = {
-    id: string,
-    name: string,
-    role: 'USER' | 'ADMIN'
 };
 
 export type EditCategoryOutputDto = {
@@ -24,7 +19,7 @@ export type EditCategoryOutputDto = {
 };
 
 export class EditCategoryUsecase
-    implements Usecase<EditCategoryInputDto, EditCategoryUserDto, EditCategoryOutputDto> {
+    implements Usecase<EditCategoryInputDto, UserInputDto, EditCategoryOutputDto> {
 
     private constructor(private readonly categoryGateway: CategoryGateway) { }
 
@@ -32,7 +27,7 @@ export class EditCategoryUsecase
         return new EditCategoryUsecase(categoryGateway);
     };
 
-    public async execute(req: EditCategoryInputDto, user: EditCategoryUserDto): Promise<EditCategoryOutputDto> {
+    public async execute(req: EditCategoryInputDto, user: UserInputDto): Promise<EditCategoryOutputDto> {
         const { id: categoryId, name: categoryName } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;

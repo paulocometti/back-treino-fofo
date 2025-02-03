@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ExerciseRepositoryInMemory } from '../../../infra/repositories/exercise/exercise.repository.in-memory';
-import { CreateExerciseInputDto, CreateExerciseUsecase,  CreateExerciseUserInputDto } from '../create-exercise/create-exercise.usecase';
+import { CreateExerciseInputDto, CreateExerciseUsecase } from '../create-exercise/create-exercise.usecase';
 import { SelectExerciseUsecase } from './select-exercise.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { CreateCategoryUsecase } from '../../category/create-category/create-category.usecase';
 import { categoryCreateMock } from '../../category/create-category/create-category.usecase.spec';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let exerciseRepository: ExerciseRepositoryInMemory;
@@ -22,7 +23,7 @@ beforeEach(() => {
 
 describe('SelectExerciseUsecase', () => {
     it('deve dar Select em um Exercicio sendo Usuário role ADMIN', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -40,7 +41,7 @@ describe('SelectExerciseUsecase', () => {
     });
 
     it('deve dar Select em um Exercicio sendo Usuário role USER', async () => {
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -58,7 +59,7 @@ describe('SelectExerciseUsecase', () => {
     });
 
     it('deve dar Select em um Exercicio OFICIAL sendo Usuário role USER', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -70,7 +71,7 @@ describe('SelectExerciseUsecase', () => {
         expect(output.name).toBe('Yoga Practice');
         expect(output.user_id).toBe(null);
 
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -81,7 +82,7 @@ describe('SelectExerciseUsecase', () => {
     });
 
     it('não deve dar Select em um Exercicio de outro USUÁRIO sendo Usuário role ADMIN', async () => {
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -97,7 +98,7 @@ describe('SelectExerciseUsecase', () => {
         expect(select.name).toBe(input.name);
         expect(select.user_id).toBe(userFake.id);
 
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -109,7 +110,7 @@ describe('SelectExerciseUsecase', () => {
     });
 
     it('não deve dar Select em um Exercicio de outro USUÁRIO sendo Usuário role USER', async () => {
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -125,7 +126,7 @@ describe('SelectExerciseUsecase', () => {
         expect(select.name).toBe(input.name);
         expect(select.user_id).toBe(userFake.id);
 
-        const userFake2: CreateExerciseUserInputDto = {
+        const userFake2: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User 2',
             role: 'USER'

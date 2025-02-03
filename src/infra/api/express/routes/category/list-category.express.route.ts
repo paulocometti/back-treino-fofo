@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { ListCategoryOutputDto, ListCategoryUsecase, ListCategoryUserDto } from "../../../../../usecases/category/list-category/list-category.usecase";
+import { ListCategoryUsecase } from "../../../../../usecases/category/list-category/list-category.usecase";
 import { HttpMethod, Route } from "../route";
+import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
 export type ListCategoryResponseDto = {
     categories: {
@@ -25,20 +26,10 @@ export class ListCategoryRoute implements Route {
     };
 
     public getHandler() {
-        return async (_: Request, response: Response) => {
+        return async (request: Request, response: Response) => {
             try {
-                const userAdminFake: ListCategoryUserDto = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake: ListCategoryUserDto = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth: string = request.headers.authorization as string;
+                const user: UserInputDto = extractUserFromAuth(auth);
                 const result = await this.listCategorySerivce.execute(undefined, user);
                 response.status(200).json(result).send();
             } catch (error: any) {

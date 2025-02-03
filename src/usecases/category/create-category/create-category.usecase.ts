@@ -2,16 +2,11 @@ import { Category } from "../../../domain/category/entities/category";
 import { User } from "../../../domain/user/entities/user";
 import { CategoryGateway } from "../../../domain/category/category.gateway";
 import { Usecase } from "../../usecase"
+import { UserInputDto } from "../../../middleware/keycloakAuth.middleware";
 
 export type CreateCategoryUsecaseInputDto = {
     name: string;
     user_id?: string | null;
-};
-
-export type CreateCategoryUsecaseUserDto = {
-    id: string,
-    name: string,
-    role: 'USER' | 'ADMIN'
 };
 
 export type CreateCategoryUsecaseOutputDto = {
@@ -23,7 +18,7 @@ export type CreateCategoryUsecaseOutputDto = {
 };
 
 export class CreateCategoryUsecase
-    implements Usecase<CreateCategoryUsecaseInputDto, CreateCategoryUsecaseUserDto, CreateCategoryUsecaseOutputDto> {
+    implements Usecase<CreateCategoryUsecaseInputDto, UserInputDto, CreateCategoryUsecaseOutputDto> {
 
     private constructor(private readonly categoryGateway: CategoryGateway) { }
 
@@ -31,7 +26,7 @@ export class CreateCategoryUsecase
         return new CreateCategoryUsecase(categoryGateway);
     };
 
-    public async execute(req: CreateCategoryUsecaseInputDto, user: CreateCategoryUsecaseUserDto): Promise<CreateCategoryUsecaseOutputDto> {
+    public async execute(req: CreateCategoryUsecaseInputDto, user: UserInputDto): Promise<CreateCategoryUsecaseOutputDto> {
         const { name: categoryName } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;

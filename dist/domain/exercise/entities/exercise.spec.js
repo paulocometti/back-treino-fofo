@@ -1,34 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createExercise = createExercise;
 const vitest_1 = require("vitest");
 const faker_1 = require("@faker-js/faker");
 const exercise_1 = require("../../exercise/entities/exercise");
 const zod_1 = require("zod");
-const category_1 = require("../../category/entities/category");
+const categoria_spec_1 = require("../../category/entities/categoria.spec");
+function createExercise() {
+    const exerciseName = faker_1.faker.person.firstName('female');
+    const exerciseUserIdAdmin = null;
+    const category = (0, categoria_spec_1.createCategory)();
+    const exerciseData = {
+        name: exerciseName,
+        user_id: exerciseUserIdAdmin,
+        categories: [category]
+    };
+    return exercise_1.Exercise.create(exerciseData);
+}
+;
 (0, vitest_1.describe)("Exercise Entity Test ", () => {
-    function createCategory() {
-        const categoryName = faker_1.faker.person.firstName('female');
-        const categoryUserIdAdmin = null;
-        const categoryData = {
-            name: categoryName,
-            user_id: categoryUserIdAdmin
-        };
-        return category_1.Category.create(categoryData);
-    }
     (0, vitest_1.it)("deve criar um Exercicio com nome e id válidos para um Usuario com role Admin", () => {
-        const categoryName = faker_1.faker.person.firstName('female');
-        const categoryUserIdAdmin = null;
-        const categoryData = {
-            name: categoryName,
-            user_id: categoryUserIdAdmin
-        };
-        const category = category_1.Category.create(categoryData);
         const exerciseName = faker_1.faker.person.firstName('female');
         const exerciseUserIdAdmin = null;
+        const category = (0, categoria_spec_1.createCategory)();
         const exerciseData = {
             name: exerciseName,
             user_id: exerciseUserIdAdmin,
-            categories: [category],
+            categories: [category]
         };
         const exercise = exercise_1.Exercise.create(exerciseData);
         (0, vitest_1.expect)(exercise.id).toBeDefined();
@@ -42,7 +40,7 @@ const category_1 = require("../../category/entities/category");
     (0, vitest_1.it)("deve criar um Exercicio com nome e id válidos para um Usuario com role User", () => {
         const exerciseName = faker_1.faker.person.firstName('female');
         const exerciseUserIdUser = crypto.randomUUID();
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const data = {
             name: exerciseName,
             user_id: exerciseUserIdUser,
@@ -59,9 +57,8 @@ const category_1 = require("../../category/entities/category");
     });
     (0, vitest_1.it)("deve criar um Exercicio com nome, category e id válidos para um Usuario com role User", () => {
         const exerciseName = faker_1.faker.person.firstName('female');
-        const categoryIdRandom = crypto.randomUUID();
         const exerciseUserIdUser = crypto.randomUUID();
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const data = {
             name: exerciseName,
             user_id: exerciseUserIdUser,
@@ -78,9 +75,8 @@ const category_1 = require("../../category/entities/category");
     });
     (0, vitest_1.it)("deve criar um Exercicio com nome e id válidos e category = null para um Usuario com role User", () => {
         const exerciseName = faker_1.faker.person.firstName('female');
-        const categoryIdRandom = null;
         const exerciseUserIdUser = crypto.randomUUID();
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const data = {
             name: exerciseName,
             user_id: exerciseUserIdUser,
@@ -98,7 +94,7 @@ const category_1 = require("../../category/entities/category");
     (0, vitest_1.it)("deve lançar um erro ao criar um Exercicio com nome inválido", () => {
         const name = "";
         const exerciseUserIdAdmin = null;
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const data = {
             name,
             user_id: exerciseUserIdAdmin,
@@ -111,7 +107,7 @@ const category_1 = require("../../category/entities/category");
     (0, vitest_1.it)("deve lançar um erro ao criar um Exercicio com nome muito longo", () => {
         const longName = "a".repeat(31);
         const exerciseUserIdAdmin = null;
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const data = {
             name: longName,
             user_id: exerciseUserIdAdmin,
@@ -119,13 +115,13 @@ const category_1 = require("../../category/entities/category");
         };
         (0, vitest_1.expect)(() => {
             exercise_1.Exercise.create(data);
-        }).toThrowError("Digite um Nome corretamente!");
+        }).toThrowError("Digite um Nome abaixo de 30 caracteres!");
     });
     (0, vitest_1.it)("deve criar um Exercicio usando o método 'with' com props válidas e user_id de Usuário com role Admin", () => {
         const id = faker_1.faker.string.uuid();
         const name = faker_1.faker.person.firstName('female');
         const exerciseUserIdAdmin = null;
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const exercise = exercise_1.Exercise.with({ id, name, user_id: exerciseUserIdAdmin, categories: [category] });
         (0, vitest_1.expect)(exercise).toBeInstanceOf(exercise_1.Exercise);
         (0, vitest_1.expect)(exercise.id).toBe(id);
@@ -136,7 +132,7 @@ const category_1 = require("../../category/entities/category");
         const id = faker_1.faker.string.uuid();
         const name = faker_1.faker.person.firstName('female');
         const exerciseUserIdUser = crypto.randomUUID();
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         const exercise = exercise_1.Exercise.with({ id, name, user_id: exerciseUserIdUser, categories: [category] });
         (0, vitest_1.expect)(exercise).toBeInstanceOf(exercise_1.Exercise);
         (0, vitest_1.expect)(exercise.id).toBe(id);
@@ -147,7 +143,7 @@ const category_1 = require("../../category/entities/category");
         const id = "1";
         const exerciseName = faker_1.faker.person.firstName('female');
         const exerciseUserIdAdmin = null;
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         (0, vitest_1.expect)(() => {
             exercise_1.Exercise.with({ id, name: exerciseName, user_id: exerciseUserIdAdmin, categories: [category] });
         }).toThrowError("Id inválido, não é um UUID.");
@@ -155,7 +151,7 @@ const category_1 = require("../../category/entities/category");
     (0, vitest_1.it)("deve lançar um erro ao criar um Exercicio com props 'nome' inválido", () => {
         const id = faker_1.faker.string.uuid();
         const exerciseUserIdAdmin = null;
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         (0, vitest_1.expect)(() => {
             exercise_1.Exercise.with({ id, name: "", user_id: exerciseUserIdAdmin, categories: [category] });
         }).toThrowError("Digite um Nome corretamente!");
@@ -164,7 +160,7 @@ const category_1 = require("../../category/entities/category");
         const id = faker_1.faker.string.uuid();
         const exerciseName = faker_1.faker.person.firstName('female');
         const exerciseUserIdAdmin = "1";
-        const category = createCategory();
+        const category = (0, categoria_spec_1.createCategory)();
         (0, vitest_1.expect)(() => {
             exercise_1.Exercise.with({ id, name: exerciseName, user_id: exerciseUserIdAdmin, categories: [category] });
         }).toThrowError("Selecione um Usuário válido!");

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { CreateExerciseInputDto, CreateExerciseUsecase, CreateExerciseUserInputDto } from "../../../../../usecases/exercise/create-exercise/create-exercise.usecase";
+import { CreateExerciseInputDto, CreateExerciseUsecase } from "../../../../../usecases/exercise/create-exercise/create-exercise.usecase";
 import { HttpMethod, Route } from "../route";
+import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
 export class CreateExerciseRoute implements Route {
 
@@ -23,18 +24,8 @@ export class CreateExerciseRoute implements Route {
             try {
                 const { name, categories } = request.body;
                 const input: CreateExerciseInputDto = { name, categories };
-                const userAdminFake: CreateExerciseUserInputDto = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake: CreateExerciseUserInputDto = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userFake;
+                const auth: string = request.headers.authorization as string;
+                const user: UserInputDto = extractUserFromAuth(auth);
                 const result = await this.createExerciseService.execute(input, user);
                 response.status(201).json(result);
             } catch (error: any) {

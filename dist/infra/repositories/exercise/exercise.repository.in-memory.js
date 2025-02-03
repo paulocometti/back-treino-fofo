@@ -21,7 +21,6 @@ class ExerciseRepositoryInMemory {
     static create() {
         return new ExerciseRepositoryInMemory();
     }
-    ;
     findCategoriesByExerciseId(exerciseId) {
         return this.exercisesCategories
             .filter(ec => ec.exercise_id === exerciseId)
@@ -32,81 +31,113 @@ class ExerciseRepositoryInMemory {
             return category_1.Category.with(foundCategory);
         });
     }
-    ;
     existsByName(input) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, name, user_id } = input;
-            return this.exercises.some(exercise => exercise.name === name && (!id || exercise.id !== id) && (!user_id || exercise.user_id === user_id));
+            for (const exercise of this.exercises) {
+                if (exercise.name !== name)
+                    continue;
+                if (id && exercise.id === id)
+                    continue;
+                if (user_id) {
+                    if (exercise.user_id !== null && exercise.user_id !== user_id)
+                        continue;
+                }
+                ;
+                return true;
+            }
+            ;
+            return false;
         });
     }
-    ;
     findByIdAndUserId(input) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, user_id } = input;
             return this.exercises.some(exercise => exercise.id === id && exercise.user_id === user_id);
         });
     }
-    ;
-    insert(inputExercise, inputCategories) {
+    insert(input) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.exercises.push(inputExercise);
-            inputCategories.forEach(category => {
-                this.exercisesCategories.push({
-                    exercise_id: inputExercise.id,
-                    category_id: category.id
-                });
+            this.exercises.push(input);
+            for (const category of input.categories) {
                 if (!this.categories.find(c => c.id === category.id)) {
                     this.categories.push(category);
                 }
-            });
-            const categories = this.findCategoriesByExerciseId(inputExercise.id);
-            return exercise_1.Exercise.with({
-                id: inputExercise.id,
-                name: inputExercise.name,
-                user_id: inputExercise.user_id,
-                categories: categories
-            });
-        });
-    }
-    ;
-    update(inputExercise, inputCategories) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const index = this.exercises.findIndex(ex => ex.id === inputExercise.id && ex.user_id === inputExercise.user_id);
-            //if (index === -1) throw new Error("Exercise not found");
-            this.exercisesCategories = this.exercisesCategories.filter(ec => ec.exercise_id !== inputExercise.id);
-            inputCategories.forEach(category => {
+                ;
                 this.exercisesCategories.push({
-                    exercise_id: inputExercise.id,
+                    exercise_id: input.id,
                     category_id: category.id
                 });
-            });
-            const categories = this.findCategoriesByExerciseId(inputExercise.id);
-            this.exercises[index] = exercise_1.Exercise.with({
-                id: inputExercise.id,
-                name: inputExercise.name,
-                user_id: inputExercise.user_id,
+            }
+            ;
+            const categories = this.findCategoriesByExerciseId(input.id);
+            const output = exercise_1.Exercise.with({
+                id: this.exercises[this.exercises.length - 1].id,
+                name: this.exercises[this.exercises.length - 1].name,
+                user_id: this.exercises[this.exercises.length - 1].user_id,
                 categories: categories
             });
-            return this.exercises[index];
+            return output;
         });
     }
     ;
+    update(input) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const index = this.exercises.findIndex(ex => ex.id === input.id && ex.user_id === input.user_id);
+            if (index === -1)
+                return null;
+            this.exercises[index] = input;
+            this.exercisesCategories = this.exercisesCategories.filter(ec => ec.exercise_id !== input.id);
+            const categoriesInput = input.categories;
+            for (const category of categoriesInput) {
+                if (!this.categories.find(c => c.id === category.id)) {
+                    this.categories.push(category);
+                }
+                ;
+                this.exercisesCategories.push({
+                    exercise_id: input.id,
+                    category_id: category.id
+                });
+            }
+            ;
+            const categories = this.findCategoriesByExerciseId(input.id);
+            const output = exercise_1.Exercise.with({
+                id: input.id,
+                name: input.name,
+                user_id: input.user_id,
+                categories: categories
+            });
+            return output;
+        });
+    }
     select(input) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, user_id } = input;
-            const foundExercise = this.exercises.find(ex => ex.id === id && (!user_id || ex.user_id === user_id));
-            if (!foundExercise)
+            const exercise = this.exercises.find(t => {
+                if (t.id !== id)
+                    return false;
+                if (user_id) {
+                    if (t.user_id !== null && t.user_id !== user_id)
+                        return false;
+                }
+                else {
+                    if (t.user_id !== null)
+                        return false;
+                }
+                ;
+                return true;
+            });
+            if (!exercise)
                 return null;
-            const categories = this.findCategoriesByExerciseId(foundExercise.id);
+            const categories = this.findCategoriesByExerciseId(exercise.id);
             return exercise_1.Exercise.with({
-                id: foundExercise.id,
-                name: foundExercise.name,
-                user_id: foundExercise.user_id,
+                id: exercise.id,
+                name: exercise.name,
+                user_id: exercise.user_id,
                 categories: categories
             });
         });
     }
-    ;
     list(input) {
         return __awaiter(this, void 0, void 0, function* () {
             const { user_id } = input;
@@ -122,7 +153,5 @@ class ExerciseRepositoryInMemory {
             });
         });
     }
-    ;
 }
 exports.ExerciseRepositoryInMemory = ExerciseRepositoryInMemory;
-;

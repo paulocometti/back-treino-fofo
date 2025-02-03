@@ -30,12 +30,12 @@ let useCaseSelect;
             role: 'ADMIN'
         };
         const output1 = yield useCaseCreate.execute(input1, userAdminFake);
-        (0, vitest_1.expect)(output1).toHaveProperty('id');
-        (0, vitest_1.expect)(output1.name).toBe(input1.name);
-        (0, vitest_1.expect)(output1.user_id).toBe(null);
-        const select = (yield useCaseSelect.execute(output1, userAdminFake)).category;
+        (0, vitest_1.expect)(output1.category).toHaveProperty('id');
+        (0, vitest_1.expect)(output1.category.name).toBe(input1.name);
+        (0, vitest_1.expect)(output1.category.user_id).toBe(null);
+        const select = (yield useCaseSelect.execute(output1.category, userAdminFake)).category;
         (0, vitest_1.expect)(select.name).toBe(input1.name);
-        (0, vitest_1.expect)(output1.user_id).toBe(null);
+        (0, vitest_1.expect)(output1.category.user_id).toBe(null);
     }));
     (0, vitest_1.it)('deve dar Select em uma Categoria sendo Usuário role USER', () => __awaiter(void 0, void 0, void 0, function* () {
         const input1 = { name: 'Eletrônicos' };
@@ -45,10 +45,10 @@ let useCaseSelect;
             role: 'USER'
         };
         const output1 = yield useCaseCreate.execute(input1, userFake);
-        (0, vitest_1.expect)(output1).toHaveProperty('id');
-        (0, vitest_1.expect)(output1.name).toBe(input1.name);
-        (0, vitest_1.expect)(output1.user_id).toBe(userFake.id);
-        const select = (yield useCaseSelect.execute(output1, userFake)).category;
+        (0, vitest_1.expect)(output1.category).toHaveProperty('id');
+        (0, vitest_1.expect)(output1.category.name).toBe(input1.name);
+        (0, vitest_1.expect)(output1.category.user_id).toBe(userFake.id);
+        const select = (yield useCaseSelect.execute(output1.category, userFake)).category;
         (0, vitest_1.expect)(select.name).toBe(input1.name);
         (0, vitest_1.expect)(select.user_id).toBe(userFake.id);
     }));
@@ -65,10 +65,10 @@ let useCaseSelect;
             role: 'USER'
         };
         const output1 = yield useCaseCreate.execute(input1, userAdminFake);
-        (0, vitest_1.expect)(output1).toHaveProperty('id');
-        (0, vitest_1.expect)(output1.name).toBe(input1.name);
-        (0, vitest_1.expect)(output1.user_id).toBe(null);
-        const select = (yield useCaseSelect.execute(output1, userFake)).category;
+        (0, vitest_1.expect)(output1.category).toHaveProperty('id');
+        (0, vitest_1.expect)(output1.category.name).toBe(input1.name);
+        (0, vitest_1.expect)(output1.category.user_id).toBe(null);
+        const select = (yield useCaseSelect.execute(output1.category, userFake)).category;
         (0, vitest_1.expect)(select.name).toBe(input1.name);
         (0, vitest_1.expect)(select.user_id).toBe(null);
     }));
@@ -87,7 +87,7 @@ let useCaseSelect;
             role: 'USER'
         };
         const output2 = yield useCaseCreate.execute(input2, userFake2);
-        yield (0, vitest_1.expect)(useCaseSelect.execute(output2, userFake)).rejects.toThrow('Nada encontrado.');
+        yield (0, vitest_1.expect)(useCaseSelect.execute(output2.category, userFake)).rejects.toThrow('Nada encontrado.');
     }));
     (0, vitest_1.it)('não deve dar Select em uma Categoria de outro USUÁRIO sendo Usuário role USER', () => __awaiter(void 0, void 0, void 0, function* () {
         const input1 = { name: 'Eletrônicos' };
@@ -104,6 +104,6 @@ let useCaseSelect;
             role: 'USER'
         };
         yield useCaseCreate.execute(input2, userFake2);
-        yield (0, vitest_1.expect)(useCaseSelect.execute(output1, userFake2)).rejects.toThrow('Nada encontrado.');
+        yield (0, vitest_1.expect)(useCaseSelect.execute(output1.category, userFake2)).rejects.toThrow('Nada encontrado.');
     }));
 });

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateExerciseRoute = void 0;
 const route_1 = require("../route");
+const keycloakAuth_middleware_1 = require("../../../../../middleware/keycloakAuth.middleware");
 class CreateExerciseRoute {
     constructor(path, method, createExerciseService) {
         this.path = path;
@@ -26,21 +27,10 @@ class CreateExerciseRoute {
             try {
                 const { name, categories } = request.body;
                 const input = { name, categories };
-                const userAdminFake = {
-                    id: crypto.randomUUID(),
-                    name: 'Paulo',
-                    role: 'ADMIN'
-                };
-                const userFake = {
-                    id: 'beee6914-5b09-46d2-be94-b09284a31811',
-                    name: 'Paulo',
-                    role: 'USER'
-                };
-                //const user = (Math.random() < 0.5) ? userAdminFake : userFake;
-                const user = userAdminFake;
+                const auth = request.headers.authorization;
+                const user = (0, keycloakAuth_middleware_1.extractUserFromAuth)(auth);
                 const result = yield this.createExerciseService.execute(input, user);
-                const output = this.presente(result);
-                response.status(201).json(output);
+                response.status(201).json(result);
             }
             catch (error) {
                 response.status(500).json({ message: (error === null || error === void 0 ? void 0 : error.message) || "Error Interno do Servidor." });
@@ -55,13 +45,6 @@ class CreateExerciseRoute {
     ;
     getMethod() {
         return this.method;
-    }
-    ;
-    presente(input) {
-        const response = { id: input.id, name: input.name, categories: input.categories, user_id: input.user_id };
-        return {
-            exercise: response
-        };
     }
     ;
 }

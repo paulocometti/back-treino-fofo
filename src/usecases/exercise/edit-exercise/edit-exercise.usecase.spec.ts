@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ExerciseRepositoryInMemory } from '../../../infra/repositories/exercise/exercise.repository.in-memory';
-import { CreateExerciseUsecase, CreateExerciseInputDto, CreateExerciseUserInputDto } from '../create-exercise/create-exercise.usecase';
+import { CreateExerciseUsecase, CreateExerciseInputDto } from '../create-exercise/create-exercise.usecase';
 import { EditExerciseUsecase, EditExerciseInputDto, } from './edit-exercise.usecase';
 import { CategoryRepositoryInMemory } from '../../../infra/repositories/category/category.repository.in-memory';
 import { categoryCreateMock } from '../../category/create-category/create-category.usecase.spec';
 import { CreateCategoryUsecase } from '../../category/create-category/create-category.usecase';
+import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let exerciseRepository: ExerciseRepositoryInMemory;
@@ -22,7 +23,7 @@ beforeEach(() => {
 
 describe('EditExerciseUsecase', () => {
     it('deve atualizar um Exercício com sucesso com role ADMIN', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -44,7 +45,7 @@ describe('EditExerciseUsecase', () => {
     });
 
     it('deve atualizar um Exercício com sucesso com role USER', async () => {
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -66,12 +67,12 @@ describe('EditExerciseUsecase', () => {
     });
   
     it('deve atualizar um Exercício com sucesso com role USER mesmo se existir a mesma CATEGORIA para outro USER', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -84,7 +85,7 @@ describe('EditExerciseUsecase', () => {
         expect(exerciseCreated.user_id).toBe(userFake.id);
         expect(exerciseCreated.categories[0].name).toBe(categoryCreateMock.name);
         
-        const userFake2: CreateExerciseUserInputDto = {
+        const userFake2: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User 2',
             role: 'USER'
@@ -106,7 +107,7 @@ describe('EditExerciseUsecase', () => {
     });
   
     it('não deve permitir nomes de exercício duplicados com role USER entre as Exercícios oficiais', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -118,7 +119,7 @@ describe('EditExerciseUsecase', () => {
         expect(exerciseCreated.name).toBe('Yoga Practice');
         expect(exerciseCreated.user_id).toBe(null);
 
-        const userFake2: CreateExerciseUserInputDto = {
+        const userFake2: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User 2',
             role: 'USER'
@@ -137,7 +138,7 @@ describe('EditExerciseUsecase', () => {
     });
   
     it('não deve permitir nomes de exercício duplicados com role USER entre as Exercícios criadas pelo usuário logado (mesmo USER)', async () => {
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
@@ -163,7 +164,7 @@ describe('EditExerciseUsecase', () => {
     });
   
     it('não deve permitir nomes de exercício duplicados com role ADMIN entre Exercícios oficiais', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
@@ -189,12 +190,12 @@ describe('EditExerciseUsecase', () => {
     });
   
     it('não deve permitir nomes de exercício duplicados com role ADMIN entre todas as Exercícios (oficiais e de outros usuários)', async () => {
-        const userAdminFake: CreateExerciseUserInputDto = {
+        const userAdminFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo Admin',
             role: 'ADMIN'
         };
-        const userFake: CreateExerciseUserInputDto = {
+        const userFake: UserInputDto = {
             id: crypto.randomUUID(),
             name: 'Paulo User',
             role: 'USER'
