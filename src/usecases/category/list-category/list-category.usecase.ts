@@ -10,6 +10,7 @@ export type ListCategoryOutputDto = {
     categories: {
         id: string;
         name: string;
+        user_id: string | null;
     }[];
 };
 
@@ -33,7 +34,7 @@ export class ListCategoryUsecase implements Usecase<ListCategoryInputDto, UserIn
     private presentOutput(categories: Category[]): ListCategoryOutputDto {
         let formatCategories = [];
         for (const t of categories)
-            formatCategories.push({ id: t.id, name: t.name });
+            formatCategories.push({ id: t.id, name: t.name, user_id: t.user_id });
 
         return { categories: formatCategories };
     };

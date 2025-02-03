@@ -32,30 +32,34 @@ const userFake: UserInputDto = {
 
 export function extractUserFromAuth(auth: string): UserInputDto {
 
-    if(process.env.NODE_ENV === 'local') return userAdminFake;
+    if (process.env.NODE_ENV === 'local') return userAdminFake;
     if (!auth) throw new Error("Authorization header is missing");
 
     const token = auth.replace(/^Bearer\s+/, '');
 
     const decodedUser: DecodedToken = jwtDecode<DecodedToken>(token);
     const { sid: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
-    console.log("userAcessos >> ", userAcessos);
 
     const treinoFofo = userAcessos['treino-fofo'];
     if (!treinoFofo || !Array.isArray(treinoFofo.roles) || treinoFofo.roles.length === 0)
         throw new Error("Erro de autenticação: Acesso de usuário inválido");
 
-    const firstRole: any = (treinoFofo.roles[0]).replace('ROLE_','');
-    console.log("Primeiro role:", firstRole);
+    const extractedRole = treinoFofo.roles.some(role => role === 'ROLE_ADMIN')
+        ? 'ADMIN'
+        : treinoFofo.roles[0].replace('ROLE_', '');
 
-    return { id: userId, name: userNome, role: firstRole };
+    if (extractedRole !== 'ADMIN' && extractedRole !== 'USER')
+        throw new Error("Erro de autenticação: A role extraída é inválida");
+
+    const userRole: "USER" | "ADMIN" = extractedRole as "USER" | "ADMIN";
+
+    return { id: userId, name: userNome, role: userRole };
 }
 
 
 const keycloakAuth = (req: Request, res: Response, next: NextFunction) => {
-    console.log(`teste middleware`);
 
-    if(process.env.NODE_ENV === 'local') return next();
+    if (process.env.NODE_ENV === 'local') return next();
     if (req.method === 'POST' && req.url.endsWith('/login')) return next();
 
     const authHeader = req.headers.authorization;

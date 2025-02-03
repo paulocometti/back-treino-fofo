@@ -3,13 +3,6 @@ import { HttpMethod, Route } from "../route";
 import { SelectCategoryInputDto, SelectCategoryUsecase } from "../../../../../usecases/category/select-category/select-category.usecase";
 import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
-export type SelectCategoryResponseDto = {
-    category: {
-        id: string;
-        name: string;
-    };
-};
-
 export class SelectCategoryRoute implements Route {
     private constructor(
         private readonly path: string,

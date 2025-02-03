@@ -3,13 +3,6 @@ import { ListCategoryUsecase } from "../../../../../usecases/category/list-categ
 import { HttpMethod, Route } from "../route";
 import { extractUserFromAuth, UserInputDto } from "../../../../../middleware/keycloakAuth.middleware";
 
-export type ListCategoryResponseDto = {
-    categories: {
-        id: string;
-        name: string;
-    }[];
-};
-
 export class ListCategoryRoute implements Route {
     private constructor(
         private readonly path: string,

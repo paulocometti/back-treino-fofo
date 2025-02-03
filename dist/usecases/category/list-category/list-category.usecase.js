@@ -33,7 +33,7 @@ class ListCategoryUsecase {
     presentOutput(categories) {
         let formatCategories = [];
         for (const t of categories)
-            formatCategories.push({ id: t.id, name: t.name });
+            formatCategories.push({ id: t.id, name: t.name, user_id: t.user_id });
         return { categories: formatCategories };
     }
     ;

@@ -24,16 +24,18 @@ function extractUserFromAuth(auth) {
     const token = auth.replace(/^Bearer\s+/, '');
     const decodedUser = (0, jwt_decode_1.jwtDecode)(token);
     const { sid: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
-    console.log("userAcessos >> ", userAcessos);
     const treinoFofo = userAcessos['treino-fofo'];
     if (!treinoFofo || !Array.isArray(treinoFofo.roles) || treinoFofo.roles.length === 0)
         throw new Error("Erro de autenticação: Acesso de usuário inválido");
-    const firstRole = (treinoFofo.roles[0]).replace('ROLE_', '');
-    console.log("Primeiro role:", firstRole);
-    return { id: userId, name: userNome, role: firstRole };
+    const extractedRole = treinoFofo.roles.some(role => role === 'ROLE_ADMIN')
+        ? 'ADMIN'
+        : treinoFofo.roles[0].replace('ROLE_', '');
+    if (extractedRole !== 'ADMIN' && extractedRole !== 'USER')
+        throw new Error("Erro de autenticação: A role extraída é inválida");
+    const userRole = extractedRole;
+    return { id: userId, name: userNome, role: userRole };
 }
 const keycloakAuth = (req, res, next) => {
-    console.log(`teste middleware`);
     if (process.env.NODE_ENV === 'local')
         return next();
     if (req.method === 'POST' && req.url.endsWith('/login'))
