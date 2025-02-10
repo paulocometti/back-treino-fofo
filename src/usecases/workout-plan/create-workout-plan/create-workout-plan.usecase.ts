@@ -4,7 +4,6 @@ import { WorkoutDay } from "../../../domain/workout-day/entities/workout-day";
 import { WorkoutExercise } from "../../../domain/workout-exercise/entities/workout-exercise";
 import { WorkoutPlan } from "../../../domain/workout-plan/entities/workout-plan";
 import { WorkoutPlanGateway } from "../../../domain/workout-plan/workout-plan.gateway";
-import { UserInputDto } from "../../../middleware/keycloakAuth.middleware";
 import { Usecase } from "../../usecase"
 
 export type CreateWorkoutPlanUsecaseInputDto = {
@@ -18,6 +17,12 @@ export type CreateWorkoutPlanUsecaseInputDto = {
             exercise_id: string
         }[]
     }[];
+};
+
+export type CreateWorkoutPlanUsecaseUserInputDto = {
+    id: string,
+    name: string,
+    role: 'USER' | 'ADMIN'
 };
 
 // consertar exercise?
@@ -43,7 +48,7 @@ export type CreateWorkoutPlanUsecaseOutputDto = {
 };
 
 export class CreateWorkoutPlanUsecase
-    implements Usecase<CreateWorkoutPlanUsecaseInputDto, UserInputDto, CreateWorkoutPlanUsecaseOutputDto> {
+    implements Usecase<CreateWorkoutPlanUsecaseInputDto, CreateWorkoutPlanUsecaseUserInputDto, CreateWorkoutPlanUsecaseOutputDto> {
 
     private constructor(private readonly workoutPlanGateway: WorkoutPlanGateway) { }
 
@@ -51,7 +56,7 @@ export class CreateWorkoutPlanUsecase
         return new CreateWorkoutPlanUsecase(workoutPlanGateway);
     };
 
-    public async execute(req: CreateWorkoutPlanUsecaseInputDto, user: UserInputDto): Promise<CreateWorkoutPlanUsecaseOutputDto> {
+    public async execute(req: CreateWorkoutPlanUsecaseInputDto, user: CreateWorkoutPlanUsecaseUserInputDto): Promise<CreateWorkoutPlanUsecaseOutputDto> {
         const { name: workoutPlanName, workoutDays } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { WorkoutPlan } from "../../../domain/workout-plan/entities/workout-plan";
-import { WorkoutPlanGateway, WorkoutPlanGatewayListInputDTO, WorkoutPlanGatewaySelectInputDTO } from "../../../domain/workout-plan/workout-plan.gateway";
+import { WorkoutPlanGateway, WorkoutPlanGatewayDeleteInputDTO, WorkoutPlanGatewayListInputDTO, WorkoutPlanGatewaySelectInputDTO } from "../../../domain/workout-plan/workout-plan.gateway";
 import { WorkoutExercise } from "../../../domain/workout-exercise/entities/workout-exercise";
 import { WorkoutDay } from "../../../domain/workout-day/entities/workout-day";
 
@@ -110,6 +110,18 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         });
 
         return output;
+    };
+
+    public async delete(input: WorkoutPlanGatewayDeleteInputDTO): Promise<boolean> {
+        const { id: workoutPlanId, user_id: userId } = input;
+        const whereUserId = (userId) ? { user_id: userId } : {};
+
+        const result = await this.prismaClient.workoutPlan.delete({
+            where: { id: workoutPlanId, ...whereUserId },
+        });
+
+        if (result === null) return false;
+        return true;
     };
 
     public async select(input: WorkoutPlanGatewaySelectInputDTO): Promise<WorkoutPlan | null> {

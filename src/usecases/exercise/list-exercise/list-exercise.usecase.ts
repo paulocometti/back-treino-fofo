@@ -11,11 +11,7 @@ export type ListExerciseOutputDto = {
     exercises: {
         id: string;
         name: string;
-        categories: {
-            id: string;
-            name: string;
-            user_id: string | null;
-        }[];
+        categories: string[];
     }[];
 };
 
@@ -42,11 +38,11 @@ export class ListExerciseUsecase implements Usecase<ListExerciseInputDto, UserIn
         for(const t of exercises){
             let categories = [];
             for(const th of t.categories){
-                categories.push({
-                    id: th.id,
-                    name: th.name,
-                    user_id: th.user_id
-                });
+                categories.push(
+                    //id: th.id,
+                    th.name,
+                    //user_id: th.user_id
+                );
             };
             const exercise = {
                     id: t.id,

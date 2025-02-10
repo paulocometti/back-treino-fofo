@@ -21,12 +21,12 @@ export interface UserInputDto {
 
 const userAdminFake: UserInputDto = {
     id: crypto.randomUUID(),
-    name: 'Paulo',
+    name: 'Paulo Admin',
     role: 'ADMIN'
 };
 const userFake: UserInputDto = {
     id: 'beee6914-5b09-46d2-be94-b09284a31811',
-    name: 'Paulo',
+    name: 'Paulo User',
     role: 'USER'
 };
 

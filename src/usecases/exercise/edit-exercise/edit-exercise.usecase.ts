@@ -48,7 +48,7 @@ export class EditExerciseUsecase
         const found = await this.exerciseGateway.findByIdAndUserId({ id: exerciseId, user_id: userIdCondition });
         if (found === false) throw new Error('O Exercício que você está tentando editar não existe!');
 
-        const testExerciseExistsByName = await this.exerciseGateway.existsByName({ name: exerciseName, user_id: userIdCondition });
+        const testExerciseExistsByName = await this.exerciseGateway.existsByName({ id: exerciseId, name: exerciseName, user_id: userIdCondition });
         if (testExerciseExistsByName === true) throw new Error('Já existe um Exercício com este nome. Por favor, tente outro nome!');
 
         if (categories && Array.isArray(categories) && categories.length > 0) {

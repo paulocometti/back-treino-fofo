@@ -24,7 +24,7 @@ export class ListCategoryRoute implements Route {
                 const auth: string = request.headers.authorization as string;
                 const user: UserInputDto = extractUserFromAuth(auth);
                 const result = await this.listCategorySerivce.execute(undefined, user);
-                response.status(200).json(result).send();
+                response.status(200).json(result);
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };
