@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { Exercise, ExerciseEntityCreateProps } from "../../exercise/entities/exercise";
 import { z } from "zod";
 import { createCategory } from "../../category/entities/categoria.spec";
+import crypto from 'crypto';
 
 export function createExercise() {
     const exerciseName: string = faker.person.firstName('female');

@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export type CategoryEntityProps = {
     id: string;
     name: string;

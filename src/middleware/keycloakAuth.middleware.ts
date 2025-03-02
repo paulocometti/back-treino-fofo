@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { jwtDecode } from 'jwt-decode';
+import crypto from 'crypto';
 
 interface ResourceAccess {
     [key: string]: {
@@ -58,25 +59,37 @@ export function extractUserFromAuth(auth: string): UserInputDto {
 
 
 const keycloakAuth = (req: Request, res: Response, next: NextFunction) => {
+    if (process.env.NODE_ENV === 'local') {
+        next();
+        return;
+    }
 
-    if (process.env.NODE_ENV === 'local') return next();
-    if (req.method === 'POST' && req.url.endsWith('/login')) return next();
+    if (req.method === 'POST' && req.url.endsWith('/treinofofo/login')) {
+        next();
+        return;
+    }
 
     const authHeader = req.headers.authorization;
-    if (!authHeader)
-        return res.status(401).json({ message: 'Authorization header missing' });
+    if (!authHeader) {
+        res.status(401).json({ message: 'Authorization header missing' });
+        return;
+    }
 
     const tokenMatch = authHeader.match(/^Bearer (.+)$/);
-    if (!tokenMatch)
-        return res.status(401).json({ message: 'Invalid authorization format. Expected Bearer token.' });
+    if (!tokenMatch) {
+        res.status(401).json({ message: 'Invalid authorization format. Expected Bearer token.' });
+        return;
+    }
 
     const token = tokenMatch[1];
 
     try {
         const decodedUser: DecodedToken = jwtDecode<DecodedToken>(token);
 
-        if (!decodedUser.sid || !decodedUser.given_name)
-            return res.status(401).json({ message: 'Invalid token payload' });
+        if (!decodedUser.sid || !decodedUser.given_name) {
+            res.status(401).json({ message: 'Invalid token payload' });
+            return;
+        }
 
         (req as any).user = decodedUser;
         console.error('decodedUser:', decodedUser);
@@ -84,8 +97,8 @@ const keycloakAuth = (req: Request, res: Response, next: NextFunction) => {
         next();
     } catch (error) {
         console.error('Token decoding failed:', error);
-        return res.status(401).json({ message: 'Invalid or malformed token' });
-    };
+        res.status(401).json({ message: 'Invalid or malformed token' });
+    }
 };
 
 export { keycloakAuth };

@@ -1,4 +1,5 @@
 import { WorkoutDay } from "../../workout-day/entities/workout-day";
+import crypto from 'crypto';
 
 export type WorkoutPlanEntityProps = {
     id: string;

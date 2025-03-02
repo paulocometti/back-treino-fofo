@@ -1,0 +1,12 @@
+services:
+  treinofofo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: treinofofo
+    image: treinofofo
+    restart: always
+    ports:
+      - "8083:8080"
+    cpus: 0.5
+    mem_limit: 500m

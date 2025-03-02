@@ -6,6 +6,7 @@ import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let useCaseCreate: CreateCategoryUsecase;
+import crypto from 'crypto';
 
 export const categoryCreateMock = { name: faker.person.firstName('female') };
 

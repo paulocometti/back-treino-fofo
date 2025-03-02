@@ -74,10 +74,6 @@ function main() {
     const loginKeycloakUsecase = LoginKeycloakUsecase.create(keycloakRepository);
     const loginKeycloakRoute = LoginKeycloakRoute.create(loginKeycloakUsecase);
 
-    //const allCategoriesRoutes = [createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute];
-    //const allExercisesRoutes = [createExerciseRoute];
-    //const allRoutes = allCategoriesRoutes.concat(allExercisesRoutes);
-
     const api = ApiExpress.create(
         [
             createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute,

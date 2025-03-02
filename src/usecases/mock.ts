@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Category } from "../domain/category/entities/category";
 import { UserInputDto } from "../middleware/keycloakAuth.middleware";
+import crypto from 'crypto';
 
 export const createMockUser = (role: 'ADMIN' | 'USER'): UserInputDto => {
     const name = faker.person.firstName('female');

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { faker } from '@faker-js/faker';
 import { Category, CategoryEntityCreateProps } from "./category";
 import { z } from "zod";
+import crypto from 'crypto';
 
 export function createCategory() {
         const categoryName: string = faker.person.firstName('female');

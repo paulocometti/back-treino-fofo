@@ -3,6 +3,7 @@ import { CategoryRepositoryInMemory } from '../../../infra/repositories/category
 import { CreateCategoryUsecase, CreateCategoryUsecaseInputDto } from '../create-category/create-category.usecase';
 import { EditCategoryUsecase, EditCategoryInputDto } from './edit-category.usecase';
 import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
+import crypto from 'crypto';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let createUseCase: CreateCategoryUsecase;

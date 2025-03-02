@@ -6,6 +6,7 @@ import { CategoryRepositoryInMemory } from '../../../infra/repositories/category
 import { categoryCreateMock } from '../../category/create-category/create-category.usecase.spec';
 import { CreateCategoryUsecase } from '../../category/create-category/create-category.usecase';
 import { UserInputDto } from '../../../middleware/keycloakAuth.middleware';
+import crypto from 'crypto';
 
 let categoryRepository: CategoryRepositoryInMemory;
 let exerciseRepository: ExerciseRepositoryInMemory;

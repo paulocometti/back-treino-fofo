@@ -1,4 +1,5 @@
 import { Category } from "../../category/entities/category";
+import crypto from 'crypto';
 
 export type ExerciseEntityProps = {
     id: string;

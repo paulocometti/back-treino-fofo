@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { faker } from '@faker-js/faker';
 import { z } from "zod";
 import { WorkoutPlan, WorkoutPlanEntityCreateProps } from "./workout-plan";
+import crypto from 'crypto';
 
 export function createWorkoutPlan() {
     const workoutPlanName: string = faker.person.firstName('female');
