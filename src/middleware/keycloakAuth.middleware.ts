@@ -31,7 +31,7 @@ const userFake: UserInputDto = {
     role: 'USER'
 };
 
-export function extractUserFromAuth(auth: string): UserInputDto {
+export const extractUserFromAuth = (auth: string): UserInputDto => {
 
     if (process.env.NODE_ENV === 'local') return userAdminFake;
     if (!auth) throw new Error("Authorization header is missing");
@@ -41,7 +41,7 @@ export function extractUserFromAuth(auth: string): UserInputDto {
     const decodedUser: DecodedToken = jwtDecode<DecodedToken>(token);
     const { sid: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
 
-    const treinoFofo = userAcessos['treino-fofo'];
+    const treinoFofo = userAcessos['treinofofo'];
     if (!treinoFofo || !Array.isArray(treinoFofo.roles) || treinoFofo.roles.length === 0)
         throw new Error("Erro de autenticação: Acesso de usuário inválido");
 

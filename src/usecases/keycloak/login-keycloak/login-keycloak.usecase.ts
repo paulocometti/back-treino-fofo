@@ -40,12 +40,12 @@ export class LoginKeycloakUsecase
         const input = { email, password };
         const user = await this.keycloakGateway.login(input);
         const decoded: { email: string, email_verified: boolean } = jwtDecode<{ email: string, email_verified: boolean }>(user?.access_token);
-        if(decoded.email_verified){
+        /*if(decoded.email_verified){
             const emailIsNotCreatedOnUserProfile: boolean = !(await this.keycloakGateway.checkEmailIsAlreadyCreated(decoded.email));
             if(emailIsNotCreatedOnUserProfile) 
                 throw new Error();
                 //await this.keycloakGateway.insert({ email: decoded.email });
-        };
+        };*/
         const result = { email_verified: decoded.email_verified, ...user };
         const output = this.presentOutput(result);
         return output;

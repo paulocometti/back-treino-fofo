@@ -9,9 +9,9 @@ export class KeycloakRepository implements KeycloakGateway {
     public static create() {
         return new KeycloakRepository();
     };
-
+    
     public async getTokenAdmin(): Promise<any> {
-        const kcUrlMasterGetToken: string = process.env.KC_URL + "/realms/master/protocol/openid-connect/token";
+        const kcUrlMasterGetToken: string = process.env.KC_URL + "/realms/"+process.env.KC_REALM+"/protocol/openid-connect/token";
         const formattedData = new URLSearchParams();
         const kcAdminClient: string = process.env.KC_ADMIN_CLIENT as string;
         const kcAdminSecret: string = process.env.KC_ADMIN_SECRET as string;
@@ -34,7 +34,7 @@ export class KeycloakRepository implements KeycloakGateway {
     };
 
     public async checkEmailIsAlreadyCreated(email: string): Promise<any> {
-        const kcUrlCheckUser: string = `${process.env.KC_URL}/admin/realms/login/users?email=${encodeURIComponent(email)}`;
+        const kcUrlCheckUser: string = `${process.env.KC_URL}/admin/realms/${process.env.KC_REALM}/users?email=${encodeURIComponent(email)}`;
         const tokenAdmin: string = await this.getTokenAdmin();
         const optionsCheckUser = {
             method: 'GET',
@@ -47,7 +47,7 @@ export class KeycloakRepository implements KeycloakGateway {
     };
 
     public async insert(data: KeycloakGatewayInsertInputDTO): Promise<any> {
-        const kcUrlLoginManagementUsers: string = process.env.KC_URL + "/admin/realms/login/users";
+        const kcUrlLoginManagementUsers: string = process.env.KC_URL + "/admin/realms/"+process.env.KC_REALM+"/users";
         const tokenAdmin: string = await this.getTokenAdmin();
         const formattedData = {
             enabled: true,
@@ -76,7 +76,7 @@ export class KeycloakRepository implements KeycloakGateway {
     };
 
     public async login(data: KeycloakGatewayLoginInputDTO): Promise<any> {
-        const kcUrlLoginGetToken: string = process.env.KC_URL + "/realms/login/protocol/openid-connect/token"
+        const kcUrlLoginGetToken: string = process.env.KC_URL + "/realms/"+process.env.KC_REALM+"/protocol/openid-connect/token"
         const { email, password } = data;
         const formattedData = new URLSearchParams();
         const kcLoginClient: string = process.env.KC_LOGIN_CLIENT as string;

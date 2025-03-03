@@ -7,14 +7,14 @@ export class LoginKeycloakRoute implements Route {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
-        private readonly createExerciseService: LoginKeycloakUsecase
+        private readonly loginKeycloakService: LoginKeycloakUsecase
     ) { }
 
-    public static create(createExerciseService: LoginKeycloakUsecase) {
+    public static create(loginKeycloakService: LoginKeycloakUsecase) {
         return new LoginKeycloakRoute(
             "/login",
             HttpMethod.POST,
-            createExerciseService
+            loginKeycloakService
         );
     };
 
@@ -23,7 +23,7 @@ export class LoginKeycloakRoute implements Route {
             try {
                 const { email, password } = request.body;
                 const input: LoginKeycloakInputDto = { email, password };
-                const result = await this.createExerciseService.execute(input, undefined);
+                const result = await this.loginKeycloakService.execute(input, undefined);
                 response.status(201).json(result);
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
