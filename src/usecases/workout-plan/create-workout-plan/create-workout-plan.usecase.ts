@@ -1,4 +1,3 @@
-import { Exercise } from "../../../domain/exercise/entities/exercise";
 import { User } from "../../../domain/user/entities/user";
 import { WorkoutDay } from "../../../domain/workout-day/entities/workout-day";
 import { WorkoutExercise } from "../../../domain/workout-exercise/entities/workout-exercise";
@@ -8,6 +7,7 @@ import { Usecase } from "../../usecase"
 
 export type CreateWorkoutPlanUsecaseInputDto = {
     name: string;
+    description: string | null;
     workoutDays: {
         name: string,
         workoutExercise: {
@@ -30,6 +30,7 @@ export type CreateWorkoutPlanUsecaseOutputDto = {
     workoutPlan: {
         id: string;
         name: string;
+        description: string | null;
         user_id: string | null;
         workoutDays: {
             name: string,
@@ -57,12 +58,13 @@ export class CreateWorkoutPlanUsecase
     };
 
     public async execute(req: CreateWorkoutPlanUsecaseInputDto, user: CreateWorkoutPlanUsecaseUserInputDto): Promise<CreateWorkoutPlanUsecaseOutputDto> {
-        const { name: workoutPlanName, workoutDays } = req;
+        const { name: workoutPlanName, description: workoutDescription, workoutDays } = req;
         const { id: userId, role: userRole } = User.with(user);
         const userIdCondition = userRole === 'ADMIN' ? null : userId;
         let aWorkoutDays: WorkoutDay[] = [];
         let aWorkoutExercises: WorkoutExercise[] = [];
         for(const t of workoutDays){
+            aWorkoutExercises = [];
             for(const th of t.workoutExercise){
                 //usar gateway do exercise para criar o objeto dele
                 const aWorkoutExercise = WorkoutExercise.create({
@@ -77,7 +79,7 @@ export class CreateWorkoutPlanUsecase
             aWorkoutDays.push(aWorkoutDay);
         };
 
-        const aWorkoutPlan = WorkoutPlan.create({ name: workoutPlanName, user_id: userIdCondition, workoutDays: aWorkoutDays });
+        const aWorkoutPlan = WorkoutPlan.create({ name: workoutPlanName, description: workoutDescription, user_id: userIdCondition, workoutDays: aWorkoutDays });
         // >> 
         // testar se os exerciseId escolhidos sao valido
         // tambem testar se ambos sao null (oficiais) ou do mesmo dono
@@ -106,7 +108,7 @@ export class CreateWorkoutPlanUsecase
             wDays.push({ name: t.name, workoutExercises: wExercises });
         };
 
-        const output = { id: workoutPlan.id, name: workoutPlan.name, user_id: workoutPlan.user_id, workoutDays: wDays };
+        const output = { id: workoutPlan.id, name: workoutPlan.name, description: workoutPlan.description, user_id: workoutPlan.user_id, workoutDays: wDays };
         return { workoutPlan: output };
     };
 };

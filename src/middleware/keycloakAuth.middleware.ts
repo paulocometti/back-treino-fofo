@@ -9,7 +9,7 @@ interface ResourceAccess {
 };
 
 interface DecodedToken {
-    sid: string;
+    sub: string;
     given_name: string;
     resource_access: ResourceAccess;
 };
@@ -39,7 +39,7 @@ export const extractUserFromAuth = (auth: string): UserInputDto => {
     const token = auth.replace(/^Bearer\s+/, '');
 
     const decodedUser: DecodedToken = jwtDecode<DecodedToken>(token);
-    const { sid: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
+    const { sub: userId, given_name: userNome, resource_access: userAcessos } = decodedUser;
 
     const treinoFofo = userAcessos['treinofofo'];
     if (!treinoFofo || !Array.isArray(treinoFofo.roles) || treinoFofo.roles.length === 0)
@@ -86,13 +86,12 @@ const keycloakAuth = (req: Request, res: Response, next: NextFunction) => {
     try {
         const decodedUser: DecodedToken = jwtDecode<DecodedToken>(token);
 
-        if (!decodedUser.sid || !decodedUser.given_name) {
+        if (!decodedUser.sub || !decodedUser.given_name) {
             res.status(401).json({ message: 'Invalid token payload' });
             return;
         }
 
         (req as any).user = decodedUser;
-        console.error('decodedUser:', decodedUser);
 
         next();
     } catch (error) {

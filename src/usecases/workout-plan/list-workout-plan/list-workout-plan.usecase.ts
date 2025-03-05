@@ -66,7 +66,7 @@ export class ListWorkoutPlanUsecase
                 wDays.push({ name: t.name, workoutExercises: wExercises });
             };
 
-            const workoutPlan = { id: workout.id, name: workout.name, user_id: workout.user_id, workoutDays: wDays };
+            const workoutPlan = { id: workout.id, name: workout.name, description: workout.description, user_id: workout.user_id, workoutDays: wDays };
             output.push(workoutPlan);
         };
         

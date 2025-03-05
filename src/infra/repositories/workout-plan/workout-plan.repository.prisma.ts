@@ -13,9 +13,9 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
     };
 
     public async insert(input: WorkoutPlan): Promise<WorkoutPlan | null> {
-        const { id: workoutPlanId, name: workoutPlanName, user_id, workoutDays } = input;
+        const { id: workoutPlanId, name: workoutPlanName, description: workoutDescription, user_id, workoutDays } = input;
 
-        const dataWorkout = { id: workoutPlanId, name: workoutPlanName, user_id };
+        const dataWorkout = { id: workoutPlanId, name: workoutPlanName, description: workoutDescription, user_id };
 
         const workoutPlan = await this.prismaClient.workoutPlan.create({ data: dataWorkout });
 
@@ -30,10 +30,10 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
             });
 
             for (const th of workoutExercises) {
-                const { id: workoutExercideId, sets, reps, observation, exercise_id } = th;
+                const { id: workoutExerciseId, sets, reps, observation, exercise_id } = th;
                 await this.prismaClient.workoutExercise.create({
                     data: {
-                        id: workoutExercideId,
+                        id: workoutExerciseId,
                         sets,
                         reps,
                         observation,
@@ -105,6 +105,7 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         const output = WorkoutPlan.with({
             id: result.id,
             name: result.name,
+            description: result.description,
             user_id: result.user_id,
             workoutDays: resultWorkoutDays
         });
@@ -115,6 +116,11 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
     public async delete(input: WorkoutPlanGatewayDeleteInputDTO): Promise<boolean> {
         const { id: workoutPlanId, user_id: userId } = input;
         const whereUserId = (userId) ? { user_id: userId } : {};
+
+        const test = await this.prismaClient.workoutPlan.findUnique({
+            where: { id: workoutPlanId, ...whereUserId },
+        });
+        if (test === null) return false;
 
         const result = await this.prismaClient.workoutPlan.delete({
             where: { id: workoutPlanId, ...whereUserId },
@@ -189,6 +195,7 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         const output = WorkoutPlan.with({
             id: result.id,
             name: result.name,
+            description: result.description,
             user_id: result.user_id,
             workoutDays: resultWorkoutDays
         });
@@ -261,12 +268,12 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
             const workoutPlan = WorkoutPlan.with({
                 id: workout.id,
                 name: workout.name,
+                description: workout.description,
                 user_id: workout.user_id,
                 workoutDays: resultWorkoutDays
             });
             output.push(workoutPlan);
         };
-
 
         return output;
     };

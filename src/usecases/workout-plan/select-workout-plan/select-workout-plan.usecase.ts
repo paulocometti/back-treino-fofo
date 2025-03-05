@@ -18,6 +18,7 @@ export type SelectWorkoutPlanUsecaseOutputDto = {
     workoutPlan: {
         id: string;
         name: string;
+        description: string | null;
         user_id: string | null;
         workoutDays: {
             name: string,
@@ -72,7 +73,7 @@ export class SelectWorkoutPlanUsecase
             wDays.push({ name: t.name, workoutExercises: wExercises });
         };
 
-        const output = { id: workoutPlan.id, name: workoutPlan.name, user_id: workoutPlan.user_id, workoutDays: wDays };
+        const output = { id: workoutPlan.id, name: workoutPlan.name, description: workoutPlan.description, user_id: workoutPlan.user_id, workoutDays: wDays };
         return { workoutPlan: output };
     };
 };

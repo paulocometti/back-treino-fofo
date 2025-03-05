@@ -6,9 +6,11 @@ import crypto from 'crypto';
 
 export function createWorkoutPlan() {
     const workoutPlanName: string = faker.person.firstName('female');
+    const workoutPlanDescription: string = faker.person.firstName('female');
     const workoutPlanUserIdAdmin: string | null = null;
     const data: WorkoutPlanEntityCreateProps = {
         name: workoutPlanName,
+        description: workoutPlanDescription,
         user_id: workoutPlanUserIdAdmin,
         workoutDays: []
     };
@@ -18,9 +20,11 @@ export function createWorkoutPlan() {
 describe("WorkoutPlan Entity Test ", () => {
     it("deve criar uma Workout Plan (Treino de Academia) com nome e id válidos para um Usuario com role Admin", () => {
         const workoutPlanName: string = faker.person.firstName('female');
+        const workoutPlanDescription: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         const data: WorkoutPlanEntityCreateProps = {
             name: workoutPlanName,
+            description: workoutPlanDescription,
             user_id: workoutPlanUserIdAdmin,
             workoutDays: []
         };
@@ -36,9 +40,11 @@ describe("WorkoutPlan Entity Test ", () => {
 
     it("deve criar uma Workout Plan (Treino de Academia) com nome e id válidos para um Usuario com role User", () => {
         const workoutPlanName: string = faker.person.firstName('female');
+        const workoutPlanDescription: string = faker.person.firstName('female');
         const workoutPlanUserIdUser: string | null = crypto.randomUUID();
         const data: WorkoutPlanEntityCreateProps = {
             name: workoutPlanName,
+            description: workoutPlanDescription,
             user_id: workoutPlanUserIdUser,
             workoutDays: []
         };
@@ -54,9 +60,11 @@ describe("WorkoutPlan Entity Test ", () => {
 
     it("deve lançar um erro ao criar uma Workout Plan (Treino de Academia) com nome inválido", () => {
         const name = "";
+        const workoutPlanDescription: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         const data: WorkoutPlanEntityCreateProps = {
             name,
+            description: workoutPlanDescription,
             user_id: workoutPlanUserIdAdmin,
             workoutDays: []
         };
@@ -67,9 +75,11 @@ describe("WorkoutPlan Entity Test ", () => {
 
     it("deve lançar um erro ao criar uma Workout Plan (Treino de Academia) com nome muito longo", () => {
         const longName = "a".repeat(31);
+        const workoutPlanDescription: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         const data: WorkoutPlanEntityCreateProps = {
             name: longName,
+            description: workoutPlanDescription,
             user_id: workoutPlanUserIdAdmin,
             workoutDays: []
         };
@@ -80,10 +90,11 @@ describe("WorkoutPlan Entity Test ", () => {
 
     it("deve criar uma Workout Plan (Treino de Academia) usando o método 'with' com props válidas e user_id de Usuário com role Admin", () => {
         const id = faker.string.uuid();
+        const description: string = faker.person.firstName('female');
         const name = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         const workoutPlan = WorkoutPlan.with({
-            id, name, user_id: workoutPlanUserIdAdmin,
+            id, name, description, user_id: workoutPlanUserIdAdmin,
             workoutDays: []
         });
 
@@ -95,10 +106,11 @@ describe("WorkoutPlan Entity Test ", () => {
 
     it("deve criar uma Workout Plan (Treino de Academia) usando o método 'with' com props válidas e user_id de Usuário com role User", () => {
         const id = faker.string.uuid();
+        const description: string = faker.person.firstName('female');
         const name = faker.person.firstName('female');
         const workoutPlanUserIdUser = crypto.randomUUID();
         const workoutPlan = WorkoutPlan.with({
-            id, name, user_id: workoutPlanUserIdUser,
+            id, name, description, user_id: workoutPlanUserIdUser,
             workoutDays: []
         });
 
@@ -111,10 +123,11 @@ describe("WorkoutPlan Entity Test ", () => {
     it("deve lançar um erro ao criar uma Workout Plan (Treino de Academia) com props 'id' inválido", () => {
         const id = "1";
         const workoutPlanName: string = faker.person.firstName('female');
+        const workoutPlanDescription: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         expect(() => {
             WorkoutPlan.with({
-                id, name: workoutPlanName, user_id: workoutPlanUserIdAdmin,
+                id, name: workoutPlanName, description: workoutPlanDescription, user_id: workoutPlanUserIdAdmin,
                 workoutDays: []
             });
         }).toThrowError("Id inválido, não é um UUID.");
@@ -122,10 +135,11 @@ describe("WorkoutPlan Entity Test ", () => {
 
     it("deve lançar um erro ao criar uma Workout Plan (Treino de Academia) com props 'nome' inválido", () => {
         const id = faker.string.uuid();
+        const description: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = null;
         expect(() => {
             WorkoutPlan.with({
-                id, name: "", user_id: workoutPlanUserIdAdmin,
+                id, name: "", description, user_id: workoutPlanUserIdAdmin,
                 workoutDays: []
             });
         }).toThrowError("Digite um Nome corretamente!");
@@ -134,10 +148,11 @@ describe("WorkoutPlan Entity Test ", () => {
     it("deve lançar um erro ao criar uma Workout Plan (Treino de Academia) com props 'user_id' inválido", () => {
         const id = faker.string.uuid();
         const workoutPlanName: string = faker.person.firstName('female');
+        const workoutPlanDescription: string = faker.person.firstName('female');
         const workoutPlanUserIdAdmin: string | null = "1";
         expect(() => {
             WorkoutPlan.with({
-                id, name: workoutPlanName, user_id: workoutPlanUserIdAdmin,
+                id, name: workoutPlanName, description: workoutPlanDescription, user_id: workoutPlanUserIdAdmin,
                 workoutDays: []
             });
         }).toThrowError("Selecione um Usuário válido!");

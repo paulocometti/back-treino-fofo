@@ -24,7 +24,7 @@ export class LoginKeycloakRoute implements Route {
                 const { email, password } = request.body;
                 const input: LoginKeycloakInputDto = { email, password };
                 const result = await this.loginKeycloakService.execute(input, undefined);
-                response.status(201).json(result);
+                response.status(200).json(result);
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };

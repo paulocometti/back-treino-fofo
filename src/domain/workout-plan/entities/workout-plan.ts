@@ -4,6 +4,7 @@ import crypto from 'crypto';
 export type WorkoutPlanEntityProps = {
     id: string;
     name: string;
+    description: string | null;
     user_id: string | null;
 
     workoutDays: WorkoutDay[];
@@ -11,6 +12,7 @@ export type WorkoutPlanEntityProps = {
 
 export type WorkoutPlanEntityCreateProps = {
     name: string;
+    description: string | null;
     user_id: string | null;
 
     workoutDays: WorkoutDay[];
@@ -44,6 +46,10 @@ export class WorkoutPlan {
         return this.props.name;
     };
 
+    public get description() {
+        return this.props.description;
+    };
+
     public get user_id() {
         return this.props.user_id;
     };
@@ -57,6 +63,7 @@ export class WorkoutPlan {
         if (!uuidRegex.test(this.props.id))
             throw new Error("Id inválido, não é um UUID.");
 
+        //name
         if (typeof this.props.name !== 'string')
             throw new Error("Digite um Nome corretamente!");
 
@@ -67,6 +74,18 @@ export class WorkoutPlan {
         if (trimmedName.length > 30)
             throw new Error("Digite um Nome abaixo de 30 caracteres!");
 
+        //description
+        if (typeof this.props.description === "string") {
+            const trimmedDescription = this.props.description.trim();
+
+            if (trimmedDescription.length < 3)
+                throw new Error("Digite uma Descrição corretamente com pelo menos 3 caracteres!");
+
+            if (trimmedDescription.length > 120)
+                throw new Error("Digite uma Descrição abaixo de 120 caracteres!");
+        };
+
+        //user_id
         if (this.props.user_id && !uuidRegex.test(this.props.user_id))
             throw new Error("Selecione um Usuário válido!");
 

@@ -40,9 +40,10 @@ model ExerciseCategory {
 }
 
 model WorkoutPlan {
-  id      String  @id @unique
-  name    String
-  user_id String?
+  id          String  @id @unique
+  name        String
+  description String?
+  user_id     String?
 
   workoutDay WorkoutDay[]
 
@@ -54,7 +55,7 @@ model WorkoutDay {
   name String
 
   workout_plan_id String
-  workoutPlan     WorkoutPlan @relation(fields: [workout_plan_id], references: [id])
+  workoutPlan     WorkoutPlan @relation(fields: [workout_plan_id], references: [id], onDelete: Cascade)
 
   workoutExercise WorkoutExercise[]
 
@@ -71,7 +72,7 @@ model WorkoutExercise {
   exercise    Exercise @relation(fields: [exercise_id], references: [id])
 
   workout_day_id String
-  workoutDay     WorkoutDay @relation(fields: [workout_day_id], references: [id])
+  workoutDay     WorkoutDay @relation(fields: [workout_day_id], references: [id], onDelete: Cascade)
 
   @@map("workout_exercise")
 }
