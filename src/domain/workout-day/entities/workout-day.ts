@@ -63,7 +63,7 @@ export class WorkoutDay {
             throw new Error("Digite um Nome corretamente!");
 
         if (trimmedName.length > 30)
-            throw new Error("Digite um Nome abaixo de 30 caracteres!");
+            throw new Error("Digite um Nome abaixo de 30 caractéres!");
 
         //if (this.props.workout_plan_id && !uuidRegex.test(this.props.workout_plan_id))
         //    throw new Error("Selecione um Plano de Treino válido!");

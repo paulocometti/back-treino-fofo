@@ -119,7 +119,7 @@ describe("Exercise Entity Test ", () => {
         };
         expect(() => {
             Exercise.create(data);
-        }).toThrowError("Digite um Nome abaixo de 30 caracteres!");
+        }).toThrowError("Digite um Nome abaixo de 30 caractéres!");
     });
 
     it("deve criar um Exercicio usando o método 'with' com props válidas e user_id de Usuário com role Admin", () => {

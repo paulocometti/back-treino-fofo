@@ -66,7 +66,6 @@ export class CreateWorkoutPlanUsecase
         for(const t of workoutDays){
             aWorkoutExercises = [];
             for(const th of t.workoutExercise){
-                //usar gateway do exercise para criar o objeto dele
                 const aWorkoutExercise = WorkoutExercise.create({
                     sets: th.sets, 
                     reps: th.reps, 

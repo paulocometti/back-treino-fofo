@@ -93,10 +93,10 @@ export class WorkoutExercise {
             const trimmedObservation = this.props.observation.trim();
 
             if (trimmedObservation.length < 3)
-                throw new Error("Digite uma Observação corretamente com pelo menos 3 caracteres!");
+                throw new Error("Digite uma Observação corretamente com pelo menos 3 caractéres!");
 
             if (trimmedObservation.length > 30)
-                throw new Error("Digite uma Observação abaixo de 30 caracteres!");
+                throw new Error("Digite uma Observação abaixo de 30 caractéres!");
         };
 
         if (this.props.exercise_id && !uuidRegex.test(this.props.exercise_id))

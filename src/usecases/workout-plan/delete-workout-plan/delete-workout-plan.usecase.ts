@@ -1,5 +1,4 @@
 import { User } from "../../../domain/user/entities/user";
-import { WorkoutPlan } from "../../../domain/workout-plan/entities/workout-plan";
 import { WorkoutPlanGateway } from "../../../domain/workout-plan/workout-plan.gateway";
 import { Usecase } from "../../usecase"
 

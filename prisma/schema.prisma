@@ -76,3 +76,17 @@ model WorkoutExercise {
 
   @@map("workout_exercise")
 }
+
+model WorkoutHistory {
+  id           String   @id @unique
+  user_id      String
+  created_date DateTime @default(now())
+
+  workout_plan String?
+  workout_day  String?
+  duration     Int?
+  observation  String? @db.VarChar(250)
+
+  @@index([user_id, created_date])
+  @@map("workout_history")
+}
