@@ -10,6 +10,8 @@ export function createWorkoutHistory(): WorkoutHistory {
         created_date: now,
         workout_plan: "Treino A",
         workout_day: "Dia 1",
+        workout_categories: "Categoria A",
+        workout_count_exercises: 10,
         duration: 60,
         observation: "Observação válida",
     };
@@ -25,6 +27,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };
@@ -39,6 +43,8 @@ describe("WorkoutHistory Entity Tests", () => {
         expect(workoutHistory.created_date).toEqual(validData.created_date);
         expect(workoutHistory.workout_plan).toBe(validData.workout_plan);
         expect(workoutHistory.workout_day).toBe(validData.workout_day);
+        expect(workoutHistory.workout_categories).toBe(validData.workout_categories);
+        expect(workoutHistory.workout_count_exercises).toBe(validData.workout_count_exercises);
         expect(workoutHistory.duration).toBe(validData.duration);
         expect(workoutHistory.observation).toBe(validData.observation);
     });
@@ -52,6 +58,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino B",
             workout_day: "Dia 2",
+            workout_categories: "Categoria B",
+            workout_count_exercises: 12,
             duration: 90,
             observation: "Observação teste",
         };
@@ -59,6 +67,9 @@ describe("WorkoutHistory Entity Tests", () => {
         expect(workoutHistory).toBeInstanceOf(WorkoutHistory);
         expect(workoutHistory.id).toBe(id);
         expect(workoutHistory.workout_plan).toBe("Treino B");
+        expect(workoutHistory.workout_day).toBe("Dia 2");
+        expect(workoutHistory.workout_categories).toBe("Categoria B");
+        expect(workoutHistory.workout_count_exercises).toBe(12);
     });
 
     it("deve lançar erro quando created_date estiver fora do intervalo permitido", () => {
@@ -70,6 +81,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: invalidDate,
             workout_plan: "Treino A",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };
@@ -88,6 +101,8 @@ describe("WorkoutHistory Entity Tests", () => {
                 created_date: now,
                 workout_plan: "Treino A",
                 workout_day: "Dia 1",
+                workout_categories: "Categoria A",
+                workout_count_exercises: 10,
                 duration: 60,
                 observation: "Observação válida",
             });
@@ -101,6 +116,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "   ",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };
@@ -117,6 +134,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: longPlan,
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };
@@ -132,6 +151,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: "   ",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };
@@ -148,6 +169,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: longDay,
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };
@@ -163,6 +186,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60.5,
             observation: "Observação válida",
         };
@@ -178,12 +203,14 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 0,
             observation: "Observação válida",
         };
         expect(() => {
             WorkoutHistory.create(data);
-        }).toThrowError("O Número de repetições deve ser um inteiro positivo ou até 1440 minutos!");
+        }).toThrowError("O Número de repetições deve ser um inteiro positivo e até 1440 minutos!");
     });
 
     it("deve lançar erro quando observation for vazia", () => {
@@ -193,6 +220,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "   ",
         };
@@ -209,6 +238,8 @@ describe("WorkoutHistory Entity Tests", () => {
             created_date: now,
             workout_plan: "Treino A",
             workout_day: "Dia 1",
+            workout_categories: "Categoria A",
+            workout_count_exercises: 10,
             duration: 60,
             observation: "Observação válida",
         };

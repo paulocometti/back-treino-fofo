@@ -8,6 +8,7 @@ import { EditExerciseRoute } from "./infra/api/express/routes/exercise/edit-exer
 import { ListExerciseRoute } from "./infra/api/express/routes/exercise/list-exercise.express.route";
 import { SelectExerciseRoute } from "./infra/api/express/routes/exercise/select-exercise.express.route";
 import { LoginKeycloakRoute } from "./infra/api/express/routes/keycloak/login-keycloak.express.route";
+import { CreateWorkoutHistoryRoute } from "./infra/api/express/routes/workout-history/create-workout-history.express.route";
 import { CreateWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/create-workout-plan.express.route";
 import { DeleteWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/delete-workout-plan.express.route";
 import { ListWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/list-workout-plan.express.route";
@@ -15,6 +16,7 @@ import { SelectWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/
 import { CategoryRepositoryPrisma } from "./infra/repositories/category/category.repository.prisma";
 import { ExerciseRepositoryPrisma } from "./infra/repositories/exercise/exercise.repository.prisma";
 import { KeycloakRepository } from "./infra/repositories/keycloak/keycloak.repository";
+import { WorkoutHistoryRepositoryPrisma } from "./infra/repositories/workout-history/workout-history.repository.prisma";
 import { WorkoutPlanRepositoryPrisma } from "./infra/repositories/workout-plan/workout-plan.repository.prisma";
 import { keycloakAuth } from "./middleware/keycloakAuth.middleware";
 import { prisma } from "./package/prisma/prisma";
@@ -27,6 +29,7 @@ import { EditExerciseUsecase } from "./usecases/exercise/edit-exercise/edit-exer
 import { ListExerciseUsecase } from "./usecases/exercise/list-exercise/list-exercise.usecase";
 import { SelectExerciseUsecase } from "./usecases/exercise/select-exercise/select-exercise.usecase";
 import { LoginKeycloakUsecase } from "./usecases/keycloak/login-keycloak/login-keycloak.usecase";
+import { CreateWorkoutHistoryUsecase } from "./usecases/workout-history/create-workout-history/create-workout-history.usecase";
 import { CreateWorkoutPlanUsecase } from "./usecases/workout-plan/create-workout-plan/create-workout-plan.usecase";
 import { DeleteWorkoutPlanUsecase } from "./usecases/workout-plan/delete-workout-plan/delete-workout-plan.usecase";
 import { ListWorkoutPlanUsecase } from "./usecases/workout-plan/list-workout-plan/list-workout-plan.usecase";
@@ -72,6 +75,13 @@ function main() {
     const getWorkoutPlanRoute = SelectWorkoutPlanRoute.create(getWorkoutPlanUsecase);
     const deleteWorkoutPlanRoute = DeleteWorkoutPlanRoute.create(deleteWorkoutPlanUsecase);
 
+    //exercise
+    const workoutHistoryRepository = WorkoutHistoryRepositoryPrisma.create(prisma);
+
+    const createworkoutHistoryUseCase = CreateWorkoutHistoryUsecase.create(workoutPlanRepository, workoutHistoryRepository);
+
+    const createWorkoutHistoryRoute = CreateWorkoutHistoryRoute.create(createworkoutHistoryUseCase);
+
     //keycloak
     const keycloakRepository = KeycloakRepository.create();
 
@@ -83,6 +93,7 @@ function main() {
             createCategoryRoute, editCategoryRoute, listCategoryRoute, getCategoryRoute,
             createExerciseRoute, editExerciseRoute, listExerciseRoute, getExerciseRoute,
             createWorkoutPlanRoute, listWorkoutPlanRoute, getWorkoutPlanRoute, deleteWorkoutPlanRoute,
+            createWorkoutHistoryRoute,
             loginKeycloakRoute
         ],
         [

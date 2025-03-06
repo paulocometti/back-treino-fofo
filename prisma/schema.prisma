@@ -82,10 +82,12 @@ model WorkoutHistory {
   user_id      String
   created_date DateTime @default(now())
 
-  workout_plan String?
-  workout_day  String?
-  duration     Int?
-  observation  String? @db.VarChar(250)
+  workout_plan            String?
+  workout_day             String?
+  workout_categories      String?
+  workout_count_exercises Int?
+  duration                Int?
+  observation             String? @db.VarChar(250)
 
   @@index([user_id, created_date])
   @@map("workout_history")

@@ -70,6 +70,9 @@ export class WorkoutDay {
 
         if (this.props.workoutExercises && !Array.isArray(this.props.workoutExercises))
             throw new Error("Selecione um Exercício de Treino válido!");
+
+        if(Array.isArray(this.props.workoutExercises) && this.props.workoutExercises.length >= 100)
+            throw new Error("Selecione no máximo 100 Exercícios de Treino!");
     };
 
 };

@@ -7,6 +7,9 @@ export type WorkoutHistoryEntityProps = {
 
     workout_plan: string | null;
     workout_day: string | null;
+    workout_categories: string | null;
+    workout_count_exercises: number | null;
+
     duration: number | null;
     observation: string | null;
 };
@@ -17,6 +20,9 @@ export type WorkoutHistoryEntityCreateProps = {
 
     workout_plan: string | null;
     workout_day: string | null;
+    workout_categories: string | null;
+    workout_count_exercises: number | null;
+
     duration: number | null;
     observation: string | null;
 };
@@ -29,9 +35,20 @@ export class WorkoutHistory {
 
     public static create(data: WorkoutHistoryEntityCreateProps) {
         const workoutHistoryId: string = crypto.randomUUID();
+        const { workout_categories, ...otherPropsData } = data;
+
+        //workout_categories
+        let newWorkoutCategories = workout_categories;
+        if (typeof newWorkoutCategories === "string") {
+            const trimmed = newWorkoutCategories.trim();
+            if (trimmed.length > 150)
+                newWorkoutCategories = trimmed.slice(0, 140) + " (...)";
+        };
+
         const workoutHistory = new WorkoutHistory({
             id: workoutHistoryId,
-            ...data
+            workout_categories: newWorkoutCategories,
+            ...otherPropsData
         });
         return workoutHistory;
     };
@@ -61,6 +78,14 @@ export class WorkoutHistory {
         return this.props.workout_day;
     };
 
+    public get workout_categories() {
+        return this.props.workout_categories;
+    };
+
+    public get workout_count_exercises() {
+        return this.props.workout_count_exercises;
+    };
+
     public get duration() {
         return this.props.duration;
     };
@@ -76,9 +101,13 @@ export class WorkoutHistory {
             throw new Error("Id inválido, não é um UUID.");
 
         //created_date
-        if (!(this.props.created_date instanceof Date) || isNaN(this.props.created_date.getTime()))
+        const createdDate = typeof this.props.created_date === "string"
+            ? new Date(this.props.created_date)
+            : this.props.created_date;
+
+        if (!(createdDate instanceof Date) || isNaN(createdDate.getTime()))
             throw new Error("A data informada precisa ser válida!");
-        const createdUTC = this.props.created_date;
+        
         const now = new Date();
         const startOfYesterdayUTC = new Date(Date.UTC(
             now.getUTCFullYear(),
@@ -92,7 +121,7 @@ export class WorkoutHistory {
             now.getUTCDate(),
             23, 59, 59, 999
         ));
-        if (createdUTC < startOfYesterdayUTC || createdUTC > endOfTodayUTC)
+        if (createdDate < startOfYesterdayUTC || createdDate > endOfTodayUTC)
             throw new Error("A data de criação deve estar entre ontem e hoje.");
 
         //workout_plan
@@ -117,12 +146,31 @@ export class WorkoutHistory {
                 throw new Error("Escolha um Plano de Treino com Nome do Dia correto, sendo até 30 caractéres!");
         };
 
+        //workout_categories
+        if (typeof this.props.workout_categories === "string") {
+            const trimmedWorkoutCategories = this.props.workout_categories.trim();
+
+            if (trimmedWorkoutCategories.length === 0)
+                throw new Error("Escolha um Plano de Treino que contenha uma Categoria correta, sendo pelo menos 1 caractér!");
+
+            if (trimmedWorkoutCategories.length > 150)
+                throw new Error("Escolha um Plano de Treino que contenha uma Categoria correta, sendo até 150 caractéres!");
+        };
+
+        //workout_count_exercises
+        if (this.props.workout_count_exercises != null) {
+            if (!Number.isInteger(this.props.workout_count_exercises))
+                throw new Error("O Número de Exercícios deve ser um inteiro positivo!");
+            if (this.props.workout_count_exercises <= 0)
+                throw new Error("O Número de Exercícios deve ser um inteiro positivo!");
+        };
+
         //duration
         if (this.props.duration != null) {
             if (!Number.isInteger(this.props.duration))
                 throw new Error("O Número de repetições deve ser um inteiro positivo!");
             if (this.props.duration <= 0 || this.props.duration >= (24 * 60))
-                throw new Error("O Número de repetições deve ser um inteiro positivo ou até 1440 minutos!");
+                throw new Error("O Número de repetições deve ser um inteiro positivo e até 1440 minutos!");
         };
 
         //observation
@@ -132,7 +180,7 @@ export class WorkoutHistory {
             if (trimmedObservation.length === 0)
                 throw new Error("Digite uma Observação corretamente com pelo menos 1 caractér!");
 
-            if (trimmedObservation.length > 30)
+            if (trimmedObservation.length > 250)
                 throw new Error("Digite uma Observação abaixo de 250 caractéres!");
         };
 

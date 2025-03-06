@@ -27,7 +27,7 @@ export class DeleteWorkoutPlanRoute implements Route {
                 const auth: string = request.headers.authorization as string;
                 const user: UserInputDto = extractUserFromAuth(auth);
                 await this.deleteWorkoutPlanService.execute(input, user);
-                response.status(200).json({ message: "Sucesso ao remover Treino." });
+                response.status(200).json({ message: "Sucesso ao remover Plano de Treino." });
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };

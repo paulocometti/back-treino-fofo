@@ -21,6 +21,7 @@ export type SelectWorkoutPlanUsecaseOutputDto = {
         description: string | null;
         user_id: string | null;
         workoutDays: {
+            id: string,
             name: string,
             workoutExercises: {
                 sets: number,
@@ -61,6 +62,7 @@ export class SelectWorkoutPlanUsecase
         let wExercises = [];
 
         for(const t of workoutPlan.workoutDays){
+            wDays = [];
             for(const th of t.workoutExercises){
                 wExercises.push({
                     sets: th.sets,
@@ -70,7 +72,7 @@ export class SelectWorkoutPlanUsecase
                     exercise: th.exercise
                 });
             };
-            wDays.push({ name: t.name, workoutExercises: wExercises });
+            wDays.push({ id: t.id, name: t.name, workoutExercises: wExercises });
         };
 
         const output = { id: workoutPlan.id, name: workoutPlan.name, description: workoutPlan.description, user_id: workoutPlan.user_id, workoutDays: wDays };
