@@ -64,7 +64,7 @@ const keycloakAuth = (req: Request, res: Response, next: NextFunction) => {
         return;
     }
 
-    if (req.method === 'POST' && req.url.endsWith('/treinofofo/login')) {
+    if (req.method === 'POST' && (req.url.endsWith('/treinofofo/user/login') || req.url.endsWith('/treinofofo/user/create'))) {
         next();
         return;
     }

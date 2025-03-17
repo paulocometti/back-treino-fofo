@@ -7,6 +7,7 @@ import { CreateExerciseRoute } from "./infra/api/express/routes/exercise/create-
 import { EditExerciseRoute } from "./infra/api/express/routes/exercise/edit-exercise.express.route";
 import { ListExerciseRoute } from "./infra/api/express/routes/exercise/list-exercise.express.route";
 import { SelectExerciseRoute } from "./infra/api/express/routes/exercise/select-exercise.express.route";
+import { CreateKeycloakRoute } from "./infra/api/express/routes/keycloak/create-keycloak.express.route";
 import { LoginKeycloakRoute } from "./infra/api/express/routes/keycloak/login-keycloak.express.route";
 import { CreateWorkoutHistoryRoute } from "./infra/api/express/routes/workout-history/create-workout-history.express.route";
 import { CreateWorkoutPlanRoute } from "./infra/api/express/routes/workout-plan/create-workout-plan.express.route";
@@ -28,6 +29,7 @@ import { CreateExerciseUsecase } from "./usecases/exercise/create-exercise/creat
 import { EditExerciseUsecase } from "./usecases/exercise/edit-exercise/edit-exercise.usecase";
 import { ListExerciseUsecase } from "./usecases/exercise/list-exercise/list-exercise.usecase";
 import { SelectExerciseUsecase } from "./usecases/exercise/select-exercise/select-exercise.usecase";
+import { CreateKeycloakUsecase } from "./usecases/keycloak/login-keycloak/create-keycloak.usecase";
 import { LoginKeycloakUsecase } from "./usecases/keycloak/login-keycloak/login-keycloak.usecase";
 import { CreateWorkoutHistoryUsecase } from "./usecases/workout-history/create-workout-history/create-workout-history.usecase";
 import { CreateWorkoutPlanUsecase } from "./usecases/workout-plan/create-workout-plan/create-workout-plan.usecase";
@@ -86,7 +88,10 @@ function main() {
     const keycloakRepository = KeycloakRepository.create();
 
     const loginKeycloakUsecase = LoginKeycloakUsecase.create(keycloakRepository);
+    const createKeycloakUsecase = CreateKeycloakUsecase.create(keycloakRepository)
+
     const loginKeycloakRoute = LoginKeycloakRoute.create(loginKeycloakUsecase);
+    const createKeycloakRoute = CreateKeycloakRoute.create(createKeycloakUsecase);
 
     const api = ApiExpress.create(
         [
@@ -94,7 +99,7 @@ function main() {
             createExerciseRoute, editExerciseRoute, listExerciseRoute, getExerciseRoute,
             createWorkoutPlanRoute, listWorkoutPlanRoute, getWorkoutPlanRoute, deleteWorkoutPlanRoute,
             createWorkoutHistoryRoute,
-            loginKeycloakRoute
+            loginKeycloakRoute, createKeycloakRoute
         ],
         [
             keycloakAuth,

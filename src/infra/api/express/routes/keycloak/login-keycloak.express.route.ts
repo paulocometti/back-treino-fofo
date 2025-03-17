@@ -12,7 +12,7 @@ export class LoginKeycloakRoute implements Route {
 
     public static create(loginKeycloakService: LoginKeycloakUsecase) {
         return new LoginKeycloakRoute(
-            "/login",
+            "/user/login",
             HttpMethod.POST,
             loginKeycloakService
         );
