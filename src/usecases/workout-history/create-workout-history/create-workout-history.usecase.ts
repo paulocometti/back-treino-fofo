@@ -6,14 +6,9 @@ import { WorkoutHistoryGateway } from "../../../domain/workout-history/workout-h
 import { WorkoutPlanGateway } from "../../../domain/workout-plan/workout-plan.gateway";
 
 export type CreateWorkoutHistoryUsecaseInputDto = {
-    created_date: Date;
-
+    created_date: Date | null;
     workout_plan_id: string;
     workout_day_id: string;
-    //workout_plan: string | null;
-    //workout_day: string | null;
-    //workout_categories: string | null;
-    //workout_count_exercises: number | null;
     duration: number | null;
     observation: string | null;
 };
@@ -49,7 +44,9 @@ export class CreateWorkoutHistoryUsecase
     public async execute(req: CreateWorkoutHistoryUsecaseInputDto, user: UserInputDto): Promise<CreateWorkoutHistoryUsecaseOutputDto> {
         const { id: userId } = User.with(user);
 
-        const { workout_plan_id: workoutPlanId, workout_day_id: workoutDayId, ...otherPropsReq } = req;
+        const { workout_plan_id: workoutPlanId, workout_day_id: workoutDayId, created_date, duration, observation } = req;
+
+        const createdDate: Date = (created_date) ? created_date : new Date();
         const workoutPlan = await this.workoutPlanGateway.select({ id: workoutPlanId, user_id: userId });
         if (workoutPlan === null) throw new Error();
         const workoutPlanName: string = workoutPlan.name;
@@ -71,11 +68,13 @@ export class CreateWorkoutHistoryUsecase
         const workoutDayCategories: string = Array.from(workoutDaySetCategories).join(", ");
 
         const input = {
+            created_date: createdDate,
             workout_plan: workoutPlanName,
             workout_day: workoutDayName,
             workout_categories: workoutDayCategories,
             workout_count_exercises: workoutCountExercises,
-            ...otherPropsReq
+            duration,
+            observation
         };
 
         const aWorkoutHistory = WorkoutHistory.create({ user_id: userId, ...input });

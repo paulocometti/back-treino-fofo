@@ -13,6 +13,7 @@ export type ListWorkoutPlanUsecaseOutputDto = {
         name: string;
         user_id: string | null;
         workoutDays: {
+            id: string,
             name: string,
             workoutExercises: {
                 sets: number,
@@ -63,7 +64,7 @@ export class ListWorkoutPlanUsecase
                         exercise: th.exercise
                     });
                 };
-                wDays.push({ name: t.name, workoutExercises: wExercises });
+                wDays.push({ id: t.id, name: t.name, workoutExercises: wExercises });
             };
 
             const workoutPlan = { id: workout.id, name: workout.name, description: workout.description, user_id: workout.user_id, workoutDays: wDays };
