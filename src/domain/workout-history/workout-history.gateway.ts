@@ -6,5 +6,5 @@ export interface CategoryGatewayDashboardOuputDto {
 
 export interface WorkoutHistoryGateway {
     insert(dto: WorkoutHistory): Promise<WorkoutHistory | null>;
-    dashboard(user_id: string): Promise<any>;
+    select(user_id: string, past_days: number): Promise<any>;
 };

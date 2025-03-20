@@ -108,7 +108,7 @@ export class WorkoutHistory {
         if (!(createdDate instanceof Date) || isNaN(createdDate.getTime()))
             throw new Error("A data informada precisa ser válida!");
         
-        const now = new Date();
+        /*const now = new Date();
         const startOfYesterdayUTC = new Date(Date.UTC(
             now.getUTCFullYear(),
             now.getUTCMonth(),
@@ -122,7 +122,7 @@ export class WorkoutHistory {
             23, 59, 59, 999
         ));
         if (createdDate < startOfYesterdayUTC || createdDate > endOfTodayUTC)
-            throw new Error("A data de criação deve estar entre ontem e hoje.");
+            throw new Error("A data de criação deve estar entre ontem e hoje.");*/
 
         //workout_plan
         if (typeof this.props.workout_plan === "string") {

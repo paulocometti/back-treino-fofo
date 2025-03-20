@@ -19,7 +19,27 @@ export class WorkoutHistoryRepositoryPrisma implements WorkoutHistoryGateway {
         return output;
     };
 
-    public async dashboard(user_id: string): Promise<any> {
-        return true;
+    public async select(user_id: string, past_days: number): Promise<WorkoutHistory[]> {
+        const dateNow: Date = new Date();
+        let datePastDays: Date = new Date(dateNow);
+        datePastDays.setDate(dateNow.getDate() - past_days);
+        const where = { user_id, created_date: { gte: datePastDays, } };
+        const result = await this.prismaClient.workoutHistory.findMany({ where, orderBy: { created_date: 'desc' } });
+
+        let output: WorkoutHistory[] = [];
+        for(const t of result){
+            output.push(WorkoutHistory.with({
+                id: t.id,
+                user_id: t.user_id,
+                created_date: t.created_date,
+                workout_plan: t.workout_plan,
+                workout_day: t.workout_day,
+                workout_categories: t.workout_categories,
+                workout_count_exercises: t.workout_count_exercises,
+                duration: t.duration,
+                observation: t.observation,
+            }));
+        };
+        return output;
     };
 };
