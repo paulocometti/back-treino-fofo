@@ -24,7 +24,7 @@ export class CreateKeycloakRoute implements Route {
                 const { email, firstName, lastName, password } = request.body;
                 const input: CreateKeycloakInputDto = { email, firstName, lastName, password };
                 await this.loginKeycloakService.execute(input, undefined);
-                response.status(200).json({ message: "Usuário criado com sucesso!" });
+                response.status(201).json({ message: "Usuário criado com sucesso!" });
             } catch (error: any) {
                 response.status(500).json({ message: error?.message || "Error Interno do Servidor." });
             };

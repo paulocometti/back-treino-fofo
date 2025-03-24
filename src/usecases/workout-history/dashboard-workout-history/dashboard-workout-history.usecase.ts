@@ -93,10 +93,10 @@ export class DashboardWorkoutHistoryUsecase
                             dayObj.latestWorkout = localWorkoutDate;
                         }
                         dayObj.trained = true;
-                    }
-                }
-            }
-        }
+                    };
+                };
+            };
+        };
 
         const trainedDaysCount = last7Days.filter(day => day.trained === true && day.date <= localNow).length;
 
@@ -106,7 +106,7 @@ export class DashboardWorkoutHistoryUsecase
                 day: dayObj.date.getDate(),
                 trained: dayObj.trained,
             };
-        }
+        };
 
         const todayAbbr = weekDays[localNow.getDay()];
 
@@ -114,12 +114,12 @@ export class DashboardWorkoutHistoryUsecase
         let lastWorkout = null;
         if (result && Array.isArray(result) && result.length > 0)
             lastWorkout = {
-                workout_plan: result[result.length - 1].workout_plan,
-                workout_day: result[result.length - 1].workout_day,
-                workout_categories: result[result.length - 1].workout_categories,
-                workout_count_exercises: result[result.length - 1].workout_count_exercises,
-                duration: result[result.length - 1].duration,
-                observation: result[result.length - 1].observation,
+                workout_plan: result[0].workout_plan,
+                workout_day: result[0].workout_day,
+                workout_categories: result[0].workout_categories,
+                workout_count_exercises: result[0].workout_count_exercises,
+                duration: result[0].duration,
+                observation: result[0].observation,
             };
 
         const output = {
