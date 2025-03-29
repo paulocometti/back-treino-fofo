@@ -165,7 +165,9 @@ export class WorkoutPlanRepositoryPrisma implements WorkoutPlanGateway {
         let resultWorkoutExercises: WorkoutExercise[] = [];
         let resultCategoriesOfWorkoutExercises: string[] = [];
         for (const t of result.workoutDay) {
-
+            resultWorkoutExercises = [];
+            resultCategoriesOfWorkoutExercises = [];
+            
             for (const th of t.workoutExercise) {
                 for (const tha of th.exercise.categoryExercise) {
                     resultCategoriesOfWorkoutExercises.push(tha.category.name);
