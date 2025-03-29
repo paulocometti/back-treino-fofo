@@ -95,7 +95,7 @@ export class CreateWorkoutPlanUsecase
         let wExercises = [];
 
         for(const t of workoutPlan.workoutDays){
-            wDays = [];
+            wExercises = [];
             for(const th of t.workoutExercises){
                 wExercises.push({
                     sets: th.sets,
