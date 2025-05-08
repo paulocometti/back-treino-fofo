@@ -1,6 +1,8 @@
 import { Api } from "../api";
 import express, { Express, RequestHandler, Router } from 'express';
 import { Route } from "./routes/route";
+import cors from 'cors';
+
 
 export class ApiExpress implements Api {
     private app: Express;
@@ -11,6 +13,7 @@ export class ApiExpress implements Api {
         this.router = express.Router();
 
         this.app.use(express.json());
+        this.app.use(cors());
         middlewares.forEach(middleware => {
             this.app.use(middleware);
         });
